@@ -1,10 +1,9 @@
-namespace Karcags.Common.Tools
+namespace Karcags.Common.Tools;
+
+/// <summary>
+/// Application Settings
+/// </summary>
+public class ApplicationSettings
 {
-    /// <summary>
-    /// Application Settings
-    /// </summary>
-    public class ApplicationSettings
-    {
-        public string JwtSecret { get; set; }
-    }
+    public string JwtSecret { get; set; }
 }

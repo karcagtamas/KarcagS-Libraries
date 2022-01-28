@@ -1,0 +1,59 @@
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using AutoMapper;
+using Karcags.Common.Tools.Entities;
+using Karcags.Common.Tools.Services;
+using Microsoft.EntityFrameworkCore;
+
+namespace Karcags.Common.Tools.Repository;
+
+public abstract class MapperRepository<TEntity, TKey> : Repository<TEntity, TKey>, IMapperRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
+{
+    protected readonly IMapper Mapper;
+
+    public MapperRepository(DbContext context, ILoggerService loggerService, IUtilsService utilsService, IMapper mapper, string entity) : base(context, loggerService, utilsService, entity)
+    {
+        Mapper = mapper;
+    }
+
+    public virtual void CreateFromModel<TModel>(TModel model)
+    {
+        Create(Mapper.Map<TEntity>(model));
+    }
+
+    public virtual IEnumerable<T> GetAllMapped<T>()
+    {
+        return Mapper.Map<IEnumerable<T>>(GetAll());
+    }
+
+    public virtual T GetMapped<T>(TKey id)
+    {
+        return Mapper.Map<T>(Get(id));
+    }
+
+    public virtual IEnumerable<T> GetMappedList<T>(Expression<Func<TEntity, bool>> expression)
+    {
+        return Mapper.Map<IEnumerable<T>>(GetList(expression));
+    }
+
+    public virtual IEnumerable<T> GetMappedList<T>(Expression<Func<TEntity, bool>> expression, int? count)
+    {
+        return Mapper.Map<IEnumerable<T>>(GetList(expression, count));
+    }
+
+    public virtual IEnumerable<T> GetMappedList<T>(Expression<Func<TEntity, bool>> expression, int? count, int? skip)
+    {
+        return Mapper.Map<IEnumerable<T>>(GetList(expression, count, skip));
+    }
+
+    public virtual IEnumerable<T> GetOrderedMappedAll<T>(string orderBy, string direction)
+    {
+        return Mapper.Map<IEnumerable<T>>(GetOrderedAll(orderBy, direction));
+    }
+
+    public virtual void UpdateByModel<TModel>(TKey id, TModel model)
+    {
+        Update(Mapper.Map(model, Get(id)));
+    }
+}
