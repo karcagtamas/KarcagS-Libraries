@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using Karcags.Common.Annotations;
 using Karcags.Common.Tools.Entities;
 using Karcags.Common.Tools.Services;
 using Microsoft.EntityFrameworkCore;
@@ -56,6 +57,12 @@ public class Repository<T, TKey> : IRepository<T, TKey>
             lue.LastUpdaterId = Utils.GetCurrentUserId<TKey>();
         }
 
+        var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
+        props.ToList().ForEach(p =>
+        {
+            p.SetValue(entity, Utils.GetCurrentUserId<TKey>());
+        });
+
         Context.Set<T>().Add(entity);
         Persist();
     }
@@ -74,6 +81,12 @@ public class Repository<T, TKey> : IRepository<T, TKey>
             {
                 lue.LastUpdaterId = Utils.GetCurrentUserId<TKey>();
             }
+
+            var props = x.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
+            props.ToList().ForEach(p =>
+            {
+                p.SetValue(x, Utils.GetCurrentUserId<TKey>());
+            });
         });
 
         // Add
@@ -223,6 +236,12 @@ public class Repository<T, TKey> : IRepository<T, TKey>
             lue.LastUpdaterId = Utils.GetCurrentUserId<TKey>();
         }
 
+        var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
+        props.ToList().ForEach(p =>
+        {
+            p.SetValue(entity, Utils.GetCurrentUserId<TKey>());
+        });
+
         Context.Set<T>().Update(entity);
         Persist();
     }
@@ -241,6 +260,12 @@ public class Repository<T, TKey> : IRepository<T, TKey>
             {
                 lue.LastUpdaterId = Utils.GetCurrentUserId<TKey>();
             }
+
+            var props = x.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
+            props.ToList().ForEach(p =>
+            {
+                p.SetValue(x, Utils.GetCurrentUserId<TKey>());
+            });
         });
 
         // Update 
