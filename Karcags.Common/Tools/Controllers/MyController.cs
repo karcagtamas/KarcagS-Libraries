@@ -73,7 +73,7 @@ public class MyController<TEntity, TKey, TModel, TElement> : ControllerBase, ICo
             return this.Ok(this._service.GetAllMapped<TElement>());
         }
 
-        return this.Ok(this._service.GetOrderedMappedAll<TElement>(orderBy, direction));
+        return this.Ok(this._service.GetAllMappedAsOrdered<TElement>(orderBy, direction));
     }
 
     /// <summary>

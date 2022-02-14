@@ -47,13 +47,28 @@ public abstract class MapperRepository<TEntity, TKey> : Repository<TEntity, TKey
         return Mapper.Map<IEnumerable<T>>(GetList(expression, count, skip));
     }
 
-    public virtual IEnumerable<T> GetOrderedMappedAll<T>(string orderBy, string direction)
+    public virtual IEnumerable<T> GetAllMappedAsOrdered<T>(string orderBy, string direction)
     {
-        return Mapper.Map<IEnumerable<T>>(GetOrderedAll(orderBy, direction));
+        return Mapper.Map<IEnumerable<T>>(GetAllAsOrdered(orderBy, direction));
     }
 
     public virtual void UpdateByModel<TModel>(TKey id, TModel model)
     {
         Update(Mapper.Map(model, Get(id)));
+    }
+
+    public IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, string orderBy, string direction)
+    {
+        return Mapper.Map<IEnumerable<T>>(GetOrderedList(expression, orderBy, direction));
+    }
+
+    public IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, int? count, string orderBy, string direction)
+    {
+        return Mapper.Map<IEnumerable<T>>(GetOrderedList(expression, count, orderBy, direction));
+    }
+
+    public IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, int? count, int? skip, string orderBy, string direction)
+    {
+        return Mapper.Map<IEnumerable<T>>(GetOrderedList(expression, count, skip, orderBy, direction));
     }
 }

@@ -4,23 +4,26 @@ using System.Linq;
 using Karcags.Common.Tools.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Karcags.Common.Tools.Services;
 
 public class UtilsService<TContext> : IUtilsService where TContext : DbContext
 {
-    private readonly IHttpContextAccessor _contextAccessor;
-    private readonly TContext _context;
+    private readonly IHttpContextAccessor contextAccessor;
+    private readonly TContext context;
+    private readonly UtilsSettings settings;
 
     /// <summary>
     /// Utils Service constructor
     /// </summary>
     /// <param name="contextAccessor">Context Accessor</param>
     /// <param name="context">Context</param>
-    public UtilsService(IHttpContextAccessor contextAccessor, TContext context)
+    public UtilsService(IHttpContextAccessor contextAccessor, TContext context, IOptions<UtilsSettings> utilsOptions)
     {
-        this._contextAccessor = contextAccessor;
-        this._context = context;
+        this.contextAccessor = contextAccessor;
+        this.context = context;
+        this.settings = utilsOptions.Value;
     }
 
     /// <summary>
@@ -30,10 +33,16 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
     public T GetCurrentUser<T, TKey>() where T : class, IEntity<TKey>
     {
         TKey userId = this.GetCurrentUserId<TKey>();
-        var user = this._context.Set<T>().Find(userId);
+
+        if (userId is null)
+        {
+            throw new UserKeyNotFoundException("User key not found");
+        }
+
+        var user = this.context.Set<T>().Find(userId);
         if (user == null)
         {
-            throw new Exception("Invalid user Id");
+            throw new UserNotFoundException($"User not found with this id: {userId}");
         }
 
         return user;
@@ -45,9 +54,14 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
     /// <returns>Current user's Id</returns>
     public TKey GetCurrentUserId<TKey>()
     {
-        // TODO: fix
-        TKey userId = (TKey)(object)this._contextAccessor.HttpContext.User.Claims.First(c => c.Type == "UserId").Value;
-        return userId;
+        string claim = GetClaimByName(settings.UserIdClaimName);
+
+        if (!string.IsNullOrEmpty(claim))
+        {
+            return (TKey)(object)claim;
+        }
+
+        return default;
     }
 
     /// <summary>
@@ -88,5 +102,31 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
         }
 
         return res;
+    }
+
+    private string GetClaimByName(string name)
+    {
+        if (this.contextAccessor.HttpContext.User is null)
+        {
+            return "";
+        }
+
+        return this.contextAccessor.HttpContext.User.Claims.First(c => c.Type == name).Value;
+    }
+
+    public class UserKeyNotFoundException : Exception
+    {
+        public UserKeyNotFoundException(string msg) : base(msg)
+        {
+
+        }
+    }
+
+    public class UserNotFoundException : Exception
+    {
+        public UserNotFoundException(string msg) : base(msg)
+        {
+
+        }
     }
 }

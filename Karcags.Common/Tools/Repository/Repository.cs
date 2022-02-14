@@ -386,7 +386,7 @@ public class Repository<T, TKey> : IRepository<T, TKey>
     /// <param name="orderBy">Ordering by</param>
     /// <param name="direction">Order direction</param>
     /// <returns>Ordered all list</returns>
-    public IEnumerable<T> GetOrderedAll(string orderBy, string direction)
+    public IEnumerable<T> GetAllAsOrdered(string orderBy, string direction)
     {
         if (string.IsNullOrEmpty(orderBy)) throw new ArgumentException("Order by value is empty or null");
         var type = typeof(T);
@@ -405,5 +405,35 @@ public class Repository<T, TKey> : IRepository<T, TKey>
             _ => throw new ArgumentException("Ordering direction does not exist")
         };
 
+    }
+
+    public IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction)
+    {
+        return GetOrderedList(predicate, null, null, orderBy, direction);
+    }
+
+    public IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, int? count, string orderBy, string direction)
+    {
+        return GetOrderedList(predicate, count, null, orderBy, direction);
+    }
+
+    public IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, int? count, int? skip, string orderBy, string direction)
+    {
+        if (string.IsNullOrEmpty(orderBy)) throw new ArgumentException("Order by value is empty or null");
+        var type = typeof(T);
+        var property = type.GetProperty(orderBy);
+
+        if (property == null)
+        {
+            throw new ArgumentException("Property does not exist");
+        }
+
+        return direction switch
+        {
+            "asc" => GetList(predicate, count, skip).OrderBy(x => property.GetValue(x)),
+            "desc" => GetList(predicate, count, skip).OrderByDescending(x => property.GetValue(x)),
+            "none" => GetList(predicate, count, skip),
+            _ => throw new ArgumentException("Ordering direction does not exist")
+        };
     }
 }

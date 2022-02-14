@@ -43,7 +43,7 @@ public class LoggerService : ILoggerService
     /// <returns>Error Response from Exception</returns>
     public void LogError(Exception e)
     {
-        this._logger.LogError(e.Message);
+        this._logger.LogError(e.ToString());
     }
 
     /// <summary>

@@ -15,7 +15,7 @@ namespace Karcags.Common.Tools.Export.PDF
         {
             this._converter = converter;
         }
-        
+
         /*public ExportResult GeneratePersonCsomor(List<CsomorPerson> persons)
         {
             persons = persons.OrderBy(x => x.Name).ToList();

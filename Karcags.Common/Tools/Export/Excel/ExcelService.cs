@@ -64,7 +64,6 @@ namespace Karcags.Common.Tools.Export.Excel
             string fileName,
             bool appendCurrentDate)
         {
-            const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             string name = appendCurrentDate
                 ? $"{DateHelper.DateToString(DateTime.Now)}{fileName}.xlsx"
                 : $"{fileName}.xlsx";
@@ -98,44 +97,44 @@ namespace Karcags.Common.Tools.Export.Excel
                 }
             }
         }
-    /*
-        public ExportResult GenerateWorkCsomor(List<CsomorWork> works)
-        {
-            works = works.OrderBy(x => x.Name).ToList();
-            const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            string name = $"{DateHelper.ToFileName(DateTime.Now)}_works.xlsx";
-
-            using (var workbook = new XLWorkbook())
+        /*
+            public ExportResult GenerateWorkCsomor(List<CsomorWork> works)
             {
-                var worksheet = workbook.Worksheets.Add("Works");
+                works = works.OrderBy(x => x.Name).ToList();
+                const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                string name = $"{DateHelper.ToFileName(DateTime.Now)}_works.xlsx";
 
-                // Header
-                for (int i = 0; i < works.Count; i++)
+                using (var workbook = new XLWorkbook())
                 {
-                    worksheet.Cell(1, i + 2).Value = works[i].Name;
-                }
+                    var worksheet = workbook.Worksheets.Add("Works");
 
-                var groups = works.SelectMany(x => x.Tables).GroupBy(x => x.Date).OrderBy(x => x.Key);
-
-                // Date Col
-                int rowNo = 2;
-                foreach (var row in groups)
-                {
-                    worksheet.Cell(rowNo, 1).Value = WriteHelper.HourInterval(row.Key, 1);
-
-                    int colNo = 2;
-                    foreach (var col in row)
+                    // Header
+                    for (int i = 0; i < works.Count; i++)
                     {
-                        worksheet.Cell(rowNo, colNo).Value = col.Person != null ? col.Person.Name : "-";
-                        colNo++;
+                        worksheet.Cell(1, i + 2).Value = works[i].Name;
                     }
-                    rowNo++;
-                }
 
-                var stream = new MemoryStream();
-                workbook.SaveAs(stream);
-                return new ExportResult { Content = stream.ToArray(), FileName = name, ContentType = contentType };
-            }
-        }*/
+                    var groups = works.SelectMany(x => x.Tables).GroupBy(x => x.Date).OrderBy(x => x.Key);
+
+                    // Date Col
+                    int rowNo = 2;
+                    foreach (var row in groups)
+                    {
+                        worksheet.Cell(rowNo, 1).Value = WriteHelper.HourInterval(row.Key, 1);
+
+                        int colNo = 2;
+                        foreach (var col in row)
+                        {
+                            worksheet.Cell(rowNo, colNo).Value = col.Person != null ? col.Person.Name : "-";
+                            colNo++;
+                        }
+                        rowNo++;
+                    }
+
+                    var stream = new MemoryStream();
+                    workbook.SaveAs(stream);
+                    return new ExportResult { Content = stream.ToArray(), FileName = name, ContentType = contentType };
+                }
+            }*/
     }
 }

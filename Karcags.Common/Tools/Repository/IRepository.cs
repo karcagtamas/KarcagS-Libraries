@@ -11,7 +11,10 @@ public interface IRepository<T, TKey> where T : class, IEntity<TKey>
     IEnumerable<T> GetList(Expression<Func<T, bool>> predicate);
     IEnumerable<T> GetList(Expression<Func<T, bool>> predicate, int? count);
     IEnumerable<T> GetList(Expression<Func<T, bool>> predicate, int? count, int? skip);
-    IEnumerable<T> GetOrderedAll(string orderBy, string direction);
+    IEnumerable<T> GetAllAsOrdered(string orderBy, string direction);
+    IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction);
+    IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, int? count, string orderBy, string direction);
+    IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, int? count, int? skip, string orderBy, string direction);
     T Get(TKey id);
     void Update(T entity);
     void UpdateRange(IEnumerable<T> entities);
