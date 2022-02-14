@@ -65,6 +65,24 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
     }
 
     /// <summary>
+    /// Get current user's Email from the HTTP Context
+    /// </summary>
+    /// <returns>Current user's Email</returns>
+    public string GetCurrentUserEmail()
+    {
+        return GetClaimByName(settings.UserEmailClaimName);
+    }
+
+    /// <summary>
+    /// Get current user's Name from the HTTP Context
+    /// </summary>
+    /// <returns>Current user's Name</returns>
+    public string GetCurrentUserName()
+    {
+        return GetClaimByName(settings.UserNameClaimName);
+    }
+
+    /// <summary>
     /// Identity errors to string.
     /// </summary>
     /// <param name="errors">Error list</param>
@@ -111,7 +129,7 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
             return "";
         }
 
-        return this.contextAccessor.HttpContext.User.Claims.First(c => c.Type == name).Value;
+        return this.contextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == name).Value;
     }
 
     public class UserKeyNotFoundException : Exception
