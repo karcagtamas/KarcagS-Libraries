@@ -23,8 +23,8 @@ public interface ILoggerService
     void LogAnonymousInformation(string service, string action, List<string> ids, object entity);
     void LogAnonymousInformation(string service, string action, List<int> ids);
     void LogAnonymousInformation(string service, string action, List<int> ids, object entity);
-    MessageException LogInvalidThings(string user, string service, string thing, string message);
-    MessageException LogAnonymousInvalidThings(string service, string thing, string message);
+    ServerException LogInvalidThings(string user, string service, string thing, string message);
+    ServerException LogAnonymousInvalidThings(string service, string thing, string message);
     string AddUserToMessage(string message, string user);
-    ErrorResponse ExceptionToResponse(Exception e, params Exception[] list);
+    ErrorResult ExceptionToResponse(Exception e, params Exception[] list);
 }

@@ -78,7 +78,7 @@ public class LoggerService : ILoggerService
     /// <param name="e">Error</param>
     /// <param name="list">Other exception list</param>
     /// <returns>API Error response</returns>
-    public ErrorResponse ExceptionToResponse(Exception e, params Exception[] list)
+    public ErrorResult ExceptionToResponse(Exception e, params Exception[] list)
     {
         foreach (var error in list)
         {
@@ -86,7 +86,7 @@ public class LoggerService : ILoggerService
         }
 
         this.LogError(e);
-        return new ErrorResponse(e);
+        return new ErrorResult(e);
     }
 
     /// <summary>
@@ -97,11 +97,11 @@ public class LoggerService : ILoggerService
     /// <param name="thing">Thing</param>
     /// <param name="message">Log message</param>
     /// <returns>Invalid message</returns>
-    public MessageException LogInvalidThings(string user, string service, string thing, string message)
+    public ServerException LogInvalidThings(string user, string service, string thing, string message)
     {
         string end = $"Invalid {thing}";
         this._logger.LogError($"{user}: {service} - {end}");
-        return new MessageException(message);
+        return new ServerException(message);
     }
 
     /// <summary>
@@ -111,11 +111,11 @@ public class LoggerService : ILoggerService
     /// <param name="thing">Thing</param>
     /// <param name="message">Log message</param>
     /// <returns>Invalid message</returns>
-    public MessageException LogAnonymousInvalidThings(string service, string thing, string message)
+    public ServerException LogAnonymousInvalidThings(string service, string thing, string message)
     {
         string end = $"Invalid {thing}";
         this._logger.LogError($"Anonymous: {service} - {end}");
-        return new MessageException(message);
+        return new ServerException(message);
     }
 
 
