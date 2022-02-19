@@ -1,11 +1,15 @@
+using Karcags.Common.Tools.ErrorHandling;
+
 namespace KarcagS.Blazor.Common.Http;
 
 public interface IHttpService
 {
-    Task<T> Get<T>(HttpSettings settings);
-    Task<string> GetString(HttpSettings settings);
-    Task<int?> GetInt(HttpSettings settings);
-    Task<bool> GetBool(HttpSettings settings);
+    Task Get<T>(HttpSettings settings, Action<T?> success, Action<HttpResultError?> error);
+    Task GetString(HttpSettings settings, Action<string?> success, Action<HttpResultError?> error);
+    Task GetInt(HttpSettings settings, Action<int?> success, Action<HttpResultError?> error);
+    Task GetBool(HttpSettings settings, Action<bool?> success, Action<HttpResultError?> error);
+
+    HttpSender<T> Get<T>(HttpSettings settings);
 
     Task<bool> Post<T>(HttpSettings settings, HttpBody<T> body);
     Task<string> PostString<T>(HttpSettings settings, HttpBody<T> body);

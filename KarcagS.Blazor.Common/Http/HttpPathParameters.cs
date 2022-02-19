@@ -5,7 +5,7 @@ namespace KarcagS.Blazor.Common.Http;
 /// <summary>
 /// HTTP path parameters
 /// </summary>
-public class HttpPathParameters : IListState
+public class HttpPathParameters : IListState<HttpPathParameters>
 {
 
     private readonly List<object> _pathParams;
@@ -15,8 +15,11 @@ public class HttpPathParameters : IListState
     /// </summary>
     public HttpPathParameters()
     {
-        this._pathParams = new List<object>();
+        _pathParams = new List<object>();
     }
+
+    public static HttpPathParameters Build() => new HttpPathParameters();
+    
 
     /// <summary>
     /// Add value to a specified index into a row (insert).
@@ -26,13 +29,18 @@ public class HttpPathParameters : IListState
     /// <param name="value">Value for adding</param>
     /// <param name="index">Destination index</param>
     /// <typeparam name="T">Type of the value</typeparam>
-    public void Add<T>(T value, int index)
+    public HttpPathParameters Add<T>(T value, int index)
     {
+        if (value == null)
+        {
+            return this;
+        }
+
         // Add to end of the list
         if (index == -1)
         {
-            this._pathParams.Add(value);
-            return;
+            _pathParams.Add(value);
+            return this;
         }
 
         // Negative index
@@ -42,12 +50,13 @@ public class HttpPathParameters : IListState
         }
 
         // Out of range
-        if (index > this._pathParams.Count)
+        if (index > _pathParams.Count)
         {
             throw new ArgumentException("Index cannot be bigger than the list");
         }
 
-        this._pathParams.Insert(index, value);
+        _pathParams.Insert(index, value);
+        return this;
     }
 
     /// <summary>
@@ -56,7 +65,7 @@ public class HttpPathParameters : IListState
     /// <returns>Length number</returns>
     public int Count()
     {
-        return this._pathParams.Count;
+        return _pathParams.Count;
     }
 
     /// <summary>
@@ -75,12 +84,12 @@ public class HttpPathParameters : IListState
         }
 
         // Out of range
-        if (index >= this._pathParams.Count)
+        if (index >= _pathParams.Count)
         {
             throw new ArgumentException("Index cannot be larger than the list size");
         }
 
-        return (T)this._pathParams[index];
+        return (T)_pathParams[index];
     }
 
     /// <summary>
@@ -91,28 +100,34 @@ public class HttpPathParameters : IListState
     /// <param name="value"></param>
     /// <param name="index"></param>
     /// <typeparam name="T"></typeparam>
-    public void TryAdd<T>(T value, int index)
+    public HttpPathParameters TryAdd<T>(T value, int index)
     {
+        if (value is null)
+        {
+            return this;
+        }
+
         // Add element end of the row
         if (index == -1)
         {
-            this._pathParams.Add(value);
-            return;
+            _pathParams.Add(value);
+            return this;
         }
 
         // Negative
         if (index < -1)
         {
-            return;
+            return this;
         }
 
         // Out of range
-        if (index > this._pathParams.Count)
+        if (index > _pathParams.Count)
         {
-            return;
+            return this;
         }
 
-        this._pathParams.Insert(index, value);
+        _pathParams.Insert(index, value);
+        return this;
     }
 
     /// <summary>
@@ -155,9 +170,9 @@ public class HttpPathParameters : IListState
     /// </summary>
     /// <param name="value">Value for adding</param>
     /// <typeparam name="T">Type of the value</typeparam>
-    public void Add<T>(T value)
+    public HttpPathParameters Add<T>(T value)
     {
-        Add(value, -1);
+        return Add(value, -1);
     }
 
     /// <summary>
@@ -167,8 +182,8 @@ public class HttpPathParameters : IListState
     /// </summary>
     /// <param name="value"></param>
     /// <typeparam name="T"></typeparam>
-    public void TryAdd<T>(T value)
+    public HttpPathParameters TryAdd<T>(T value)
     {
-        TryAdd(value, -1);
+        return TryAdd(value, -1);
     }
 }

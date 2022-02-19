@@ -1,12 +1,12 @@
 namespace KarcagS.Blazor.Common.Models.Interfaces;
 
-public interface IDictionaryState
+public interface IDictionaryState<TD>
 {
-    public void Add<T>(string key, T value);
+    public TD Add<T>(string key, T value);
 
     public T Get<T>(string key);
 
-    public void TryAdd<T>(string key, T value);
+    public TD TryAdd<T>(string key, T value);
 
     public T TryGet<T>(string key);
 

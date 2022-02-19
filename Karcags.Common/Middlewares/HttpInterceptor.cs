@@ -74,7 +74,7 @@ public class HttpInterceptor
     {
         context.Response.ContentType = "application/json";
 
-        var response = new HttpResult
+        var response = new HttpResult<object>
         {
             IsSuccess = true,
             StatusCode = code,
@@ -88,7 +88,7 @@ public class HttpInterceptor
     {
         context.Response.ContentType = "application/json";
 
-        var response = new HttpResult
+        var response = new HttpResult<object>
         {
             IsSuccess = false,
             StatusCode = code
@@ -121,7 +121,7 @@ public class HttpInterceptor
         context.Response.ContentType = "application/json";
         const int statusCode = (int)HttpStatusCode.InternalServerError;
 
-        var response = new HttpResult
+        var response = new HttpResult<object>
         {
             IsSuccess = false,
             StatusCode = statusCode,

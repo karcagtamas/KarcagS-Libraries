@@ -24,18 +24,14 @@ public class HttpBody<T>
     /// Create string content from the body
     /// </summary>
     /// <returns>String content</returns>
-    public StringContent GetStringContent()
-    {
-        return Body == null ? new StringContent("") : HttpBody<T>.CreateContent(Body);
-    }
+    public StringContent GetStringContent() => Body == null ? new StringContent("") : HttpBody<T>.CreateContent(Body);
+    
 
     /// <summary>
     /// Create String Content
     /// </summary>
     /// <param name="obj">Object for creation</param>
     /// <returns>String content</returns>
-    private static StringContent CreateContent(object obj)
-    {
-        return new StringContent(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
-    }
+    private static StringContent CreateContent(object obj) => new(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
+    
 }

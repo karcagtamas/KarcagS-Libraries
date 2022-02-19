@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
@@ -36,6 +36,10 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="System.Text.Json" Version="5.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\KarcagS.Shared\KarcagS.Shared.csproj" />
 	</ItemGroup>
 
 </Project>

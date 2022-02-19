@@ -1,16 +1,16 @@
 namespace KarcagS.Blazor.Common.Models.Interfaces;
 
-public interface IListState
+public interface IListState<TL>
 {
-    public void Add<T>(T value, int index);
+    public TL Add<T>(T value, int index);
 
-    public void Add<T>(T value);
+    public TL Add<T>(T value);
 
     public T Get<T>(int index);
 
-    public void TryAdd<T>(T value, int index);
+    public TL TryAdd<T>(T value, int index);
 
-    public void TryAdd<T>(T value);
+    public TL TryAdd<T>(T value);
 
     public T TryGet<T>(int index);
 

@@ -5,7 +5,7 @@ namespace KarcagS.Blazor.Common.Http;
 /// <summary>
 /// HTTP query parameters
 /// </summary>
-public class HttpQueryParameters : IDictionaryState
+public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
 {
     private readonly Dictionary<string, object> _queryParams;
 
@@ -14,9 +14,11 @@ public class HttpQueryParameters : IDictionaryState
     /// </summary>
     public HttpQueryParameters()
     {
-        this._queryParams = new Dictionary<string, object>();
+        _queryParams = new Dictionary<string, object>();
     }
-    /// 
+
+    public static HttpQueryParameters Build() => new();
+
     /// <summary>
     /// Add key with the given value.
     /// If the given key already exists it will throw an error
@@ -24,13 +26,20 @@ public class HttpQueryParameters : IDictionaryState
     /// <param name="key">Key value</param>
     /// <param name="value">Value</param>
     /// <typeparam name="T">Type of the value</typeparam>
-    public void Add<T>(string key, T value)
+    public HttpQueryParameters Add<T>(string key, T value)
     {
-        if (this._queryParams.ContainsKey(key))
+        if (value is null)
+        {
+            return this;
+        }
+
+        if (_queryParams.ContainsKey(key))
         {
             throw new ArgumentException("Key already exists");
         }
-        this._queryParams[key] = value;
+
+        _queryParams[key] = value;
+        return this;
     }
 
     /// <summary>
@@ -42,11 +51,11 @@ public class HttpQueryParameters : IDictionaryState
     /// <returns>Value for the given key</returns>
     public T Get<T>(string key)
     {
-        if (!this._queryParams.ContainsKey(key))
+        if (!_queryParams.ContainsKey(key))
         {
             throw new ArgumentException("Key does not exist");
         }
-        return (T)this._queryParams[key];
+        return (T)_queryParams[key];
     }
 
     /// <summary>
@@ -56,13 +65,19 @@ public class HttpQueryParameters : IDictionaryState
     /// <param name="key">Key value</param>
     /// <param name="value">Value</param>
     /// <typeparam name="T">Type of the value</typeparam>
-    public void TryAdd<T>(string key, T value)
+    public HttpQueryParameters TryAdd<T>(string key, T value)
     {
-        if (this._queryParams.ContainsKey(key))
+        if (value is null)
         {
-            return;
+            return this;
         }
-        this._queryParams[key] = value;
+
+        if (_queryParams.ContainsKey(key))
+        {
+            return this;
+        }
+        _queryParams[key] = value;
+        return this;
     }
 
     /// <summary>
@@ -74,21 +89,19 @@ public class HttpQueryParameters : IDictionaryState
     /// <returns>Value for the given key</returns>
     public T TryGet<T>(string key)
     {
-        if (!this._queryParams.ContainsKey(key))
+        if (!_queryParams.ContainsKey(key))
         {
             return default;
         }
-        return (T)this._queryParams[key];
+        return (T)_queryParams[key];
     }
 
     /// <summary>
     /// Get length of the dictionary.
     /// </summary>
     /// <returns>Count number</returns>
-    public int Count()
-    {
-        return this._queryParams.Keys.Count;
-    }
+    public int Count() => _queryParams.Keys.Count;
+    
 
     /// <summary>
     /// Create string from the dictionary.

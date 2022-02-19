@@ -13,10 +13,8 @@ public class HttpCall<TKey> : IHttpCall<TKey>
         _caption = caption;
     }
 
-    public Task<List<T>> GetAll<T>()
-    {
-        return GetAll<T>("Id");
-    }
+    public Task<List<T>> GetAll<T>() => GetAll<T>("Id");
+    
 
     public async Task<List<T>> GetAll<T>(string orderBy, string direction = "asc")
     {
