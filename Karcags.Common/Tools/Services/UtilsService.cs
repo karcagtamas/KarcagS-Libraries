@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Karcags.Common.Tools.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +20,7 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
     {
         this.contextAccessor = contextAccessor;
         this.context = context;
-        this.settings = utilsOptions.Value;
+        settings = utilsOptions.Value;
     }
 
     /// <summary>
@@ -32,14 +29,14 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
     /// <returns>Current user</returns>
     public T GetCurrentUser<T, TKey>() where T : class, IEntity<TKey>
     {
-        TKey userId = this.GetCurrentUserId<TKey>();
+        TKey? userId = GetCurrentUserId<TKey>();
 
         if (userId is null)
         {
             throw new UserKeyNotFoundException("User key not found");
         }
 
-        var user = this.context.Set<T>().Find(userId);
+        var user = context.Set<T>().Find(userId);
         if (user == null)
         {
             throw new UserNotFoundException($"User not found with this id: {userId}");
@@ -52,7 +49,7 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
     /// Get current user's Id from the HTTP Context
     /// </summary>
     /// <returns>Current user's Id</returns>
-    public TKey GetCurrentUserId<TKey>()
+    public TKey? GetCurrentUserId<TKey>()
     {
         string claim = GetClaimByName(settings.UserIdClaimName);
 
@@ -68,19 +65,15 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
     /// Get current user's Email from the HTTP Context
     /// </summary>
     /// <returns>Current user's Email</returns>
-    public string GetCurrentUserEmail()
-    {
-        return GetClaimByName(settings.UserEmailClaimName);
-    }
+    public string GetCurrentUserEmail() => GetClaimByName(settings.UserEmailClaimName);
+    
 
     /// <summary>
     /// Get current user's Name from the HTTP Context
     /// </summary>
     /// <returns>Current user's Name</returns>
-    public string GetCurrentUserName()
-    {
-        return GetClaimByName(settings.UserNameClaimName);
-    }
+    public string GetCurrentUserName() => GetClaimByName(settings.UserNameClaimName);
+    
 
     /// <summary>
     /// Identity errors to string.
@@ -91,7 +84,9 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
     public string ErrorsToString<T>(IEnumerable<T> errors, Func<T, string> toString)
     {
         var list = errors.ToList();
-        return toString(list.FirstOrDefault());
+        return list.Count > 0 
+            ? toString(list.First()) 
+            : string.Empty;
     }
 
     /// <summary>
@@ -124,12 +119,12 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
 
     private string GetClaimByName(string name)
     {
-        if (this.contextAccessor.HttpContext.User is null)
+        if (contextAccessor.HttpContext?.User is null)
         {
-            return "";
+            return string.Empty;
         }
 
-        return this.contextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == name).Value;
+        return contextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(c => c.Type == name)?.Value ?? string.Empty;
     }
 
     public class UserKeyNotFoundException : Exception

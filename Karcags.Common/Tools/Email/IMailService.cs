@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿namespace Karcags.Common.Tools.Email;
 
-namespace Karcags.Common.Tools.Email
+public interface IMailService
 {
-    public interface IMailService
-    {
-        Task SendEmailAsync(Mail mail);
-    }
+    Task SendEmailAsync(Mail mail);
 }

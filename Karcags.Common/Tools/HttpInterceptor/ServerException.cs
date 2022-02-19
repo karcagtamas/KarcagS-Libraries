@@ -1,5 +1,3 @@
-using System;
-
 namespace Karcags.Common.Tools.ErrorHandling;
 
 /// <summary>

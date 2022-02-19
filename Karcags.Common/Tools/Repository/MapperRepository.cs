@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using AutoMapper;
 using Karcags.Common.Tools.Entities;

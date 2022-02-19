@@ -9,13 +9,13 @@ namespace Karcags.Common.Annotations;
 [AttributeUsage(AttributeTargets.Property)]
 public class MinNumberAttribute : ValidationAttribute
 {
-    private int Min { get; }
+    private long Min { get; }
 
     /// <summary>
     /// Add annotation
     /// </summary>
     /// <param name="min">Min value parameter</param>
-    public MinNumberAttribute(int min)
+    public MinNumberAttribute(long min)
     {
         Min = min;
     }
@@ -26,15 +26,15 @@ public class MinNumberAttribute : ValidationAttribute
     /// <param name="value">Checked value</param>
     /// <param name="validationContext">Context</param>
     /// <returns>Validation result</returns>
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         try
         {
             // Try convert to nullable int
-            var number = (int?)value;
+            var number = (long?)value;
 
             // Ignore null values
-            if (number == null)
+            if (number is null)
             {
                 return ValidationResult.Success;
             }
@@ -47,7 +47,7 @@ public class MinNumberAttribute : ValidationAttribute
         }
         catch (Exception)
         {
-            return new ValidationResult("Field is not integer");
+            return new ValidationResult("Field is not a number");
         }
 
         return ValidationResult.Success;

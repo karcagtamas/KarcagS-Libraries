@@ -9,13 +9,13 @@ namespace Karcags.Common.Annotations;
 [AttributeUsage(AttributeTargets.Property)]
 public class MaxNumberAttribute : ValidationAttribute
 {
-    private int Max { get; }
+    private long Max { get; }
 
     /// <summary>
     /// Add annotation
     /// </summary>
     /// <param name="max">Max value parameter</param>
-    public MaxNumberAttribute(int max)
+    public MaxNumberAttribute(long max)
     {
         Max = max;
     }
@@ -26,15 +26,15 @@ public class MaxNumberAttribute : ValidationAttribute
     /// <param name="value">Checked value</param>
     /// <param name="validationContext">Context</param>
     /// <returns>Validation result</returns>
-    protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+    protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         try
         {
             // Try convert to nullable int
-            var number = (int?)value;
+            var number = (long?)value;
 
             // Ignore null values
-            if (number == null)
+            if (number is null)
             {
                 return ValidationResult.Success;
             }
@@ -47,7 +47,7 @@ public class MaxNumberAttribute : ValidationAttribute
         }
         catch (Exception)
         {
-            return new ValidationResult("Field is not integer");
+            return new ValidationResult("Field is not a number");
         }
 
         return ValidationResult.Success;

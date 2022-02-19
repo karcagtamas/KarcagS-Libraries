@@ -10,7 +10,7 @@ namespace Karcags.Common.Tools.Controllers;
 /// <typeparam name="TEntity">Type of Entity</typeparam>
 /// <typeparam name="TModel">Type of Model object</typeparam>
 /// <typeparam name="TElement">Type of Return element</typeparam>
-public class MyController<TEntity, TKey, TModel, TElement> : ControllerBase, IController<TKey, TModel>
+public class MapperController<TEntity, TKey, TModel, TElement> : ControllerBase, IMapperController<TKey, TModel>
     where TEntity : class, IEntity<TKey>
 {
     private readonly IMapperRepository<TEntity, TKey> _service;
@@ -19,9 +19,9 @@ public class MyController<TEntity, TKey, TModel, TElement> : ControllerBase, ICo
     /// Init
     /// </summary>
     /// <param name="service">Repository service</param>
-    public MyController(IMapperRepository<TEntity, TKey> service)
+    public MapperController(IMapperRepository<TEntity, TKey> service)
     {
-        this._service = service;
+        _service = service;
     }
 
     /// <summary>
@@ -32,8 +32,8 @@ public class MyController<TEntity, TKey, TModel, TElement> : ControllerBase, ICo
     [HttpPost]
     public IActionResult Create([FromBody] TModel model)
     {
-        this._service.CreateFromModel(model);
-        return this.Ok();
+        _service.CreateFromModel(model);
+        return Ok();
     }
 
     /// <summary>
@@ -44,8 +44,8 @@ public class MyController<TEntity, TKey, TModel, TElement> : ControllerBase, ICo
     [HttpDelete("{id}")]
     public IActionResult Delete(TKey id)
     {
-        this._service.DeleteById(id);
-        return this.Ok();
+        _service.DeleteById(id);
+        return Ok();
     }
 
     /// <summary>
@@ -56,7 +56,7 @@ public class MyController<TEntity, TKey, TModel, TElement> : ControllerBase, ICo
     [HttpGet("{id}")]
     public IActionResult Get(TKey id)
     {
-        return this.Ok(this._service.GetMapped<TElement>(id));
+        return Ok(_service.GetMapped<TElement>(id));
     }
 
     /// <summary>
@@ -70,10 +70,10 @@ public class MyController<TEntity, TKey, TModel, TElement> : ControllerBase, ICo
     {
         if (string.IsNullOrEmpty(orderBy) || string.IsNullOrEmpty(direction))
         {
-            return this.Ok(this._service.GetAllMapped<TElement>());
+            return Ok(_service.GetAllMapped<TElement>());
         }
 
-        return this.Ok(this._service.GetAllMappedAsOrdered<TElement>(orderBy, direction));
+        return Ok(_service.GetAllMappedAsOrdered<TElement>(orderBy, direction));
     }
 
     /// <summary>
@@ -85,7 +85,7 @@ public class MyController<TEntity, TKey, TModel, TElement> : ControllerBase, ICo
     [HttpPut("{id}")]
     public IActionResult Update(TKey id, TModel model)
     {
-        this._service.UpdateByModel(id, model);
-        return this.Ok();
+        _service.UpdateByModel(id, model);
+        return Ok();
     }
 }

@@ -19,7 +19,7 @@ public class ValidateModelAttribute : ActionFilterAttribute
             {
                 IsSuccess = false,
                 StatusCode = (int)HttpStatusCode.InternalServerError,
-                Error = new ErrorResult
+                Error = new HttpResultError
                 {
                     Message = "Validation error",
                     SubMessages = context.ModelState

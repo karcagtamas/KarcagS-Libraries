@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Karcags.Common.Tools.Entities;
 
 namespace Karcags.Common.Tools.Repository;

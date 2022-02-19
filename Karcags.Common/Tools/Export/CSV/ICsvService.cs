@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
+﻿namespace Karcags.Common.Tools.Export.CSV;
 
-namespace Karcags.Common.Tools.Export.CSV
+public interface ICsvService
 {
-    public interface ICsvService
-    {
-        ExportResult GenerateTableExport<T>(IEnumerable<T> objectList, IEnumerable<Header> columnList,
-            string fileName, bool appendCurrentDate);
-    }
+    ExportResult? GenerateTableExport<T>(IEnumerable<T> objectList, IEnumerable<Header> columnList,
+        string fileName, bool appendCurrentDate);
 }

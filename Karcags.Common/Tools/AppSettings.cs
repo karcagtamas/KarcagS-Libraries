@@ -5,5 +5,5 @@ namespace Karcags.Common.Tools;
 /// </summary>
 public class ApplicationSettings
 {
-    public string JwtSecret { get; set; }
+    public string JwtSecret { get; set; } = string.Empty;
 }

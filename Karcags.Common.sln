@@ -1,8 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Karcags.Common", "Karcags.Common\Karcags.Common.csproj", "{CDDCFF72-34DB-4033-BD1F-CE463136DFCA}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Common", "Karcags.Common\KarcagS.Common.csproj", "{CDDCFF72-34DB-4033-BD1F-CE463136DFCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Karcags.Common.Tests", "Karcags.Common.Tests\Karcags.Common.Tests.csproj", "{5A59B42E-B2E6-4FF7-9D7E-D6D1774A5924}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Common.Tests", "Karcags.Common.Tests\KarcagS.Common.Tests.csproj", "{5A59B42E-B2E6-4FF7-9D7E-D6D1774A5924}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{39A9A03A-B5A6-44F3-BCEC-DF0051FDC514}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KarcagS.Common.Demo", "KarcagS.Common.Demo\KarcagS.Common.Demo.csproj", "{2AF8E18D-714B-4346-B22B-F449F2B0693B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +25,20 @@ Global
 		{5A59B42E-B2E6-4FF7-9D7E-D6D1774A5924}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A59B42E-B2E6-4FF7-9D7E-D6D1774A5924}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A59B42E-B2E6-4FF7-9D7E-D6D1774A5924}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AF8E18D-714B-4346-B22B-F449F2B0693B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AF8E18D-714B-4346-B22B-F449F2B0693B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AF8E18D-714B-4346-B22B-F449F2B0693B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AF8E18D-714B-4346-B22B-F449F2B0693B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CDDCFF72-34DB-4033-BD1F-CE463136DFCA} = {39A9A03A-B5A6-44F3-BCEC-DF0051FDC514}
+		{5A59B42E-B2E6-4FF7-9D7E-D6D1774A5924} = {39A9A03A-B5A6-44F3-BCEC-DF0051FDC514}
+		{2AF8E18D-714B-4346-B22B-F449F2B0693B} = {39A9A03A-B5A6-44F3-BCEC-DF0051FDC514}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0A570FF8-7CCA-407E-95F3-B62C7F5E0A0B}
 	EndGlobalSection
 EndGlobal

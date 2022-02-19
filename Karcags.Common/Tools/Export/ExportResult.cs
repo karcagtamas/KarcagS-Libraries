@@ -1,9 +1,8 @@
-﻿namespace Karcags.Common.Tools.Export
+﻿namespace Karcags.Common.Tools.Export;
+
+public class ExportResult
 {
-    public class ExportResult
-    {
-        public byte[] Content { get; set; }
-        public string FileName { get; set; }
-        public string ContentType { get; set; }
-    }
+    public byte[] Content { get; set; } = default!;
+    public string FileName { get; set; } = default!;
+    public string ContentType { get; set; } = default!;
 }

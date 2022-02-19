@@ -1,41 +1,45 @@
 ﻿using System;
 
-namespace Karcags.Common.Tools.Export
+namespace Karcags.Common.Tools.Export;
+
+/// <summary>
+/// Table header object
+/// </summary>
+public class Header
 {
+    private string PropertyName { get; set; }
+    public string DisplayName { get; set; }
+    private Func<object, string> Displaying { get; set; }
+
     /// <summary>
-    /// Table header object
+    /// Header init
     /// </summary>
-    public class Header
+    /// <param name="property">Property name</param>
+    /// <param name="display">Display name</param>
+    /// <param name="displaying">Displaying method</param>
+    public Header(string property, string display, Func<object, string> displaying)
     {
-        private string PropertyName { get; set; }
-        public string DisplayName { get; set; }
-        private Func<object, string> Displaying { get; set; }
+        PropertyName = property;
+        DisplayName = display;
+        Displaying = displaying;
+    }
 
-        /// <summary>
-        /// Header init
-        /// </summary>
-        /// <param name="property">Property name</param>
-        /// <param name="display">Display name</param>
-        /// <param name="displaying">Displaying method</param>
-        public Header(string property, string display, Func<object, string> displaying)
+    /// <summary>
+    /// Get string value from the given object
+    /// </summary>
+    /// <param name="obj">Source object</param>
+    /// <typeparam name="T">Type of the object</typeparam>
+    /// <returns>Current property's value</returns>
+    public string GetValue<T>(T obj)
+    {
+        if (obj is null)
         {
-            this.PropertyName = property;
-            this.DisplayName = display;
-            this.Displaying = displaying;
+            return string.Empty;
         }
 
-        /// <summary>
-        /// Get string value from the given object
-        /// </summary>
-        /// <param name="obj">Source object</param>
-        /// <typeparam name="T">Type of the object</typeparam>
-        /// <returns>Current property's value</returns>
-        public string GetValue<T>(T obj)
-        {
-            var type = obj.GetType();
-            var property = type.GetProperty(this.PropertyName);
+        var type = obj.GetType();
+        var property = type.GetProperty(this.PropertyName);
 
-            return property != null ? this.Displaying(property.GetValue(obj)) : "";
-        }
+        return property is not null ? Displaying(property?.GetValue(obj) ?? string.Empty) : string.Empty;
     }
 }

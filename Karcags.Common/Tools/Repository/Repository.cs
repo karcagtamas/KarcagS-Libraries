@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Linq.Expressions;
 using Karcags.Common.Annotations;
 using Karcags.Common.Tools.Entities;
@@ -14,7 +11,7 @@ namespace Karcags.Common.Tools.Repository;
 /// Repository manager
 /// </summary>
 /// <typeparam name="T">Type of Entity</typeparam>
-public class Repository<T, TKey> : IRepository<T, TKey>
+public abstract class Repository<T, TKey> : IRepository<T, TKey>
     where T : class, IEntity<TKey>
 {
     protected readonly DbContext Context;

@@ -1,7 +1,6 @@
-﻿namespace Karcags.Common.Tools.Export.PDF
-{
-    public interface IPDFService
-    {
+﻿namespace Karcags.Common.Tools.Export.PDF;
 
-    }
+public interface IPDFService
+{
+
 }

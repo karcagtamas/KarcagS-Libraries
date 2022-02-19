@@ -2,7 +2,7 @@
 
 namespace Karcags.Common.Tools.Controllers;
 
-public interface IController<TKey, in TModel>
+public interface IMapperController<TKey, in TModel>
 {
     IActionResult Get(TKey id);
     IActionResult GetAll([FromQuery] string orderBy, [FromQuery] string direction);

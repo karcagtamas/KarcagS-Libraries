@@ -1,29 +1,25 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Net;
 using Karcags.Common.Tools.ErrorHandling;
 using Karcags.Common.Tools.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Newtonsoft.Json;
 
 namespace Karcags.Common.Middlewares;
 
-public class ExceptionHandler
+public class HttpInterceptor
 {
     private readonly RequestDelegate next;
-    private ILoggerService logger;
-    private const string FatalError = "Something bad happened. Try again later";
+    private const string FatalError = "Something bad happened. Please try again later";
 
-    public ExceptionHandler(RequestDelegate next)
+    public HttpInterceptor(RequestDelegate next)
     {
         this.next = next;
-        logger = default!;
     }
 
     public async Task InvokeAsync(HttpContext context, ILoggerService logger)
     {
-        this.logger = logger;
+        logger.LogRequest(context);
+
         if (IsSwagger(context))
         {
             await next.Invoke(context);
@@ -40,7 +36,7 @@ public class ExceptionHandler
 
                 if (context.Response.StatusCode == (int)HttpStatusCode.OK)
                 {
-                    var body = await FormatResponse(context.Response);
+                    var body = JsonConvert.DeserializeObject(await FormatResponse(context.Response));
                     await HandleSuccessRequestAsync(context, body, context.Response.StatusCode);
                 }
                 else
@@ -50,25 +46,13 @@ public class ExceptionHandler
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(context, ex);
+                await HandleExceptionAsync(context, ex, logger);
             }
             finally
             {
                 responseBody.Seek(0, SeekOrigin.Begin);
                 await responseBody.CopyToAsync(originalBodyStream);
             }
-        }
-        try
-        {
-            await next.Invoke(context);
-        }
-        catch (ServerException me)
-        {
-            await HandleExceptionAsync(context, me).ConfigureAwait(false);
-        }
-        catch (Exception e)
-        {
-            await HandleExceptionAsync(context, e).ConfigureAwait(false);
         }
     }
 
@@ -113,7 +97,7 @@ public class ExceptionHandler
 
         if (code == (int)HttpStatusCode.NotFound)
         {
-            response.Error = new ErrorResult
+            response.Error = new HttpResultError
             {
                 Message = "Resource not found.",
                 SubMessages = new string[0]
@@ -121,7 +105,7 @@ public class ExceptionHandler
         }
         else
         {
-            response.Error = new ErrorResult
+            response.Error = new HttpResultError
             {
                 Message = "Request cannot be processed.",
                 SubMessages = new string[0]
@@ -132,7 +116,7 @@ public class ExceptionHandler
         return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
     }
 
-    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception, ILoggerService logger)
     {
         context.Response.ContentType = "application/json";
         const int statusCode = (int)HttpStatusCode.InternalServerError;
@@ -145,7 +129,7 @@ public class ExceptionHandler
 
         if (exception is ServerException)
         {
-            response.Error = new ErrorResult
+            response.Error = new HttpResultError
             {
                 Message = exception.Message,
                 SubMessages = new string[0]
@@ -153,12 +137,14 @@ public class ExceptionHandler
         }
         else
         {
-            response.Error = new ErrorResult
+            response.Error = new HttpResultError
             {
                 Message = FatalError,
                 SubMessages = new string[0]
             };
         }
+
+        logger.LogError(exception);
 
         return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
     }
