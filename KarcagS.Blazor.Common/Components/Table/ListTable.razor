@@ -1,0 +1,20 @@
+﻿@typeparam T
+
+@if (Columns is not null && Columns.Count > 0)
+{
+
+    <MudTable T="T" Hover="false" Dense="true">
+        <HeaderContent>
+            @foreach (var col in Columns)
+            {
+                <MudTh>@col.Title</MudTh>
+            }
+        </HeaderContent>
+        <RowTemplate>
+            @foreach (var col in Columns)
+            {
+                <MudTd DataLabel="@col.Title">@col.ValueGetter(context)</MudTd>
+            }
+        </RowTemplate>
+    </MudTable>
+}
