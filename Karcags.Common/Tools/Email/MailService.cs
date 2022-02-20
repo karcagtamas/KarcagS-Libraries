@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Mail;
 
-namespace Karcags.Common.Tools.Email;
+namespace KarcagS.Common.Tools.Email;
 
 /// <summary>
 /// Mail Service

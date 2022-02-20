@@ -1,4 +1,4 @@
-﻿namespace Karcags.Common.Tools.Email;
+﻿namespace KarcagS.Common.Tools.Email;
 
 public interface IMailService
 {

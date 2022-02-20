@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace Karcags.Common.Middlewares
+namespace KarcagS.Common.Middlewares
 {
     public static class HttpInterceptorExtension
     {

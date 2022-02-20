@@ -1,25 +1,21 @@
-using Karcags.Common.Tools.ErrorHandling;
-
 namespace KarcagS.Blazor.Common.Http;
 
 public interface IHttpService
 {
-    Task Get<T>(HttpSettings settings, Action<T?> success, Action<HttpResultError?> error);
-    Task GetString(HttpSettings settings, Action<string?> success, Action<HttpResultError?> error);
-    Task GetInt(HttpSettings settings, Action<int?> success, Action<HttpResultError?> error);
-    Task GetBool(HttpSettings settings, Action<bool?> success, Action<HttpResultError?> error);
-
     HttpSender<T> Get<T>(HttpSettings settings);
+    HttpSender<string> GetString(HttpSettings settings);
+    HttpSender<int> GetInt(HttpSettings settings);
+    HttpSender<bool> GetBool(HttpSettings settings);
 
-    Task<bool> Post<T>(HttpSettings settings, HttpBody<T> body);
-    Task<string> PostString<T>(HttpSettings settings, HttpBody<T> body);
-    Task<int> PostInt<T>(HttpSettings settings, HttpBody<T> body);
-    Task<T> PostWithResult<T, TBody>(HttpSettings settings, HttpBody<TBody> body);
+    HttpSender<object> Post<T>(HttpSettings settings, HttpBody<T> body);
+    HttpSender<string> PostString<T>(HttpSettings settings, HttpBody<T> body);
+    HttpSender<int> PostInt<T>(HttpSettings settings, HttpBody<T> body);
+    HttpSender<T> PostWithResult<T, TBody>(HttpSettings settings, HttpBody<TBody> body);
 
-    Task<bool> Put<T>(HttpSettings settings, HttpBody<T> body);
-    Task<T> PutWithResult<T, TBody>(HttpSettings settings, HttpBody<TBody> body);
+    HttpSender<object> Put<T>(HttpSettings settings, HttpBody<T> body);
+    HttpSender<T> PutWithResult<T, TBody>(HttpSettings settings, HttpBody<TBody> body);
 
-    Task<bool> Delete(HttpSettings settings);
+    HttpSender<object> Delete(HttpSettings settings);
 
     Task<bool> Download(HttpSettings settings);
     Task<bool> Download<T>(HttpSettings settings, T model);

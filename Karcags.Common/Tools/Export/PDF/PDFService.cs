@@ -1,6 +1,6 @@
 ﻿using DinkToPdf.Contracts;
 
-namespace Karcags.Common.Tools.Export.PDF;
+namespace KarcagS.Common.Tools.Export.PDF;
 
 public class PDFService : IPDFService
 {

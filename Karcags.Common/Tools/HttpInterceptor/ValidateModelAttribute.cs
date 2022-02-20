@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using KarcagS.Shared;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Karcags.Common.Tools.ErrorHandling;
+namespace KarcagS.Common.Tools.HttpInterceptor;
 
 public class ValidateModelAttribute : ActionFilterAttribute
 {
@@ -15,7 +11,7 @@ public class ValidateModelAttribute : ActionFilterAttribute
     {
         if (!context.ModelState.IsValid)
         {
-            context.Result = new BadRequestObjectResult(new HttpResult
+            context.Result = new BadRequestObjectResult(new HttpResult<object>
             {
                 IsSuccess = false,
                 StatusCode = (int)HttpStatusCode.InternalServerError,

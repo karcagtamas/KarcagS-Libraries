@@ -1,6 +1,6 @@
-using Karcags.Common.Middlewares;
-using Karcags.Common.Tools;
-using Karcags.Common.Tools.Services;
+using KarcagS.Common.Middlewares;
+using KarcagS.Common.Tools;
+using KarcagS.Common.Tools.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

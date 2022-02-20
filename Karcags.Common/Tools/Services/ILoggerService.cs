@@ -1,7 +1,6 @@
-using Karcags.Common.Tools.ErrorHandling;
 using Microsoft.AspNetCore.Http;
 
-namespace Karcags.Common.Tools.Services;
+namespace KarcagS.Common.Tools.Services;
 
 public interface ILoggerService
 {

@@ -1,10 +1,11 @@
 ﻿using System.Net;
-using Karcags.Common.Tools.ErrorHandling;
-using Karcags.Common.Tools.Services;
+using KarcagS.Common.Tools.HttpInterceptor;
+using KarcagS.Common.Tools.Services;
+using KarcagS.Shared;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace Karcags.Common.Middlewares;
+namespace KarcagS.Common.Middlewares;
 
 public class HttpInterceptor
 {

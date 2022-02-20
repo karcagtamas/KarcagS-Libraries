@@ -1,4 +1,4 @@
-﻿namespace Karcags.Common.Tools.ErrorHandling;
+﻿namespace KarcagS.Shared;
 
 public class HttpResult<T>
 {

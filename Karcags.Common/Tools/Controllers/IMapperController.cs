@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Karcags.Common.Tools.Controllers;
+namespace KarcagS.Common.Tools.Controllers;
 
 public interface IMapperController<TKey, in TModel>
 {

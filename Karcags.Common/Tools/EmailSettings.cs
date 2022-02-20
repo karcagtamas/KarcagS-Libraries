@@ -1,4 +1,4 @@
-namespace Karcags.Common.Tools;
+namespace KarcagS.Common.Tools;
 
 /// <summary>
 /// Mail Settings

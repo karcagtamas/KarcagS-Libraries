@@ -1,8 +1,8 @@
 using System;
-using Karcags.Common.Enums;
+using KarcagS.Common.Enums;
 using NUnit.Framework;
 
-namespace Karcags.Common.Tests.Enums
+namespace KarcagS.Common.Tests.Enums
 {
     [TestFixture]
     public class OrderDirectionServiceTest

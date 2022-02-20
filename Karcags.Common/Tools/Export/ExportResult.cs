@@ -1,4 +1,4 @@
-﻿namespace Karcags.Common.Tools.Export;
+﻿namespace KarcagS.Common.Tools.Export;
 
 public class ExportResult
 {

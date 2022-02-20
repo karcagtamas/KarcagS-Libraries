@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace Karcags.Common.Tools.Services;
+namespace KarcagS.Common.Tools.Services;
 
 /// <summary>
 /// Logger Service

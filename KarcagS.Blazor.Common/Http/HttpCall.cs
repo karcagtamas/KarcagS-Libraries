@@ -31,17 +31,17 @@ public class HttpCall<TKey> : IHttpCall<TKey>
 
         var settings = new HttpSettings(Url).AddQueryParams(queryParams);
 
-        return await Http.Get<List<T>>(settings);
+        return await Http.Get<List<T>>(settings).ExecuteWithResult() ?? new();
     }
 
-    public async Task<T> Get<T>(TKey id)
+    public async Task<T?> Get<T>(TKey id)
     {
         var pathParams = new HttpPathParameters();
         pathParams.Add(id);
 
         var settings = new HttpSettings(Url).AddPathParams(pathParams);
 
-        return await Http.Get<T>(settings);
+        return await Http.Get<T>(settings).ExecuteWithResult();
     }
 
     public async Task<bool> Create<T>(T model)
@@ -50,7 +50,7 @@ public class HttpCall<TKey> : IHttpCall<TKey>
 
         var body = new HttpBody<T>(model);
 
-        return await Http.Post(settings, body);
+        return await Http.Post(settings, body).Execute();
     }
 
     public async Task<bool> Update<T>(TKey id, T model)
@@ -62,7 +62,7 @@ public class HttpCall<TKey> : IHttpCall<TKey>
 
         var body = new HttpBody<T>(model);
 
-        return await Http.Put(settings, body);
+        return await Http.Put(settings, body).Execute();
     }
 
     public async Task<bool> Delete(TKey id)
@@ -72,6 +72,6 @@ public class HttpCall<TKey> : IHttpCall<TKey>
 
         var settings = new HttpSettings(Url).AddPathParams(pathParams).AddToaster($"{_caption} deleting");
 
-        return await Http.Delete(settings);
+        return await Http.Delete(settings).Execute();
     }
 }

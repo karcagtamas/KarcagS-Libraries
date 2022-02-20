@@ -1,6 +1,6 @@
 using System;
 
-namespace Karcags.Common.Tools.Entities;
+namespace KarcagS.Common.Tools.Entities;
 
 public interface ILastUpdateEntity
 {

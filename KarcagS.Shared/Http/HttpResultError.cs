@@ -1,4 +1,4 @@
-namespace Karcags.Common.Tools.ErrorHandling;
+namespace KarcagS.Shared;
 
 /// <summary>
 /// Error response model

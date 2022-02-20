@@ -1,8 +1,8 @@
-﻿using Karcags.Common.Tools.Entities;
-using Karcags.Common.Tools.Repository;
+﻿using KarcagS.Common.Tools.Entities;
+using KarcagS.Common.Tools.Repository;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Karcags.Common.Tools.Controllers;
+namespace KarcagS.Common.Tools.Controllers;
 
 /// <summary>
 /// My Controller

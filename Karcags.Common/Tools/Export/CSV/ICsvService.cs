@@ -1,4 +1,4 @@
-﻿namespace Karcags.Common.Tools.Export.CSV;
+﻿namespace KarcagS.Common.Tools.Export.CSV;
 
 public interface ICsvService
 {

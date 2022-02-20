@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Karcags.Common.Tools.Email;
+namespace KarcagS.Common.Tools.Email;
 
 /// <summary>
 /// Mail object

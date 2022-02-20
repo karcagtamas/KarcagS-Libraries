@@ -1,10 +1,10 @@
 using System.Linq.Expressions;
 using AutoMapper;
-using Karcags.Common.Tools.Entities;
-using Karcags.Common.Tools.Services;
+using KarcagS.Common.Tools.Entities;
+using KarcagS.Common.Tools.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Karcags.Common.Tools.Repository;
+namespace KarcagS.Common.Tools.Repository;
 
 public abstract class MapperRepository<TEntity, TKey> : Repository<TEntity, TKey>, IMapperRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
 {

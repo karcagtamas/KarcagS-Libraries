@@ -1,6 +1,4 @@
-using System;
-
-namespace Karcags.Common.Annotations;
+namespace KarcagS.Common.Annotations;
 
 [AttributeUsage(AttributeTargets.Property)]
 public class UserAttribute : Attribute

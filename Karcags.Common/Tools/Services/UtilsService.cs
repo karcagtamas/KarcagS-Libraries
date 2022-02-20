@@ -1,9 +1,10 @@
-using Karcags.Common.Tools.Entities;
+using KarcagS.Common.Tools.Entities;
+using KarcagS.Common.Tools.HttpInterceptor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace Karcags.Common.Tools.Services;
+namespace KarcagS.Common.Tools.Services;
 
 public class UtilsService<TContext> : IUtilsService where TContext : DbContext
 {
@@ -59,6 +60,22 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
         }
 
         return default;
+    }
+
+    /// <summary>
+    /// Get current user's Id from the HTTP Context
+    /// </summary>
+    /// <returns>Current user's Id</returns>
+    public TKey GetRequiredCurrentUserId<TKey>()
+    {
+        var id = GetCurrentUserId<TKey>();
+
+        if (id is null)
+        {
+            throw new ServerException("Current user is required");
+        }
+
+        return id;
     }
 
     /// <summary>

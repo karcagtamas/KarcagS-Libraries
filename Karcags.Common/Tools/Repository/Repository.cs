@@ -1,11 +1,11 @@
 ﻿using System.Globalization;
 using System.Linq.Expressions;
-using Karcags.Common.Annotations;
-using Karcags.Common.Tools.Entities;
-using Karcags.Common.Tools.Services;
+using KarcagS.Common.Annotations;
+using KarcagS.Common.Tools.Entities;
+using KarcagS.Common.Tools.Services;
 using Microsoft.EntityFrameworkCore;
 
-namespace Karcags.Common.Tools.Repository;
+namespace KarcagS.Common.Tools.Repository;
 
 /// <summary>
 /// Repository manager
@@ -51,7 +51,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
 
         if (entity is ILastUpdaterEntity<TKey> lue)
         {
-            lue.LastUpdaterId = Utils.GetCurrentUserId<TKey>();
+            lue.LastUpdaterId = Utils.GetRequiredCurrentUserId<TKey>();
         }
 
         var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
@@ -76,7 +76,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
         {
             if (x is ILastUpdaterEntity<TKey> lue)
             {
-                lue.LastUpdaterId = Utils.GetCurrentUserId<TKey>();
+                lue.LastUpdaterId = Utils.GetRequiredCurrentUserId<TKey>();
             }
 
             var props = x.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
@@ -230,7 +230,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
     {
         if (entity is ILastUpdaterEntity<TKey> lue)
         {
-            lue.LastUpdaterId = Utils.GetCurrentUserId<TKey>();
+            lue.LastUpdaterId = Utils.GetRequiredCurrentUserId<TKey>();
         }
 
         var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
@@ -255,7 +255,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
         {
             if (x is ILastUpdaterEntity<TKey> lue)
             {
-                lue.LastUpdaterId = Utils.GetCurrentUserId<TKey>();
+                lue.LastUpdaterId = Utils.GetRequiredCurrentUserId<TKey>();
             }
 
             var props = x.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
@@ -326,7 +326,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
         {
             var propList = i.Split(".");
             var lastType = firstType;
-            object lastEntity = entity;
+            object? lastEntity = entity;
 
             foreach (var propElement in propList)
             {

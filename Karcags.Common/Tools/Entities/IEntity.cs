@@ -1,4 +1,4 @@
-namespace Karcags.Common.Tools.Entities;
+namespace KarcagS.Common.Tools.Entities;
 
 public interface IEntity<T>
 {

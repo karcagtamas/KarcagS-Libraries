@@ -1,8 +1,8 @@
 using System;
-using Karcags.Common.Helpers;
+using KarcagS.Common.Helpers;
 using NUnit.Framework;
 
-namespace Karcags.Common.Tests.Helpers
+namespace KarcagS.Common.Tests.Helpers
 {
     [TestFixture]
     public class DateHelperTest

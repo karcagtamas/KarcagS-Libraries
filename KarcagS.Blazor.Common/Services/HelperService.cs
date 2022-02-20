@@ -1,6 +1,7 @@
 using System.Text.Json;
 using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
+using KarcagS.Shared;
 using Microsoft.AspNetCore.Components;
 
 namespace KarcagS.Blazor.Common.Services;
@@ -13,39 +14,44 @@ public class HelperService : IHelperService
 
     public HelperService(NavigationManager navigationManager, IToasterService toasterService)
     {
-        this.NavigationManager = navigationManager;
-        this.ToasterService = toasterService;
+        NavigationManager = navigationManager;
+        ToasterService = toasterService;
     }
 
     public void Navigate(string path)
     {
-        this.NavigationManager.NavigateTo(path);
+        NavigationManager.NavigateTo(path);
     }
 
     public JsonSerializerOptions GetSerializerOptions()
     {
-        return new() {PropertyNameCaseInsensitive = true};
+        return new() { PropertyNameCaseInsensitive = true };
     }
 
-    public async Task AddToaster(HttpResponseMessage response, string caption)
+    public void AddHttpSuccessToaster(string caption)
     {
-        if (response.IsSuccessStatusCode)
+        ToasterService.Open(new ToasterSettings
         {
-            ToasterService.Open(new ToasterSettings
-                {Message = "Event successfully accomplished", Caption = caption, Type = ToasterType.Success});
-        }
-        else
+            Message = "Event successfully accomplished",
+            Caption = caption,
+            Type = ToasterType.Success
+        });
+    }
+
+    public void AddHttpErrorToaster(string caption, HttpResultError? errorResult)
+    {
+        string message = errorResult?.Message ?? "Unexpected Error";
+        ToasterService.Open(new ToasterSettings
         {
-            await using var sr = await response.Content.ReadAsStreamAsync();
-            var e = await JsonSerializer.DeserializeAsync<ErrorResponse>(sr, this.GetSerializerOptions());
-            ToasterService.Open(new ToasterSettings
-                {Message = e?.Message ?? "-", Caption = caption, Type = ToasterType.Error});
-        }
+            Message = message,
+            Caption = caption,
+            Type = ToasterType.Error
+        });
     }
 
     public decimal MinToHour(int min)
     {
-        return min / (decimal) 60;
+        return min / (decimal)60;
     }
 
     public int CurrentYear()

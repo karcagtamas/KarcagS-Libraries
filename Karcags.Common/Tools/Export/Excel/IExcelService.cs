@@ -1,4 +1,4 @@
-﻿namespace Karcags.Common.Tools.Export.Excel;
+﻿namespace KarcagS.Common.Tools.Export.Excel;
 
 public interface IExcelService
 {

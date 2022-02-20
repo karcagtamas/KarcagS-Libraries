@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
-using Karcags.Common.Tools.Entities;
+using KarcagS.Common.Tools.Entities;
 
-namespace Karcags.Common.Tools.Repository;
+namespace KarcagS.Common.Tools.Repository;
 
 public interface IRepository<T, TKey> where T : class, IEntity<TKey>
 {

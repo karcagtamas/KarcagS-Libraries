@@ -1,7 +1,7 @@
-using Karcags.Common.Annotations;
+using KarcagS.Common.Annotations;
 using NUnit.Framework;
 
-namespace Karcags.Common.Tests.Annotations
+namespace KarcagS.Common.Tests.Annotations
 {
     [TestFixture]
     public class MaxNumberAttributeTest

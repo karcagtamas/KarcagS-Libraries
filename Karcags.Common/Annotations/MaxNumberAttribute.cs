@@ -1,7 +1,6 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Karcags.Common.Annotations;
+namespace KarcagS.Common.Annotations;
 
 /// <summary>
 /// Maximum number checked annotation

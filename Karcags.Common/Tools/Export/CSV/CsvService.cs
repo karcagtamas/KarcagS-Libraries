@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Karcags.Common.Tools.Export.CSV;
+namespace KarcagS.Common.Tools.Export.CSV;
 
 /// <summary>
 /// CSV Service

@@ -1,4 +1,4 @@
-﻿using Karcags.Common.Tools.ErrorHandling;
+﻿using KarcagS.Shared;
 
 namespace KarcagS.Blazor.Common.Http;
 
@@ -6,9 +6,9 @@ public class HttpSender<T>
 {
     private readonly List<Action<T?>> successActions = new();
     private readonly List<Action<HttpResultError?>> errorActions = new();
-    private readonly Func<HttpResult<T>?> sender;
+    private readonly Func<Task<HttpResult<T>?>> sender;
 
-    public HttpSender(Func<HttpResult<T>?> sender)
+    public HttpSender(Func<Task<HttpResult<T>?>> sender)
     {
         this.sender = sender;
     }
@@ -25,24 +25,42 @@ public class HttpSender<T>
         return this;
     }
 
-    public void Perform()
+    public async Task<bool> Execute() => (await Perform())?.IsSuccess ?? false;
+    
+
+    public async Task<T?> ExecuteWithResult()
     {
-        var response = sender();
+        var res = await Perform();
+
+        if (res is null)
+        {
+            return default;
+        }
+
+        return res.Result;
+    }
+
+    private async Task<HttpResult<T>?> Perform()
+    {
+        var response = await sender();
 
         if (response is not null)
         {
             if (response.IsSuccess)
             {
                 successActions.ForEach(a => a(response.Result));
+                return response;
             }
             else
             {
                 errorActions.ForEach(a => a(response.Error));
+                return response;
             }
         }
         else
         {
             errorActions.ForEach(a => a(null));
+            return null;
         }
     }
 }

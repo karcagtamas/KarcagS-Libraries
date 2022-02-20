@@ -1,7 +1,7 @@
 ﻿using ClosedXML.Excel;
-using Karcags.Common.Helpers;
+using KarcagS.Common.Helpers;
 
-namespace Karcags.Common.Tools.Export.Excel;
+namespace KarcagS.Common.Tools.Export.Excel;
 
 /// <summary>
 /// Excel Service

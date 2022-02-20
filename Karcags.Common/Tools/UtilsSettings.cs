@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace Karcags.Common.Tools;
+namespace KarcagS.Common.Tools;
 
 public class UtilsSettings
 {

@@ -87,7 +87,7 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     /// <param name="key">Key value</param>
     /// <typeparam name="T">Type of the object</typeparam>
     /// <returns>Value for the given key</returns>
-    public T TryGet<T>(string key)
+    public T? TryGet<T>(string key)
     {
         if (!_queryParams.ContainsKey(key))
         {

@@ -1,4 +1,4 @@
-namespace Karcags.Common.Tools.ErrorHandling;
+namespace KarcagS.Common.Tools.HttpInterceptor;
 
 /// <summary>
 /// Own Generated Message Exception

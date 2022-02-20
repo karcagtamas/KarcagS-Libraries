@@ -53,8 +53,8 @@ public class StoreService : IStoreService
             Remove(key);
         }
 
-        if (value is not null) 
-        { 
+        if (value is not null)
+        {
             Store.Add(key, value);
         }
 
