@@ -1,11 +1,10 @@
 ﻿using System.Net;
-using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace KarcagS.Common.Middlewares;
+namespace KarcagS.Common.Tools.HttpInterceptor;
 
 public class HttpInterceptor
 {
@@ -35,10 +34,19 @@ public class HttpInterceptor
             {
                 await next.Invoke(context);
 
+                if (context.Request.Method == HttpMethod.Options.Method)
+                {
+                    return;
+                }
+
                 if (context.Response.StatusCode == (int)HttpStatusCode.OK)
                 {
                     var body = JsonConvert.DeserializeObject(await FormatResponse(context.Response));
                     await HandleSuccessRequestAsync(context, body, context.Response.StatusCode);
+                }
+                else if (context.Response.StatusCode == ValidationErrorActionResult.ValidationErrorCode)
+                {
+                    return;
                 }
                 else
                 {
@@ -51,8 +59,11 @@ public class HttpInterceptor
             }
             finally
             {
-                responseBody.Seek(0, SeekOrigin.Begin);
-                await responseBody.CopyToAsync(originalBodyStream);
+                if (context.Response.StatusCode != (int)HttpStatusCode.NoContent)
+                {
+                    responseBody.Seek(0, SeekOrigin.Begin);
+                    await responseBody.CopyToAsync(originalBodyStream);
+                }
             }
         }
     }

@@ -1,11 +1,22 @@
-using KarcagS.Common.Middlewares;
 using KarcagS.Common.Tools;
+using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<UtilsSettings>(builder.Configuration.GetSection("Utils"));
+
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("Policy", cb =>
+    {
+        cb.AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+        .WithOrigins("https://localhost:7257", "http://localhost:5257");
+    });
+});
 
 // Add services to the container.
 
@@ -15,7 +26,7 @@ builder.Services.AddScoped<ILoggerService, LoggerService>();
 
 builder.Services.AddDbContext<DbContext>();
 
-builder.Services.AddControllers();
+builder.Services.AddModelValidatedControllers();
 
 var app = builder.Build();
 
@@ -25,7 +36,9 @@ app.UseHttpInterceptor();
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseCors("Policy");
+
+// app.UseAuthorization();
 
 app.MapControllers();
 

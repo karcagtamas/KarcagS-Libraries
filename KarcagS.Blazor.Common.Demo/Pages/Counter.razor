@@ -1,4 +1,6 @@
 ﻿@page "/counter"
+@using KarcagS.Blazor.Common.Http
+@using System.ComponentModel.DataAnnotations
 
 <PageTitle>Counter</PageTitle>
 
@@ -9,10 +11,36 @@
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
+    [Inject]
+    private IHttpService HttpService { get; set; }
+
+    [Inject]
+    private HttpClient Client { get; set; }
+
     private int currentCount = 0;
 
-    private void IncrementCount()
+    private async void IncrementCount()
     {
-        currentCount++;
+        await HttpService.Post<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast"), new HttpBody<TestModel>(new TestModel { })).Execute();
+        //sawait HttpService.Get<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast")).Execute();
+
+        //await Client.GetFromJsonAsync<TestModel>("https://localhost:7205/weatherforecast");
+        await Client.PostAsJsonAsync<TestModel>("https://localhost:7205/weatherforecast", new TestModel { });
+    }
+
+    public class TestModel
+    {
+        [Required]
+        public int? Id { get; set; }
+
+        [Required]
+        public int Number { get; set; }
+
+        [Required]
+        public DateTime? DateTime { get; set; }
+
+        [Required]
+        [MaxLength(20)]
+        public string Name { get; set; } = string.Empty;
     }
 }

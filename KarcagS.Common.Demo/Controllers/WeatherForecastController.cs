@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace KarcagS.Common.Demo.Controllers
 {
@@ -28,6 +29,28 @@ namespace KarcagS.Common.Demo.Controllers
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [HttpPost]
+        public TestModel Test([FromBody] TestModel model) 
+        {
+            return model;
+        }
+
+        public class TestModel
+        {
+            [Required]
+            public int? Id { get; set; }
+
+            [Required]
+            public int Number { get; set; }
+
+            [Required]
+            public DateTime? DateTime { get; set; }
+
+            [Required]
+            [MaxLength(20)]
+            public string Name { get; set; } = string.Empty;
         }
     }
 }
