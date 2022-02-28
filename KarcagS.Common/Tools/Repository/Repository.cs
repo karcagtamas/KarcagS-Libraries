@@ -185,7 +185,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
     /// Remove entity.
     /// </summary>
     /// <param name="entity">Entity</param>
-    public void Delete(T entity)
+    public virtual void Delete(T entity)
     {
         Context.Set<T>().Remove(entity);
         Persist();
@@ -195,7 +195,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
     /// Remove by Id
     /// </summary>
     /// <param name="id">Id of entity</param>
-    public void DeleteById(TKey id)
+    public virtual void DeleteById(TKey id)
     {
         // Get entity
         var entity = Get(id);
@@ -213,7 +213,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
     /// Remove range
     /// </summary>
     /// <param name="entities">Entities</param>
-    public void DeleteRange(IEnumerable<T> entities)
+    public virtual void DeleteRange(IEnumerable<T> entities)
     {
         // Remove range
         Context.Set<T>().RemoveRange(entities.ToList());
@@ -247,7 +247,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
     /// Update multiple entity
     /// </summary>
     /// <param name="entities">Entities</param>
-    public void UpdateRange(IEnumerable<T> entities)
+    public virtual void UpdateRange(IEnumerable<T> entities)
     {
         var list = entities.ToList();
 
@@ -318,7 +318,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
     /// <param name="firstType">First entity's type</param>
     /// <param name="entity">Entity</param>
     /// <returns>Declared argument value list</returns>
-    private List<string> DetermineArguments(IEnumerable<string> nameList, Type firstType, T entity)
+    protected List<string> DetermineArguments(IEnumerable<string> nameList, Type firstType, T entity)
     {
         var args = new List<string>();
 
@@ -383,7 +383,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
     /// <param name="orderBy">Ordering by</param>
     /// <param name="direction">Order direction</param>
     /// <returns>Ordered all list</returns>
-    public IEnumerable<T> GetAllAsOrdered(string orderBy, string direction)
+    public virtual IEnumerable<T> GetAllAsOrdered(string orderBy, string direction)
     {
         if (string.IsNullOrEmpty(orderBy)) throw new ArgumentException("Order by value is empty or null");
         var type = typeof(T);
@@ -404,17 +404,17 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
 
     }
 
-    public IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction)
+    public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction)
     {
         return GetOrderedList(predicate, null, null, orderBy, direction);
     }
 
-    public IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, int? count, string orderBy, string direction)
+    public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, int? count, string orderBy, string direction)
     {
         return GetOrderedList(predicate, count, null, orderBy, direction);
     }
 
-    public IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, int? count, int? skip, string orderBy, string direction)
+    public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, int? count, int? skip, string orderBy, string direction)
     {
         if (string.IsNullOrEmpty(orderBy)) throw new ArgumentException("Order by value is empty or null");
         var type = typeof(T);

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Mail;
+using Microsoft.Extensions.Options;
 
 namespace KarcagS.Common.Tools.Email;
 
@@ -14,9 +15,9 @@ public class MailService : IMailService
     /// Mail Service init
     /// </summary>
     /// <param name="settings">Mail Settings</param>
-    public MailService(EmailSettings settings)
+    public MailService(IOptions<EmailSettings> emailOptions)
     {
-        _settings = settings;
+        _settings = emailOptions.Value;
     }
 
     /// <summary>

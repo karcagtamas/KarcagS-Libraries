@@ -1,5 +1,5 @@
 using System;
-using KarcagS.Common.Helpers;
+using KarcagS.Shared.Helpers;
 using NUnit.Framework;
 
 namespace KarcagS.Common.Tests.Helpers
@@ -70,7 +70,7 @@ namespace KarcagS.Common.Tests.Helpers
 
             Assert.That(result, Is.EqualTo(new DateTime(2032, 11, 12, 0, 0, 0)));
         }
-        
+
         [Test]
         public void CompareDates_FirstDateInEarlierYear_ReturnFalse()
         {
@@ -78,7 +78,7 @@ namespace KarcagS.Common.Tests.Helpers
 
             Assert.That(result, Is.False);
         }
-        
+
         [Test]
         public void CompareDates_FirstDateInEarlierMonth_ReturnFalse()
         {
@@ -86,7 +86,7 @@ namespace KarcagS.Common.Tests.Helpers
 
             Assert.That(result, Is.False);
         }
-        
+
         [Test]
         public void CompareDates_FirstDateInEarlierDay_ReturnFalse()
         {
@@ -94,7 +94,7 @@ namespace KarcagS.Common.Tests.Helpers
 
             Assert.That(result, Is.False);
         }
-        
+
         [Test]
         public void CompareDates_TwoDayIsInTheSameYearMonthDayHourMinAndSec_ReturnTrue()
         {
@@ -102,7 +102,7 @@ namespace KarcagS.Common.Tests.Helpers
 
             Assert.That(result, Is.True);
         }
-        
+
         [Test]
         public void CompareDates_TwoDayIsInTheSameYearMonthDayAndHourButNotMinAndSec_ReturnTrue()
         {
@@ -110,7 +110,7 @@ namespace KarcagS.Common.Tests.Helpers
 
             Assert.That(result, Is.True);
         }
-        
+
         [Test]
         public void CompareDates_SecondDateInEarlierYear_ReturnFalse()
         {
@@ -118,7 +118,7 @@ namespace KarcagS.Common.Tests.Helpers
 
             Assert.That(result, Is.False);
         }
-        
+
         [Test]
         public void CompareDates_SecondDateInEarlierMonth_ReturnFalse()
         {
@@ -126,7 +126,7 @@ namespace KarcagS.Common.Tests.Helpers
 
             Assert.That(result, Is.False);
         }
-        
+
         [Test]
         public void CompareDates_SecondDateInEarlierDay_ReturnFalse()
         {

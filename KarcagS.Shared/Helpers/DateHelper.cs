@@ -1,4 +1,4 @@
-namespace KarcagS.Common.Helpers;
+namespace KarcagS.Shared.Helpers;
 
 /// <summary>
 /// Date helper

@@ -1,5 +1,5 @@
 ﻿using ClosedXML.Excel;
-using KarcagS.Common.Helpers;
+using KarcagS.Shared.Helpers;
 
 namespace KarcagS.Common.Tools.Export.Excel;
 

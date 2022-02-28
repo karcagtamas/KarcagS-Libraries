@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Karcags.Common\KarcagS.Common.csproj" />
+      <ProjectReference Include="..\KarcagS.Common\KarcagS.Common.csproj" />
     </ItemGroup>
 
 </Project>
