@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq.Expressions;
-using KarcagS.Common.Annotations;
+using KarcagS.Common.Attributes;
 using KarcagS.Common.Tools.Entities;
 using KarcagS.Common.Tools.Services;
 using Microsoft.EntityFrameworkCore;
@@ -226,7 +226,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
     /// Update entity
     /// </summary>
     /// <param name="entity">Entity</param>
-    public void Update(T entity)
+    public virtual void Update(T entity)
     {
         if (entity is ILastUpdaterEntity<TKey> lue)
         {

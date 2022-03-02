@@ -1,4 +1,4 @@
-﻿namespace KarcagS.Shared;
+﻿namespace KarcagS.Shared.Http;
 
 public class HttpResult<T>
 {

@@ -12,7 +12,7 @@ public interface IListState<TL>
 
     public TL TryAdd<T>(T value);
 
-    public T TryGet<T>(int index);
+    public T? TryGet<T>(int index);
 
     public int Count();
 

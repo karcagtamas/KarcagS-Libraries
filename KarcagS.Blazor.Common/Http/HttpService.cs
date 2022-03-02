@@ -6,7 +6,7 @@ using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using KarcagS.Shared;
+using KarcagS.Shared.Http;
 
 namespace KarcagS.Blazor.Common.Http;
 

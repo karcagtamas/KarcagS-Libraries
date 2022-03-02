@@ -1,4 +1,4 @@
-﻿using KarcagS.Shared;
+﻿using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KarcagS.Common.Tools.HttpInterceptor;

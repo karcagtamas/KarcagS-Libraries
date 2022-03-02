@@ -1,35 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>2.0.1</PackageVersion>
-        <Title>KarcagS Common C# Library</Title>
-        <AssemblyVersion>2.0.1</AssemblyVersion>
-        <FileVersion>2.0.1</FileVersion>
-		    <Nullable>enable</Nullable>
-		    <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageVersion>2.0.2</PackageVersion>
+		<Title>KarcagS Common C# Library</Title>
+		<AssemblyVersion>2.0.2</AssemblyVersion>
+		<FileVersion>2.0.2</FileVersion>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="11.0.0" />
-      <PackageReference Include="ClosedXML" Version="0.95.4" />
-      <PackageReference Include="DinkToPdf" Version="1.0.8" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="11.0.0" />
+		<PackageReference Include="ClosedXML" Version="0.95.4" />
+		<PackageReference Include="DinkToPdf" Version="1.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.1" />
+	</ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\KarcagS.Shared\KarcagS.Shared.csproj" />
-    </ItemGroup>
-    
-    <PropertyGroup>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    </PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\KarcagS.Shared\KarcagS.Shared.csproj" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
 
 </Project>

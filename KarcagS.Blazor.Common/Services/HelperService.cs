@@ -1,7 +1,7 @@
 using System.Text.Json;
 using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
-using KarcagS.Shared;
+using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Components;
 
 namespace KarcagS.Blazor.Common.Services;

@@ -1,4 +1,4 @@
-using KarcagS.Shared;
+using KarcagS.Shared.Http;
 using System.Text.Json;
 
 namespace KarcagS.Blazor.Common.Services;

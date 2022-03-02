@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared;
+using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 

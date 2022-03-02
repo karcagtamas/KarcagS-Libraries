@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace KarcagS.Common.Annotations;
+namespace KarcagS.Shared.Attributes;
 
 /// <summary>
 /// Minimum number checked annotation

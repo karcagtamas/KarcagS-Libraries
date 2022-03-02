@@ -137,7 +137,7 @@ public class HttpPathParameters : IListState<HttpPathParameters>
     /// <param name="index"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public T TryGet<T>(int index)
+    public T? TryGet<T>(int index)
     {
         // Negative
         if (index < 0)
@@ -146,12 +146,12 @@ public class HttpPathParameters : IListState<HttpPathParameters>
         }
 
         // Out of range
-        if (index >= this._pathParams.Count)
+        if (index >= _pathParams.Count)
         {
             return default;
         }
 
-        return (T)this._pathParams[index];
+        return (T)_pathParams[index];
     }
 
     /// <summary>
