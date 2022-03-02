@@ -23,7 +23,7 @@ public class NullableEmailAddressAttribute : DataTypeAttribute
                 return true;
             }
 
-            var attr = new PhoneAttribute();
+            var attr = new EmailAddressAttribute();
             return attr.IsValid(value);
         }
 
