@@ -236,7 +236,15 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
         var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
         props.ToList().ForEach(p =>
         {
-            p.SetValue(entity, Utils.GetCurrentUserId<TKey>());
+            var attr = Attribute.GetCustomAttribute(p, typeof(UserAttribute));
+
+            if (attr is not null)
+            {
+                if (!((UserAttribute)attr).OnlyInit)
+                {
+                    p.SetValue(entity, Utils.GetCurrentUserId<TKey>());
+                }
+            }
         });
 
         Context.Set<T>().Update(entity);
