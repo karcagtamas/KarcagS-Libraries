@@ -2,11 +2,11 @@ using KarcagS.Common.Tools.Entities;
 
 namespace KarcagS.Common.Tools.Services;
 
-public interface IUtilsService
+public interface IUtilsService<TUserKey>
 {
-    T GetCurrentUser<T, TKey>() where T : class, IEntity<TKey>;
-    TKey? GetCurrentUserId<TKey>();
-    TKey GetRequiredCurrentUserId<TKey>();
+    T GetCurrentUser<T>() where T : class, IEntity<TUserKey>;
+    TUserKey? GetCurrentUserId();
+    TUserKey GetRequiredCurrentUserId();
     string GetCurrentUserEmail();
     string GetCurrentUserName();
     string InjectString(string baseText, params string[] args);

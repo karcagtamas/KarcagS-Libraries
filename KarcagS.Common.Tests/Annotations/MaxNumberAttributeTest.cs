@@ -1,4 +1,4 @@
-using KarcagS.Common.Annotations;
+using KarcagS.Shared.Attributes;
 using NUnit.Framework;
 
 namespace KarcagS.Common.Tests.Annotations

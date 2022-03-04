@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace KarcagS.Common.Tools.Services;
 
-public class UtilsService<TContext> : IUtilsService where TContext : DbContext
+public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TContext : DbContext
 {
     private readonly IHttpContextAccessor contextAccessor;
     private readonly TContext context;
@@ -28,9 +28,9 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
     /// Get current user from the HTTP Context
     /// </summary>
     /// <returns>Current user</returns>
-    public T GetCurrentUser<T, TKey>() where T : class, IEntity<TKey>
+    public T GetCurrentUser<T>() where T : class, IEntity<TUserKey>
     {
-        TKey? userId = GetCurrentUserId<TKey>();
+        TUserKey? userId = GetCurrentUserId();
 
         if (userId is null)
         {
@@ -50,13 +50,13 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
     /// Get current user's Id from the HTTP Context
     /// </summary>
     /// <returns>Current user's Id</returns>
-    public TKey? GetCurrentUserId<TKey>()
+    public TUserKey? GetCurrentUserId()
     {
         string claim = GetClaimByName(settings.UserIdClaimName);
 
         if (!string.IsNullOrEmpty(claim))
         {
-            return (TKey)(object)claim;
+            return (TUserKey)(object)claim;
         }
 
         return default;
@@ -66,9 +66,9 @@ public class UtilsService<TContext> : IUtilsService where TContext : DbContext
     /// Get current user's Id from the HTTP Context
     /// </summary>
     /// <returns>Current user's Id</returns>
-    public TKey GetRequiredCurrentUserId<TKey>()
+    public TUserKey GetRequiredCurrentUserId()
     {
-        var id = GetCurrentUserId<TKey>();
+        var id = GetCurrentUserId();
 
         if (id is null)
         {

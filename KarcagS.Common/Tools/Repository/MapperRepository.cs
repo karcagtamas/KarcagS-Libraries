@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KarcagS.Common.Tools.Repository;
 
-public abstract class MapperRepository<TEntity, TKey> : Repository<TEntity, TKey>, IMapperRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
+public abstract class MapperRepository<TEntity, TKey, TUserKey> : Repository<TEntity, TKey, TUserKey>, IMapperRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
 {
     protected readonly IMapper Mapper;
 
-    public MapperRepository(DbContext context, ILoggerService loggerService, IUtilsService utilsService, IMapper mapper, string entity) : base(context, loggerService, utilsService, entity)
+    public MapperRepository(DbContext context, ILoggerService loggerService, IUtilsService<TUserKey> utilsService, IMapper mapper, string entity) : base(context, loggerService, utilsService, entity)
     {
         Mapper = mapper;
     }

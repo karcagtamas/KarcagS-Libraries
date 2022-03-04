@@ -11,12 +11,12 @@ namespace KarcagS.Common.Tools.Repository;
 /// Repository manager
 /// </summary>
 /// <typeparam name="T">Type of Entity</typeparam>
-public abstract class Repository<T, TKey> : IRepository<T, TKey>
+public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     where T : class, IEntity<TKey>
 {
     protected readonly DbContext Context;
     protected readonly ILoggerService Logger;
-    protected readonly IUtilsService Utils;
+    protected readonly IUtilsService<TUserKey> Utils;
     protected readonly string Entity;
 
     /// <summary>
@@ -27,7 +27,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
     /// <param name="utils">Utils Service</param>
     /// <param name="mapper">Mapper</param>
     /// <param name="entity">Entity name</param>
-    protected Repository(DbContext context, ILoggerService logger, IUtilsService utils, string entity)
+    protected Repository(DbContext context, ILoggerService logger, IUtilsService<TUserKey> utils, string entity)
     {
         Context = context;
         Logger = logger;
@@ -49,15 +49,15 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
             }
         }
 
-        if (entity is ILastUpdaterEntity<TKey> lue)
+        if (entity is ILastUpdaterEntity<TUserKey> lue)
         {
-            lue.LastUpdaterId = Utils.GetRequiredCurrentUserId<TKey>();
+            lue.LastUpdaterId = Utils.GetRequiredCurrentUserId();
         }
 
         var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
         props.ToList().ForEach(p =>
         {
-            p.SetValue(entity, Utils.GetCurrentUserId<TKey>());
+            p.SetValue(entity, Utils.GetCurrentUserId());
         });
 
         Context.Set<T>().Add(entity);
@@ -74,15 +74,15 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
 
         list.ForEach(x =>
         {
-            if (x is ILastUpdaterEntity<TKey> lue)
+            if (x is ILastUpdaterEntity<TUserKey> lue)
             {
-                lue.LastUpdaterId = Utils.GetRequiredCurrentUserId<TKey>();
+                lue.LastUpdaterId = Utils.GetRequiredCurrentUserId();
             }
 
             var props = x.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
             props.ToList().ForEach(p =>
             {
-                p.SetValue(x, Utils.GetCurrentUserId<TKey>());
+                p.SetValue(x, Utils.GetCurrentUserId());
             });
         });
 
@@ -228,9 +228,9 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
     /// <param name="entity">Entity</param>
     public virtual void Update(T entity)
     {
-        if (entity is ILastUpdaterEntity<TKey> lue)
+        if (entity is ILastUpdaterEntity<TUserKey> lue)
         {
-            lue.LastUpdaterId = Utils.GetRequiredCurrentUserId<TKey>();
+            lue.LastUpdaterId = Utils.GetRequiredCurrentUserId();
         }
 
         var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
@@ -242,7 +242,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
             {
                 if (!((UserAttribute)attr).OnlyInit)
                 {
-                    p.SetValue(entity, Utils.GetCurrentUserId<TKey>());
+                    p.SetValue(entity, Utils.GetCurrentUserId());
                 }
             }
         });
@@ -261,15 +261,15 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey>
 
         list.ForEach(x =>
         {
-            if (x is ILastUpdaterEntity<TKey> lue)
+            if (x is ILastUpdaterEntity<TUserKey> lue)
             {
-                lue.LastUpdaterId = Utils.GetRequiredCurrentUserId<TKey>();
+                lue.LastUpdaterId = Utils.GetRequiredCurrentUserId();
             }
 
             var props = x.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
             props.ToList().ForEach(p =>
             {
-                p.SetValue(x, Utils.GetCurrentUserId<TKey>());
+                p.SetValue(x, Utils.GetCurrentUserId());
             });
         });
 

@@ -21,8 +21,8 @@ builder.Services.AddCors(opt =>
 // Add services to the container.
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<IUtilsService, UtilsService<DbContext>>();
-builder.Services.AddScoped<ILoggerService, LoggerService>();
+builder.Services.AddScoped<IUtilsService<string>, UtilsService<DbContext, string>>();
+builder.Services.AddScoped<ILoggerService, LoggerService<string>>();
 
 builder.Services.AddDbContext<DbContext>();
 

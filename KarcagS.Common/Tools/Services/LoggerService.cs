@@ -6,17 +6,17 @@ namespace KarcagS.Common.Tools.Services;
 /// <summary>
 /// Logger Service
 /// </summary>
-public class LoggerService : ILoggerService
+public class LoggerService<TUserKey> : ILoggerService
 {
-    private readonly ILogger<LoggerService> _logger;
-    private readonly IUtilsService _utilsService;
+    private readonly ILogger<LoggerService<TUserKey>> _logger;
+    private readonly IUtilsService<TUserKey> _utilsService;
 
     /// <summary>
     /// Injector Constructor
     /// </summary>
     /// <param name="logger">Logger</param>
     /// <param name="utilsService">Utils Service</param>
-    public LoggerService(ILogger<LoggerService> logger, IUtilsService utilsService)
+    public LoggerService(ILogger<LoggerService<TUserKey>> logger, IUtilsService<TUserKey> utilsService)
     {
         _logger = logger;
         _utilsService = utilsService;
