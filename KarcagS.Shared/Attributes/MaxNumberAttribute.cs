@@ -29,13 +29,38 @@ public class MaxNumberAttribute : ValidationAttribute
     {
         try
         {
-            // Try convert to nullable int
-            var number = (long?)value;
-
             // Ignore null values
-            if (number is null)
+            if (value is null)
             {
                 return ValidationResult.Success;
+            }
+
+            long? number = null;
+
+            if (value is long)
+            {
+                number = (long)value;
+            }
+            else if (value is int)
+            {
+                number = (int)value;
+            }
+            else if (value is byte)
+            {
+                number = (byte)value;
+            }
+            else if (value is uint)
+            {
+                number = (uint)value;
+            }
+            else if (value is sbyte)
+            {
+                number = (sbyte)value;
+            }
+
+            if (number is null)
+            {
+                throw new InvalidCastException("Number is not supported");
             }
 
             // Check maximum (explicit)

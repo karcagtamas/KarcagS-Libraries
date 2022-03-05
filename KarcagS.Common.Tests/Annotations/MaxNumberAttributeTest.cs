@@ -13,6 +13,7 @@ namespace KarcagS.Common.Tests.Annotations
         [TestCase(23,23, true)]
         [TestCase(43, 12, false)]
         [TestCase(2,1, false)]
+        [TestCase(null, 1, true)]
         public void MaxNumber_ValidNumbers_AreValid(int number, int max, bool expectedResult)
         {
             var attr = new MaxNumberAttribute(max);
