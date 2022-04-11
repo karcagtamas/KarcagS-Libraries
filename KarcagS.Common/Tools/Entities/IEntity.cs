@@ -6,5 +6,5 @@ public interface IEntity<T>
 
     bool Equals(object obj);
 
-    string ToString();
+    string? ToString();
 }

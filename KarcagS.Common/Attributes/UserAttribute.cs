@@ -1,3 +1,5 @@
+using System;
+
 namespace KarcagS.Common.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
