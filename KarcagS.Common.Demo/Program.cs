@@ -32,7 +32,10 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.UseHttpInterceptor();
+app.UseHttpInterceptor((opt) =>
+{
+    
+});
 
 app.UseHttpsRedirection();
 

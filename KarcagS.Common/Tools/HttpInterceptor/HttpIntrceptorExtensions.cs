@@ -1,17 +1,18 @@
-﻿using KarcagS.Shared;
-using KarcagS.Shared.Http;
+﻿using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 
 namespace KarcagS.Common.Tools.HttpInterceptor;
 
-public static class HttpIntrceptorExtensions
+public static class HttpInterceptorExtensions
 {
-    public static IApplicationBuilder UseHttpInterceptor(this WebApplication app)
+    public static IApplicationBuilder UseHttpInterceptor(this WebApplication app, Action<HttpInterceptorOptions> configureOptions)
     {
-        return app.UseMiddleware<HttpInterceptor>();
+        var options = new HttpInterceptorOptions();
+        configureOptions(options);
+
+        return app.UseMiddleware<HttpInterceptor>(options);
     }
 
     public static IServiceCollection AddModelValidatedControllers(this IServiceCollection services)

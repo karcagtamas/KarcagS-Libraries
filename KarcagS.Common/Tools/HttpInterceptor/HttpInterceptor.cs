@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.RegularExpressions;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Http;
@@ -16,11 +17,11 @@ public class HttpInterceptor
         this.next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context, ILoggerService logger)
+    public async Task InvokeAsync(HttpContext context, ILoggerService logger, HttpInterceptorOptions options)
     {
         logger.LogRequest(context);
 
-        if (IsSwagger(context))
+        if (IsSwagger(context) || (options.OnlyApi && !IsApi(context, options.ApiPath)) || IsIgnored(context, options.IgnoredPaths))
         {
             await next.Invoke(context);
         }
@@ -80,6 +81,21 @@ public class HttpInterceptor
     private static bool IsSwagger(HttpContext context)
     {
         return context.Request.Path.StartsWithSegments("/swagger");
+    }
+
+    private static bool IsApi(HttpContext context, string apiPath)
+    {
+        return context.Request.Path.StartsWithSegments(apiPath);
+    }
+
+    private static bool IsIgnored(HttpContext context, List<string> ignoredPaths)
+    {
+        return ignoredPaths.Any(path =>
+        {
+            var reg = new Regex(path);
+
+            return reg.IsMatch(context.Request.Path.Value ?? "");
+        });
     }
 
     private static Task HandleSuccessRequestAsync(HttpContext context, object body, int code)
