@@ -6,5 +6,5 @@ namespace KarcagS.Shared.Http;
 public class HttpResultError
 {
     public string Message { get; set; } = string.Empty;
-    public string[] SubMessages { get; set; } = new string[0];
+    public string[] SubMessages { get; set; } = Array.Empty<string>();
 }

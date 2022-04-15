@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using KarcagS.Common.Tools.Services;
-using KarcagS.Shared;
 using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -113,7 +112,7 @@ public class HttpInterceptor
             response.Error = new HttpResultError
             {
                 Message = "Resource not found.",
-                SubMessages = new string[0]
+                SubMessages = Array.Empty<string>()
             };
         }
         else
@@ -121,7 +120,7 @@ public class HttpInterceptor
             response.Error = new HttpResultError
             {
                 Message = "Request cannot be processed.",
-                SubMessages = new string[0]
+                SubMessages = Array.Empty<string>()
             };
         }
         context.Response.StatusCode = code;
@@ -145,7 +144,7 @@ public class HttpInterceptor
             response.Error = new HttpResultError
             {
                 Message = exception.Message,
-                SubMessages = new string[0]
+                SubMessages = Array.Empty<string>()
             };
         }
         else
@@ -153,7 +152,7 @@ public class HttpInterceptor
             response.Error = new HttpResultError
             {
                 Message = FatalError,
-                SubMessages = new string[0]
+                SubMessages = Array.Empty<string>()
             };
         }
 
