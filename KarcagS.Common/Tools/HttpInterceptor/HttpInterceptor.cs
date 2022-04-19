@@ -10,14 +10,16 @@ namespace KarcagS.Common.Tools.HttpInterceptor;
 public class HttpInterceptor
 {
     private readonly RequestDelegate next;
+    private readonly HttpInterceptorOptions options;
     private const string FatalError = "Something bad happened. Please try again later";
 
-    public HttpInterceptor(RequestDelegate next)
+    public HttpInterceptor(RequestDelegate next, HttpInterceptorOptions options)
     {
         this.next = next;
+        this.options = options;
     }
 
-    public async Task InvokeAsync(HttpContext context, ILoggerService logger, HttpInterceptorOptions options)
+    public async Task InvokeAsync(HttpContext context, ILoggerService logger)
     {
         logger.LogRequest(context);
 
