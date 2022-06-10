@@ -39,58 +39,38 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// Add entity
     /// </summary>
     /// <param name="entity">Entity object</param>
-    public virtual void Create(T entity)
+    public virtual TKey Create(T entity, bool doPersist = true)
     {
-        if (entity is IEntity<string> e)
-        {
-            if (string.IsNullOrEmpty(e.Id))
-            {
-                e.Id = Guid.NewGuid().ToString();
-            }
-        }
-
-        if (entity is ILastUpdaterEntity<TUserKey> lue)
-        {
-            lue.LastUpdaterId = Utils.GetRequiredCurrentUserId();
-        }
-
-        var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
-        props.ToList().ForEach(p =>
-        {
-            p.SetValue(entity, Utils.GetCurrentUserId());
-        });
+        ApplyCreateModification(entity);
 
         Context.Set<T>().Add(entity);
-        Persist();
+
+        if (doPersist)
+        {
+            Persist();
+        }
+
+        return entity.Id;
     }
 
     /// <summary>
     /// Add multiple entity.
     /// </summary>
     /// <param name="entities">Entities</param>
-    public virtual void CreateRange(IEnumerable<T> entities)
+    public virtual void CreateRange(IEnumerable<T> entities, bool doPersist = true)
     {
         var list = entities.ToList();
 
-        list.ForEach(x =>
-        {
-            if (x is ILastUpdaterEntity<TUserKey> lue)
-            {
-                lue.LastUpdaterId = Utils.GetRequiredCurrentUserId();
-            }
-
-            var props = x.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
-            props.ToList().ForEach(p =>
-            {
-                p.SetValue(x, Utils.GetCurrentUserId());
-            });
-        });
+        list.ForEach(x => ApplyCreateModification(x));
 
         // Add
         Context.Set<T>().AddRange(list);
 
-        // Save
-        Persist();
+        if (doPersist)
+        {
+            // Save
+            Persist();
+        }
     }
 
     /// <summary>
@@ -185,17 +165,21 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// Remove entity.
     /// </summary>
     /// <param name="entity">Entity</param>
-    public virtual void Delete(T entity)
+    public virtual void Delete(T entity, bool doPersist = true)
     {
         Context.Set<T>().Remove(entity);
-        Persist();
+
+        if (doPersist)
+        {
+            Persist();
+        }
     }
 
     /// <summary>
     /// Remove by Id
     /// </summary>
     /// <param name="id">Id of entity</param>
-    public virtual void DeleteById(TKey id)
+    public virtual void DeleteById(TKey id, bool doPersist = true)
     {
         // Get entity
         var entity = Get(id);
@@ -206,78 +190,60 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
         }
 
         // Remove
-        Delete(entity);
+        Delete(entity, doPersist);
     }
 
     /// <summary>
     /// Remove range
     /// </summary>
     /// <param name="entities">Entities</param>
-    public virtual void DeleteRange(IEnumerable<T> entities)
+    public virtual void DeleteRange(IEnumerable<T> entities, bool doPersist = true)
     {
         // Remove range
         Context.Set<T>().RemoveRange(entities.ToList());
 
-        // Save
-        Persist();
+        if (doPersist)
+        {
+            // Save
+            Persist();
+        }
     }
 
     /// <summary>
     /// Update entity
     /// </summary>
     /// <param name="entity">Entity</param>
-    public virtual void Update(T entity)
+    public virtual void Update(T entity, bool doPersist = true)
     {
-        if (entity is ILastUpdaterEntity<TUserKey> lue)
-        {
-            lue.LastUpdaterId = Utils.GetRequiredCurrentUserId();
-        }
-
-        var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
-        props.ToList().ForEach(p =>
-        {
-            var attr = Attribute.GetCustomAttribute(p, typeof(UserAttribute));
-
-            if (attr is not null)
-            {
-                if (!((UserAttribute)attr).OnlyInit)
-                {
-                    p.SetValue(entity, Utils.GetCurrentUserId());
-                }
-            }
-        });
+        ApplyUpdateModification(entity);
 
         Context.Set<T>().Update(entity);
-        Persist();
+
+        if (doPersist)
+        {
+            // Save
+            Persist();
+        }
     }
 
     /// <summary>
     /// Update multiple entity
     /// </summary>
     /// <param name="entities">Entities</param>
-    public virtual void UpdateRange(IEnumerable<T> entities)
+    public virtual void UpdateRange(IEnumerable<T> entities, bool doPersist = true)
     {
         var list = entities.ToList();
 
-        list.ForEach(x =>
-        {
-            if (x is ILastUpdaterEntity<TUserKey> lue)
-            {
-                lue.LastUpdaterId = Utils.GetRequiredCurrentUserId();
-            }
-
-            var props = x.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
-            props.ToList().ForEach(p =>
-            {
-                p.SetValue(x, Utils.GetCurrentUserId());
-            });
-        });
+        list.ForEach(x => ApplyUpdateModification(x));
 
         // Update 
         Context.Set<T>().UpdateRange(list);
 
-        // Save
-        Persist();
+        if (doPersist)
+        {
+            // Save
+            Persist();
+        }
     }
 
     /// <summary>
@@ -440,5 +406,65 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
             "none" => GetList(predicate, count, skip),
             _ => throw new ArgumentException("Ordering direction does not exist")
         };
+    }
+
+    private void ApplyCreateModification(T entity)
+    {
+        if (entity is IEntity<string> e)
+        {
+            if (string.IsNullOrEmpty(e.Id))
+            {
+                e.Id = Guid.NewGuid().ToString();
+            }
+        }
+
+        if (entity is ILastUpdaterEntity<TUserKey> lue)
+        {
+            lue.LastUpdaterId = Utils.GetRequiredCurrentUserId();
+        }
+
+        var dateTime = DateTime.Now;
+        if (entity is ICreationEntity creationEntity)
+        {
+            creationEntity.Creation = dateTime;
+        }
+
+        if (entity is ILastUpdateEntity lastUpdateEntity)
+        {
+            lastUpdateEntity.LastUpdate = dateTime;
+        }
+
+        var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
+        props.ToList().ForEach(p =>
+        {
+            p.SetValue(entity, Utils.GetCurrentUserId());
+        });
+    }
+
+    private void ApplyUpdateModification(T entity)
+    {
+        if (entity is ILastUpdaterEntity<TUserKey> lue)
+        {
+            lue.LastUpdaterId = Utils.GetRequiredCurrentUserId();
+        }
+
+        if (entity is ILastUpdateEntity lastUpdateEntity)
+        {
+            lastUpdateEntity.LastUpdate = DateTime.Now;
+        }
+
+        var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
+        props.ToList().ForEach(p =>
+        {
+            var attr = Attribute.GetCustomAttribute(p, typeof(UserAttribute));
+
+            if (attr is not null)
+            {
+                if (!((UserAttribute)attr).OnlyInit)
+                {
+                    p.SetValue(entity, Utils.GetCurrentUserId());
+                }
+            }
+        });
     }
 }

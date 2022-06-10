@@ -14,6 +14,6 @@ public interface IMapperRepository<TEntity, TKey> : IRepository<TEntity, TKey> w
     IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, int? count, string orderBy, string direction);
     IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, int? count, int? skip, string orderBy, string direction);
     T GetMapped<T>(TKey id);
-    void CreateFromModel<TModel>(TModel model);
-    void UpdateByModel<TModel>(TKey id, TModel model);
+    TKey CreateFromModel<TModel>(TModel model, bool doPersist = true);
+    void UpdateByModel<TModel>(TKey id, TModel model, bool doPersist = true);
 }

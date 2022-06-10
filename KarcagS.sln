@@ -9,15 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Common.Tests", "Kar
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{39A9A03A-B5A6-44F3-BCEC-DF0051FDC514}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KarcagS.Common.Demo", "KarcagS.Common.Demo\KarcagS.Common.Demo.csproj", "{2AF8E18D-714B-4346-B22B-F449F2B0693B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Common.Demo", "KarcagS.Common.Demo\KarcagS.Common.Demo.csproj", "{2AF8E18D-714B-4346-B22B-F449F2B0693B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blazor", "Blazor", "{5FD9A2E4-5860-4186-A4A5-EB9771E9D34C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KarcagS.Blazor.Common", "KarcagS.Blazor.Common\KarcagS.Blazor.Common.csproj", "{ED8BD237-C1BB-4D1C-8AC1-3B73BCF33CF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Blazor.Common", "KarcagS.Blazor.Common\KarcagS.Blazor.Common.csproj", "{ED8BD237-C1BB-4D1C-8AC1-3B73BCF33CF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KarcagS.Blazor.Common.Demo", "KarcagS.Blazor.Common.Demo\KarcagS.Blazor.Common.Demo.csproj", "{ADDFEB5D-F1EF-4DDF-B9D5-8050CB010696}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Blazor.Common.Demo", "KarcagS.Blazor.Common.Demo\KarcagS.Blazor.Common.Demo.csproj", "{ADDFEB5D-F1EF-4DDF-B9D5-8050CB010696}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KarcagS.Shared", "KarcagS.Shared\KarcagS.Shared.csproj", "{D44B0DA4-B723-423F-914A-5F9149A1FD6F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Shared", "KarcagS.Shared\KarcagS.Shared.csproj", "{D44B0DA4-B723-423F-914A-5F9149A1FD6F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

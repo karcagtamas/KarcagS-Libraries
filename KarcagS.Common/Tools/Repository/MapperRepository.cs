@@ -15,9 +15,9 @@ public abstract class MapperRepository<TEntity, TKey, TUserKey> : Repository<TEn
         Mapper = mapper;
     }
 
-    public virtual void CreateFromModel<TModel>(TModel model)
+    public virtual TKey CreateFromModel<TModel>(TModel model, bool doPersist = true)
     {
-        Create(Mapper.Map<TEntity>(model));
+        return Create(Mapper.Map<TEntity>(model), doPersist);
     }
 
     public virtual IEnumerable<T> GetAllMapped<T>()
@@ -50,9 +50,9 @@ public abstract class MapperRepository<TEntity, TKey, TUserKey> : Repository<TEn
         return Mapper.Map<IEnumerable<T>>(GetAllAsOrdered(orderBy, direction));
     }
 
-    public virtual void UpdateByModel<TModel>(TKey id, TModel model)
+    public virtual void UpdateByModel<TModel>(TKey id, TModel model, bool doPersist = true)
     {
-        Update(Mapper.Map(model, Get(id)));
+        Update(Mapper.Map(model, Get(id)), doPersist);
     }
 
     public virtual IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, string orderBy, string direction)

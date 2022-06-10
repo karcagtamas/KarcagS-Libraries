@@ -15,7 +15,7 @@ public class ImageUploaderService : IImageUploaderService
     public async Task<bool> Open(ImageUploaderDialogInput input, string title)
     {
         var parameters = new DialogParameters { { "Input", input } };
-        var dialog = dialogService.Show<ImageUploader>(title, parameters);
+        var dialog = dialogService.Show<ImageUploader>(title, parameters, new DialogOptions { MaxWidth = MaxWidth.Medium });
         var result = await dialog.Result;
 
         return !result.Cancelled;
