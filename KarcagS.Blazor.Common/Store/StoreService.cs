@@ -13,7 +13,7 @@ public class StoreService : IStoreService
     /// <summary>
     /// Store data has been changed
     /// </summary>
-    public event EventHandler? Changed;
+    public event EventHandler<StoreEventArgs>? Changed;
 
     /// <summary>
     /// 
@@ -58,21 +58,21 @@ public class StoreService : IStoreService
             Store.Add(key, value);
         }
 
-        OnChanged();
+        OnChanged(key, StoreEvent.Add);
     }
 
     /// <inheritdoc />
     public void Remove(string key)
     {
         Store.Remove(key);
-        OnChanged();
+        OnChanged(key, StoreEvent.Remove);
     }
 
     /// <summary>
     /// On Change event
     /// </summary>
-    protected virtual void OnChanged()
+    protected virtual void OnChanged(string key, StoreEvent type)
     {
-        Changed?.Invoke(this, EventArgs.Empty);
+        Changed?.Invoke(this, new StoreEventArgs(key, type));
     }
 }

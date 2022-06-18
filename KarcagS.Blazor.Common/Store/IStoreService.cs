@@ -8,7 +8,7 @@ public interface IStoreService
     /// <summary>
     /// Changed event
     /// </summary>
-    event EventHandler Changed;
+    event EventHandler<StoreEventArgs> Changed;
 
     /// <summary>
     /// Get value from Store
