@@ -30,17 +30,7 @@ public abstract class MapperRepository<TEntity, TKey, TUserKey> : Repository<TEn
         return Mapper.Map<T>(Get(id));
     }
 
-    public virtual IEnumerable<T> GetMappedList<T>(Expression<Func<TEntity, bool>> expression)
-    {
-        return Mapper.Map<IEnumerable<T>>(GetList(expression));
-    }
-
-    public virtual IEnumerable<T> GetMappedList<T>(Expression<Func<TEntity, bool>> expression, int? count)
-    {
-        return Mapper.Map<IEnumerable<T>>(GetList(expression, count));
-    }
-
-    public virtual IEnumerable<T> GetMappedList<T>(Expression<Func<TEntity, bool>> expression, int? count, int? skip)
+    public virtual IEnumerable<T> GetMappedList<T>(Expression<Func<TEntity, bool>> expression, int? count = null, int? skip = null)
     {
         return Mapper.Map<IEnumerable<T>>(GetList(expression, count, skip));
     }
@@ -55,18 +45,8 @@ public abstract class MapperRepository<TEntity, TKey, TUserKey> : Repository<TEn
         Update(Mapper.Map(model, Get(id)), doPersist);
     }
 
-    public virtual IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, string orderBy, string direction)
+    public virtual IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, string orderBy, string direction, int? count = null, int? skip = null)
     {
-        return Mapper.Map<IEnumerable<T>>(GetOrderedList(expression, orderBy, direction));
-    }
-
-    public virtual IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, int? count, string orderBy, string direction)
-    {
-        return Mapper.Map<IEnumerable<T>>(GetOrderedList(expression, count, orderBy, direction));
-    }
-
-    public virtual IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, int? count, int? skip, string orderBy, string direction)
-    {
-        return Mapper.Map<IEnumerable<T>>(GetOrderedList(expression, count, skip, orderBy, direction));
+        return Mapper.Map<IEnumerable<T>>(GetOrderedList(expression, orderBy, direction, count, skip));
     }
 }

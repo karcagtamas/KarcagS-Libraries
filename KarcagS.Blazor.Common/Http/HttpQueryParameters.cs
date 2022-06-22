@@ -1,4 +1,5 @@
 using KarcagS.Blazor.Common.Models.Interfaces;
+using System.Text;
 
 namespace KarcagS.Blazor.Common.Http;
 
@@ -43,6 +44,34 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     }
 
     /// <summary>
+    /// Add key with the given value by a predicate function.
+    /// If the predicate is true, the query will be added
+    /// </summary>
+    /// <param name="key">Key value</param>
+    /// <param name="value">Value</param>
+    /// <typeparam name="T">Type of the value</typeparam>
+    public HttpQueryParameters AddOptional<T>(string key, T value, Predicate<T> predicate)
+    {
+        if (predicate(value))
+        {
+            return Add(key, value);
+        }
+
+        return this;
+    }
+
+    /// <summary>
+    /// Add multiple query items under one key
+    /// </summary>
+    /// <typeparam name="T">Type of list items</typeparam>
+    /// <param name="key">Key value</param>
+    /// <param name="values">Value list</param>
+    public HttpQueryParameters AddMultiple<T>(string key, List<T> values)
+    {
+        return Add(key, values.ToArray());
+    }
+
+    /// <summary>
     /// Get value by the given key.
     /// If the given key does not exist it will throw an error
     /// </summary>
@@ -81,6 +110,17 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     }
 
     /// <summary>
+    /// Try add multiple query items under one key
+    /// </summary>
+    /// <param name="key">Key value</param>
+    /// <param name="values">Value list</param>
+    /// <typeparam name = "T" > Type of list items</typeparam>
+    public HttpQueryParameters TryAddMultiple<T>(string key, List<T> values)
+    {
+        return TryAdd(key, values.ToArray());
+    }
+
+    /// <summary>
     /// Try get value by the given key.
     /// Will not throw errors, but will not execute the adding.
     /// </summary>
@@ -101,7 +141,7 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     /// </summary>
     /// <returns>Count number</returns>
     public int Count() => _queryParams.Keys.Count;
-    
+
 
     /// <summary>
     /// Create string from the dictionary.
@@ -110,14 +150,31 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     /// <returns></returns>
     public override string ToString()
     {
-        string val = "";
+        List<string> values = new();
 
-        foreach (string key in this._queryParams.Keys)
+        foreach (string key in _queryParams.Keys)
         {
-            val += val != "" ? "&" : "";
-            val += $"{key}={this._queryParams[key]}";
+            var value = _queryParams[key];
+
+            if (value is null)
+            {
+                continue;
+            }
+
+            if (value is Array arr)
+            {
+                foreach (var i in arr)
+                {
+                    values.Add($"{key}={i}");
+
+                }
+            }
+            else
+            {
+                values.Add($"{key}={value}");
+            }
         }
 
-        return val;
+        return string.Join("&", values);
     }
 }

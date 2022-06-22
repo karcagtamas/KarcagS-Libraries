@@ -7,4 +7,5 @@ public class HttpResultError
 {
     public string Message { get; set; } = string.Empty;
     public string[] SubMessages { get; set; } = Array.Empty<string>();
+    public string? StackTrace { get; set; }
 }

@@ -49,11 +49,12 @@ public class HttpInterceptor
                 }
                 else if (context.Response.StatusCode == ValidationErrorActionResult.ValidationErrorCode)
                 {
+                    logger.LogValidationError();
                     return;
                 }
                 else
                 {
-                    await HandleNotSuccessRequestAsync(context, context.Response.StatusCode);
+                    await HandleNotSuccessRequestAsync(context, context.Response.StatusCode, logger);
                 }
             }
             catch (Exception ex)
@@ -114,7 +115,7 @@ public class HttpInterceptor
         return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
     }
 
-    private static Task HandleNotSuccessRequestAsync(HttpContext context, int code)
+    private static Task HandleNotSuccessRequestAsync(HttpContext context, int code, ILoggerService logger)
     {
         context.Response.ContentType = "application/json";
 
@@ -141,7 +142,10 @@ public class HttpInterceptor
                 SubMessages = Array.Empty<string>()
             };
         }
+
         context.Response.StatusCode = code;
+
+        logger.LogError(response.Error, code);
 
         return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
     }
@@ -162,7 +166,8 @@ public class HttpInterceptor
             response.Error = new HttpResultError
             {
                 Message = exception.Message,
-                SubMessages = Array.Empty<string>()
+                SubMessages = Array.Empty<string>(),
+                StackTrace = exception.StackTrace
             };
         }
         else
@@ -170,11 +175,14 @@ public class HttpInterceptor
             response.Error = new HttpResultError
             {
                 Message = FatalError,
-                SubMessages = Array.Empty<string>()
+                SubMessages = Array.Empty<string>(),
+                StackTrace = exception.StackTrace
             };
         }
 
         logger.LogError(exception);
+
+        context.Response.StatusCode = 500;
 
         return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
     }

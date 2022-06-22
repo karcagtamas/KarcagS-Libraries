@@ -40,6 +40,18 @@ public class HttpSender<T>
         return res.Result;
     }
 
+    public async Task<T> ExecuteWithResultOrElse(T orElse)
+    {
+        var res = await Perform();
+
+        if (res is null)
+        {
+            return orElse;
+        }
+
+        return res.Result ?? orElse;
+    }
+
     private async Task<HttpResult<T>?> Perform()
     {
         var response = await sender();

@@ -18,26 +18,18 @@ public class HttpCall<TKey> : IHttpCall<TKey>
 
     public async Task<List<T>> GetAll<T>(string orderBy, string direction = "asc")
     {
-        var queryParams = new HttpQueryParameters();
-        if (!string.IsNullOrEmpty(orderBy))
-        {
-            queryParams.Add("orderBy", orderBy);
-        }
-
-        if (!string.IsNullOrEmpty(direction))
-        {
-            queryParams.Add("direction", direction);
-        }
+        var queryParams = HttpQueryParameters.Build()
+            .AddOptional("orderBy", orderBy, (x) => !string.IsNullOrEmpty(x))
+            .AddOptional("direction", direction, (x) => !string.IsNullOrEmpty(x));
 
         var settings = new HttpSettings(Url).AddQueryParams(queryParams);
 
-        return await Http.Get<List<T>>(settings).ExecuteWithResult() ?? new();
+        return await Http.Get<List<T>>(settings).ExecuteWithResultOrElse(new());
     }
 
     public async Task<T?> Get<T>(TKey id)
     {
-        var pathParams = new HttpPathParameters();
-        pathParams.Add(id);
+        var pathParams = HttpPathParameters.Build().Add(id);
 
         var settings = new HttpSettings(Url).AddPathParams(pathParams);
 
@@ -55,8 +47,7 @@ public class HttpCall<TKey> : IHttpCall<TKey>
 
     public async Task<bool> Update<T>(TKey id, T model)
     {
-        var pathParams = new HttpPathParameters();
-        pathParams.Add(id);
+        var pathParams = HttpPathParameters.Build().Add(id);
 
         var settings = new HttpSettings(Url).AddPathParams(pathParams).AddToaster($"{_caption} updating");
 
@@ -67,8 +58,7 @@ public class HttpCall<TKey> : IHttpCall<TKey>
 
     public async Task<bool> Delete(TKey id)
     {
-        var pathParams = new HttpPathParameters();
-        pathParams.Add(id);
+        var pathParams = HttpPathParameters.Build().Add(id);
 
         var settings = new HttpSettings(Url).AddPathParams(pathParams).AddToaster($"{_caption} deleting");
 

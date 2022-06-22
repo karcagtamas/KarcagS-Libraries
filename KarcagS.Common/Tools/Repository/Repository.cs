@@ -114,51 +114,27 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// Get list of entities.
     /// </summary>
     /// <param name="predicate">Filter predicate.</param>
-    /// <returns>Filtered list of entities</returns>
-    public virtual IEnumerable<T> GetList(Expression<Func<T, bool>> predicate)
-    {
-        return GetList(predicate, null, null);
-    }
-
-    /// <summary>
-    /// Get list of entities.
-    /// </summary>
-    /// <param name="predicate">Filter predicate.</param>
-    /// <param name="count">Max result count.</param>
-    /// <returns>Filtered list of entities with max count.</returns>
-    public virtual IEnumerable<T> GetList(Expression<Func<T, bool>> predicate, int? count)
-    {
-        return GetList(predicate, count, null);
-    }
-
-    /// <summary>
-    /// Get list of entities.
-    /// </summary>
-    /// <param name="predicate">Filter predicate.</param>
     /// <param name="count">Max result count.</param>
     /// <param name="skip">Skipped element number.</param>
     /// <returns>Filtered list of entities with max count and first skip.</returns>
-    public virtual IEnumerable<T> GetList(Expression<Func<T, bool>> predicate, int? count, int? skip)
+    public virtual IEnumerable<T> GetList(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null)
     {
         // Get
         var query = Context.Set<T>().Where(predicate);
 
         // Count
-        if (count != null)
+        if (count is not null)
         {
             query = query.Take((int)count);
         }
 
         // Skip
-        if (skip != null)
+        if (skip is not null)
         {
             query = query.Skip((int)skip);
         }
 
-        // To list
-        var list = query.ToList();
-
-        return list;
+        return query.ToList();
     }
 
     /// <summary>
@@ -378,17 +354,7 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
 
     }
 
-    public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction)
-    {
-        return GetOrderedList(predicate, null, null, orderBy, direction);
-    }
-
-    public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, int? count, string orderBy, string direction)
-    {
-        return GetOrderedList(predicate, count, null, orderBy, direction);
-    }
-
-    public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, int? count, int? skip, string orderBy, string direction)
+    public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null)
     {
         if (string.IsNullOrEmpty(orderBy)) throw new ArgumentException("Order by value is empty or null");
         var type = typeof(T);

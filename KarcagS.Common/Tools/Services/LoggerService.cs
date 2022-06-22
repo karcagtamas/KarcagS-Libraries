@@ -1,3 +1,4 @@
+using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -35,6 +36,14 @@ public class LoggerService<TUserKey> : ILoggerService
         }
     }
 
+    public void LogError(HttpResultError error, int code)
+    {
+        if (error is not null)
+        {
+            _logger.LogError($"Error occurred during the request process[Message={error.Message}, Code={code}]");
+        }
+    }
+
     public void LogRequest(HttpContext context)
     {
         if (context is not null)
@@ -43,5 +52,10 @@ public class LoggerService<TUserKey> : ILoggerService
             string message = $"[{request.Method}]: {request.Path}";
             _logger.LogInformation(message, Array.Empty<string>());
         }
+    }
+
+    public void LogValidationError()
+    {
+        _logger.LogError($"Validation error occurred during the request process");
     }
 }
