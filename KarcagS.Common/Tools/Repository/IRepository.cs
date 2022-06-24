@@ -10,6 +10,7 @@ public interface IRepository<T, TKey> where T : class, IEntity<TKey>
     IEnumerable<T> GetAllAsOrdered(string orderBy, string direction);
     IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null);
     T Get(TKey id);
+    T? GetOptional(TKey id);
     void Update(T entity, bool doPersist = true);
     void UpdateRange(IEnumerable<T> entities, bool doPersist = true);
     TKey Create(T entity, bool doPersist = true);

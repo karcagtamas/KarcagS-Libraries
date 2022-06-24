@@ -1,4 +1,6 @@
-﻿namespace KarcagS.Blazor.Common.Components.Confirm;
+﻿using KarcagS.Shared.Helpers;
+
+namespace KarcagS.Blazor.Common.Components.Confirm;
 
 public class ConfirmDialogInput
 {
@@ -11,4 +13,12 @@ public class ConfirmDialogInput
     /// Delete function
     /// </summary>
     public Func<Task<bool>> ActionFunction { get; set; } = null!;
+
+    public string ActionName { get; set; } = "delete";
+    public string? Message { get; set; }
+
+    public string Msg 
+    { 
+        get => ObjectHelper.OrElse(Message, $"Are you sure want to {ActionName} {Name}?"); 
+    }
 }

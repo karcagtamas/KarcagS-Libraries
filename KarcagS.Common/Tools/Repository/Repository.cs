@@ -1,8 +1,10 @@
 ﻿using System.Globalization;
 using System.Linq.Expressions;
 using KarcagS.Common.Attributes;
+using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Entities;
 using KarcagS.Common.Tools.Services;
+using KarcagS.Shared.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace KarcagS.Common.Tools.Repository;
@@ -41,6 +43,8 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// <param name="entity">Entity object</param>
     public virtual TKey Create(T entity, bool doPersist = true)
     {
+        ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, "Entity cannot be null");
+
         ApplyCreateModification(entity);
 
         Context.Set<T>().Add(entity);
@@ -59,7 +63,7 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// <param name="entities">Entities</param>
     public virtual void CreateRange(IEnumerable<T> entities, bool doPersist = true)
     {
-        var list = entities.ToList();
+        var list = entities.Where(x => ObjectHelper.IsNotNull(x)).ToList();
 
         list.ForEach(x => ApplyCreateModification(x));
 
@@ -76,27 +80,21 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// <summary>
     /// Save changes
     /// </summary>
-    public virtual void Persist()
-    {
-        Context.SaveChanges();
-    }
+    public virtual void Persist() => Context.SaveChanges();
 
     /// <summary>
     /// Get entity
     /// </summary>
     /// <param name="id">Identity id of entity</param>
     /// <returns>Entity with the given keys</returns>
-    public virtual T Get(TKey id)
-    {
-        var el = Context.Set<T>().Find(id);
+    public virtual T Get(TKey id) => ObjectHelper.OrElseThrow(Context.Set<T>().Find(id), () => new ArgumentException($"Element not found with id: {id}"));
 
-        if (el is null)
-        {
-            throw new ArgumentException($"Element not found with id: {id}");
-        }
-
-        return el;
-    }
+    /// <summary>
+    /// Get entity as optional value
+    /// </summary>
+    /// <param name="id">Identity id of entity</param>
+    /// <returns>Entity with the given keys or default</returns>
+    public virtual T? GetOptional(TKey id) => Context.Set<T>().Find(id);
 
     /// <summary>
     /// Get all entity
@@ -105,9 +103,7 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     public virtual IEnumerable<T> GetAll()
     {
         // Get
-        var list = Context.Set<T>().ToList();
-
-        return list;
+        return Context.Set<T>().ToList();
     }
 
     /// <summary>
@@ -143,6 +139,8 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// <param name="entity">Entity</param>
     public virtual void Delete(T entity, bool doPersist = true)
     {
+        ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, "Entity cannot be null");
+
         Context.Set<T>().Remove(entity);
 
         if (doPersist)
@@ -160,10 +158,7 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
         // Get entity
         var entity = Get(id);
 
-        if (entity == null)
-        {
-            throw new ArgumentException($"Element not found with id: {id}");
-        }
+        ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, $"Element not found with id: {id}");
 
         // Remove
         Delete(entity, doPersist);
@@ -176,7 +171,7 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     public virtual void DeleteRange(IEnumerable<T> entities, bool doPersist = true)
     {
         // Remove range
-        Context.Set<T>().RemoveRange(entities.ToList());
+        Context.Set<T>().RemoveRange(entities.Where(x => ObjectHelper.IsNotNull(x)).ToList());
 
         if (doPersist)
         {
@@ -191,6 +186,8 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// <param name="entity">Entity</param>
     public virtual void Update(T entity, bool doPersist = true)
     {
+        ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, "Entity cannot be null");
+
         ApplyUpdateModification(entity);
 
         Context.Set<T>().Update(entity);
@@ -208,7 +205,7 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// <param name="entities">Entities</param>
     public virtual void UpdateRange(IEnumerable<T> entities, bool doPersist = true)
     {
-        var list = entities.ToList();
+        var list = entities.Where(x => ObjectHelper.IsNotNull(x)).ToList();
 
         list.ForEach(x => ApplyUpdateModification(x));
 
@@ -226,40 +223,27 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// Generate entity service
     /// </summary>
     /// <returns>Entity Service name</returns>
-    protected string GetService()
-    {
-        return $"{Entity} Service";
-    }
+    protected string GetService() => $"{Entity} Service";
 
     /// <summary>
     /// Generate event from action
     /// </summary>
     /// <param name="action">Action</param>
     /// <returns>Event name</returns>
-    protected string GetEvent(string action)
-    {
-        return $"{action} {Entity}";
-    }
+    protected string GetEvent(string action) => $"{action} {Entity}";
 
     /// <summary>
     /// Generate entity error message
     /// </summary>
     /// <returns>Error message</returns>
-    protected string GetEntityErrorMessage()
-    {
-        return $"{Entity} does not exist";
-    }
+    protected string GetEntityErrorMessage() => $"{Entity} does not exist";
 
     /// <summary>
     /// Generate notification action from action
     /// </summary>
     /// <param name="action">Action</param>
     /// <returns>Notification action</returns>
-    private string GetNotificationAction(string action)
-    {
-        return string.Join("",
-            GetEvent(action).Split(" ").Select(x => char.ToUpper(x[0]) + x.Substring(1).ToLower()));
-    }
+    private string GetNotificationAction(string action) => string.Join("", GetEvent(action).Split(" ").Select(x => char.ToUpper(x[0]) + x.Substring(1).ToLower()));
 
     /// <summary>
     /// Determine arguments from entity by name
@@ -335,14 +319,9 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// <returns>Ordered all list</returns>
     public virtual IEnumerable<T> GetAllAsOrdered(string orderBy, string direction)
     {
-        if (string.IsNullOrEmpty(orderBy)) throw new ArgumentException("Order by value is empty or null");
+        ExceptionHelper.Throw(string.IsNullOrEmpty(orderBy), () => new ArgumentException("Order by value is empty or null"));
         var type = typeof(T);
-        var property = type.GetProperty(orderBy);
-
-        if (property == null)
-        {
-            throw new ArgumentException("Property does not exist");
-        }
+        var property = ObjectHelper.OrElseThrow(type.GetProperty(orderBy), () => new ArgumentException("Property does not exist"));
 
         return direction switch
         {
@@ -351,19 +330,13 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
             "none" => GetAll(),
             _ => throw new ArgumentException("Ordering direction does not exist")
         };
-
     }
 
     public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null)
     {
-        if (string.IsNullOrEmpty(orderBy)) throw new ArgumentException("Order by value is empty or null");
+        ExceptionHelper.Throw(string.IsNullOrEmpty(orderBy), () => new ArgumentException("Order by value is empty or null"));
         var type = typeof(T);
-        var property = type.GetProperty(orderBy);
-
-        if (property == null)
-        {
-            throw new ArgumentException("Property does not exist");
-        }
+        var property = ObjectHelper.OrElseThrow(type.GetProperty(orderBy), () => new ArgumentException("Property does not exist"));
 
         return direction switch
         {

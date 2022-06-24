@@ -1,5 +1,8 @@
+using DocumentFormat.OpenXml.Spreadsheet;
+using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Entities;
 using KarcagS.Common.Tools.HttpInterceptor;
+using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -32,18 +35,9 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
     {
         TUserKey? userId = GetCurrentUserId();
 
-        if (userId is null)
-        {
-            throw new UserKeyNotFoundException("User key not found");
-        }
+        ExceptionHelper.ThrowIfIsNull(userId, "User key not found");
 
-        var user = context.Set<T>().Find(userId);
-        if (user == null)
-        {
-            throw new UserNotFoundException($"User not found with this id: {userId}");
-        }
-
-        return user;
+        return ObjectHelper.OrElseThrow(context.Set<T>().Find(userId), () => new ArgumentException($"User not found with this id: {userId}"));
     }
 
     /// <summary>
@@ -66,31 +60,19 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
     /// Get current user's Id from the HTTP Context
     /// </summary>
     /// <returns>Current user's Id</returns>
-    public TUserKey GetRequiredCurrentUserId()
-    {
-        var id = GetCurrentUserId();
-
-        if (id is null)
-        {
-            throw new ServerException("Current user is required");
-        }
-
-        return id;
-    }
+    public TUserKey GetRequiredCurrentUserId() => ObjectHelper.OrElseThrow(GetCurrentUserId(), () => new ArgumentException("Current user is required"));
 
     /// <summary>
     /// Get current user's Email from the HTTP Context
     /// </summary>
     /// <returns>Current user's Email</returns>
     public string GetCurrentUserEmail() => GetClaimByName(settings.UserEmailClaimName);
-    
 
     /// <summary>
     /// Get current user's Name from the HTTP Context
     /// </summary>
     /// <returns>Current user's Name</returns>
     public string GetCurrentUserName() => GetClaimByName(settings.UserNameClaimName);
-    
 
     /// <summary>
     /// Identity errors to string.
@@ -101,8 +83,8 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
     public string ErrorsToString<T>(IEnumerable<T> errors, Func<T, string> toString)
     {
         var list = errors.ToList();
-        return list.Count > 0 
-            ? toString(list.First()) 
+        return list.Count > 0
+            ? toString(list.First())
             : string.Empty;
     }
 
@@ -122,10 +104,7 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
             string placeholder = "{i}".Replace('i', i.ToString()[0]);
 
             // Placeholder does not exist in the base text
-            if (!res.Contains(placeholder))
-            {
-                throw new ArgumentException($"Placer holder is missing with number: {i}");
-            }
+            ExceptionHelper.Check(res.Contains(placeholder), () => new ArgumentException($"Placer holder is missing with number: {i}"));
 
             // Inject params instead of placeholder
             res = res.Replace(placeholder, $"{args[i]}");
@@ -142,21 +121,5 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
         }
 
         return contextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(c => c.Type == name)?.Value ?? string.Empty;
-    }
-
-    public class UserKeyNotFoundException : Exception
-    {
-        public UserKeyNotFoundException(string msg) : base(msg)
-        {
-
-        }
-    }
-
-    public class UserNotFoundException : Exception
-    {
-        public UserNotFoundException(string msg) : base(msg)
-        {
-
-        }
     }
 }

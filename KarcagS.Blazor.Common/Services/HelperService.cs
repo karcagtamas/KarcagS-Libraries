@@ -3,24 +3,40 @@ using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
 using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Components;
+using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Services;
 
 public class HelperService : IHelperService
 {
     protected const string NA = "N/A";
-    protected readonly NavigationManager NavigationManager;
-    protected readonly IToasterService ToasterService;
+    protected readonly NavigationManager navigationManager;
+    protected readonly IToasterService toasterService;
+    protected readonly IDialogService dialogService;
 
-    public HelperService(NavigationManager navigationManager, IToasterService toasterService)
+    public HelperService(NavigationManager navigationManager, IToasterService toasterService, IDialogService dialogService)
     {
-        NavigationManager = navigationManager;
-        ToasterService = toasterService;
+        this.navigationManager = navigationManager;
+        this.toasterService = toasterService;
+        this.dialogService = dialogService;
     }
 
     public void Navigate(string path)
     {
-        NavigationManager.NavigateTo(path);
+        navigationManager.NavigateTo(path);
+    }
+
+    public async Task<TData> OpenDialog<TComponent, TData>(string title, DialogParameters? parameters, DialogOptions? options, Action action) where TComponent : ComponentBase
+    {
+        var dialog = dialogService.Show<TComponent>(title, parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            action();
+        }
+
+        return (TData)result.Data;
     }
 
     public JsonSerializerOptions GetSerializerOptions()
@@ -30,7 +46,7 @@ public class HelperService : IHelperService
 
     public void AddHttpSuccessToaster(string caption)
     {
-        ToasterService.Open(new ToasterSettings
+        toasterService.Open(new ToasterSettings
         {
             Message = "Event successfully accomplished",
             Caption = caption,
@@ -41,7 +57,7 @@ public class HelperService : IHelperService
     public void AddHttpErrorToaster(string caption, HttpResultError? errorResult)
     {
         string message = errorResult?.Message ?? "Unexpected Error";
-        ToasterService.Open(new ToasterSettings
+        toasterService.Open(new ToasterSettings
         {
             Message = message,
             Caption = caption,

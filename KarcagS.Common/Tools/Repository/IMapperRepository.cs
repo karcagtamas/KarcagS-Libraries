@@ -10,6 +10,7 @@ public interface IMapperRepository<TEntity, TKey> : IRepository<TEntity, TKey> w
     IEnumerable<T> GetAllMappedAsOrdered<T>(string orderBy, string direction);
     IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, string orderBy, string direction, int? count = null, int? skip = null);
     T GetMapped<T>(TKey id);
+    T? GetOptionalMapped<T>(TKey id);
     TKey CreateFromModel<TModel>(TModel model, bool doPersist = true);
     void UpdateByModel<TModel>(TKey id, TModel model, bool doPersist = true);
 }

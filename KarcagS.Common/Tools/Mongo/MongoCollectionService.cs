@@ -18,25 +18,13 @@ public class MongoCollectionService<T, Configuration> : IMongoCollectionService<
         Collection = mongoService.GetDatabase().GetCollection<T>(collectionNameGetter(mongoService.GetConfiguration().CollectionNames));
     }
 
-    public List<T> Get()
-    {
-        return Collection.Find(x => true).ToList();
-    }
+    public List<T> Get() => Collection.Find(x => true).ToList();
 
-    public T? Get(string id)
-    {
-        return Collection.Find(x => x.Id == id).FirstOrDefault();
-    }
+    public T? Get(string id) => Collection.Find(x => x.Id == id).FirstOrDefault();
 
-    public T? Get(Expression<Func<T, bool>> where)
-    {
-        return Collection.Find(where).FirstOrDefault();
-    }
+    public T? Get(Expression<Func<T, bool>> where) => Collection.Find(where).FirstOrDefault();
 
-    public List<T> GetList(Expression<Func<T, bool>> where)
-    {
-        return Collection.Find(where).ToList();
-    }
+    public List<T> GetList(Expression<Func<T, bool>> where) => Collection.Find(where).ToList();
 
     public string Insert(T entity)
     {
@@ -45,8 +33,5 @@ public class MongoCollectionService<T, Configuration> : IMongoCollectionService<
         return entity.Id;
     }
 
-    public string InsertByModel<M>(M model)
-    {
-        return Insert(Mapper.Map<T>(model));
-    }
+    public string InsertByModel<M>(M model) => Insert(Mapper.Map<T>(model));
 }
