@@ -8,7 +8,8 @@ namespace KarcagS.Blazor.Common.Services;
 public interface IHelperService
 {
     void Navigate(string path);
-    Task<TData> OpenDialog<TComponent, TData>(string title, DialogParameters? parameters, DialogOptions? options, Action action) where TComponent : ComponentBase;
+    Task OpenDialog<TComponent>(string title, Action action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase;
+    Task<TData?> OpenDialog<TComponent, TData>(string title, Action<TData> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase;
     JsonSerializerOptions GetSerializerOptions();
     void AddHttpSuccessToaster(string caption);
     void AddHttpErrorToaster(string caption, HttpResultError? error);

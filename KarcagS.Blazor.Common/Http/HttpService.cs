@@ -172,10 +172,14 @@ public class HttpService : IHttpService
     /// <param name="url">Url</param>
     /// <param name="segments"></param>
     /// <returns>Created url</returns>
-    public string BuildUrl(string url, params string[] segments) => $"{url}/{string.Join("/", segments)}";
+    public string BuildUrl(string url, params string[] segments)
+    {
+        List<string> parts = new() { url };
+        parts.AddRange(segments);
+        return string.Join("/", parts);
+    }
 
     private async Task<HttpResult<T>?> SendRequest<T>(HttpSettings settings, HttpMethod method, HttpContent? content) => await SendRequest<T>(settings, method, content, false);
-
 
     private async Task<HttpResult<T>?> SendRequest<T>(HttpSettings settings, HttpMethod method, HttpContent? content, bool afterRefresh = false)
     {

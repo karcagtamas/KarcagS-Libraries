@@ -1,10 +1,7 @@
 ﻿using System.Globalization;
 using System.Linq.Expressions;
-using KarcagS.Common.Attributes;
-using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Entities;
 using KarcagS.Common.Tools.Services;
-using KarcagS.Shared.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace KarcagS.Common.Tools.Repository;
@@ -13,6 +10,8 @@ namespace KarcagS.Common.Tools.Repository;
 /// Repository manager
 /// </summary>
 /// <typeparam name="T">Type of Entity</typeparam>
+/// <typeparam name="TKey">Type of key</typeparam>
+/// <typeparam name="TUserKey">Type of user entity key</typeparam>
 public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     where T : class, IEntity<TKey>
 {
@@ -20,6 +19,7 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     protected readonly ILoggerService Logger;
     protected readonly IUtilsService<TUserKey> Utils;
     protected readonly string Entity;
+    protected readonly IPersistence Persistence;
 
     /// <summary>
     /// Init
@@ -35,76 +35,28 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
         Logger = logger;
         Utils = utils;
         Entity = entity;
+        Persistence = new Persistence<TUserKey>(context, utils);
     }
-
-    /// <summary>
-    /// Add entity
-    /// </summary>
-    /// <param name="entity">Entity object</param>
-    public virtual TKey Create(T entity, bool doPersist = true)
-    {
-        ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, "Entity cannot be null");
-
-        ApplyCreateModification(entity);
-
-        Context.Set<T>().Add(entity);
-
-        if (doPersist)
-        {
-            Persist();
-        }
-
-        return entity.Id;
-    }
-
-    /// <summary>
-    /// Add multiple entity.
-    /// </summary>
-    /// <param name="entities">Entities</param>
-    public virtual void CreateRange(IEnumerable<T> entities, bool doPersist = true)
-    {
-        var list = entities.Where(x => ObjectHelper.IsNotNull(x)).ToList();
-
-        list.ForEach(x => ApplyCreateModification(x));
-
-        // Add
-        Context.Set<T>().AddRange(list);
-
-        if (doPersist)
-        {
-            // Save
-            Persist();
-        }
-    }
-
-    /// <summary>
-    /// Save changes
-    /// </summary>
-    public virtual void Persist() => Context.SaveChanges();
 
     /// <summary>
     /// Get entity
     /// </summary>
     /// <param name="id">Identity id of entity</param>
-    /// <returns>Entity with the given keys</returns>
-    public virtual T Get(TKey id) => ObjectHelper.OrElseThrow(Context.Set<T>().Find(id), () => new ArgumentException($"Element not found with id: {id}"));
+    /// <returns>Entity with the given key</returns>
+    public virtual T Get(TKey id) => Persistence.Get<TKey, T>(id);
 
     /// <summary>
     /// Get entity as optional value
     /// </summary>
     /// <param name="id">Identity id of entity</param>
-    /// <returns>Entity with the given keys or default</returns>
-    public virtual T? GetOptional(TKey id) => Context.Set<T>().Find(id);
+    /// <returns>Entity with the given key or default</returns>
+    public virtual T? GetOptional(TKey id) => Persistence.GetOptional<TKey, T>(id);
 
     /// <summary>
     /// Get all entity
     /// </summary>
     /// <returns>All existing entity</returns>
-    public virtual IEnumerable<T> GetAll()
-    {
-        // Get
-        return Context.Set<T>().ToList();
-    }
+    public virtual IEnumerable<T> GetAll() => Persistence.GetAll<TKey, T>();
 
     /// <summary>
     /// Get list of entities.
@@ -113,111 +65,76 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// <param name="count">Max result count.</param>
     /// <param name="skip">Skipped element number.</param>
     /// <returns>Filtered list of entities with max count and first skip.</returns>
-    public virtual IEnumerable<T> GetList(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null)
-    {
-        // Get
-        var query = Context.Set<T>().Where(predicate);
-
-        // Count
-        if (count is not null)
-        {
-            query = query.Take((int)count);
-        }
-
-        // Skip
-        if (skip is not null)
-        {
-            query = query.Skip((int)skip);
-        }
-
-        return query.ToList();
-    }
+    public virtual IEnumerable<T> GetList(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) => Persistence.GetList<TKey, T>(predicate, count, skip);
 
     /// <summary>
-    /// Remove entity.
+    /// Get ordered list
     /// </summary>
-    /// <param name="entity">Entity</param>
-    public virtual void Delete(T entity, bool doPersist = true)
-    {
-        ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, "Entity cannot be null");
-
-        Context.Set<T>().Remove(entity);
-
-        if (doPersist)
-        {
-            Persist();
-        }
-    }
+    /// <param name="orderBy">Ordering by</param>
+    /// <param name="direction">Order direction</param>
+    /// <returns>Ordered all list</returns>
+    public virtual IEnumerable<T> GetAllAsOrdered(string orderBy, string direction) => Persistence.GetAllAsOrdered<TKey, T>(orderBy, direction);
 
     /// <summary>
-    /// Remove by Id
+    /// Get ordered list
     /// </summary>
-    /// <param name="id">Id of entity</param>
-    public virtual void DeleteById(TKey id, bool doPersist = true)
-    {
-        // Get entity
-        var entity = Get(id);
-
-        ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, $"Element not found with id: {id}");
-
-        // Remove
-        Delete(entity, doPersist);
-    }
+    /// <param name="predicate">Filter predicate.</param>
+    /// <param name="orderBy">Ordering by</param>
+    /// <param name="direction">Order direction</param>
+    /// <param name="count">Max result count.</param>
+    /// <param name="skip">Skipped element number.</param>
+    /// <returns>Ordered list</returns>
+    public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) => Persistence.GetOrderedList<TKey, T>(predicate, orderBy, direction);
 
     /// <summary>
-    /// Remove range
+    /// Add entity
     /// </summary>
-    /// <param name="entities">Entities</param>
-    public virtual void DeleteRange(IEnumerable<T> entities, bool doPersist = true)
-    {
-        // Remove range
-        Context.Set<T>().RemoveRange(entities.Where(x => ObjectHelper.IsNotNull(x)).ToList());
+    /// <param name="entity">Entity object</param>
+    /// <param name="doPersist">Do object persist</param>
+    /// <returns>Newly created key</returns>
+    public virtual TKey Create(T entity, bool doPersist = true) => Persistence.Create<TKey, T>(entity, doPersist);
 
-        if (doPersist)
-        {
-            // Save
-            Persist();
-        }
-    }
+    /// <summary>
+    /// Add multiple entity.
+    /// </summary>
+    /// <param name="entities">Entity objects</param>
+    /// <param name="doPersist">Do object persist</param>
+    public virtual void CreateRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.CreateRange<TKey, T>(entities, doPersist);
 
     /// <summary>
     /// Update entity
     /// </summary>
     /// <param name="entity">Entity</param>
-    public virtual void Update(T entity, bool doPersist = true)
-    {
-        ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, "Entity cannot be null");
-
-        ApplyUpdateModification(entity);
-
-        Context.Set<T>().Update(entity);
-
-        if (doPersist)
-        {
-            // Save
-            Persist();
-        }
-    }
+    public virtual void Update(T entity, bool doPersist = true) => Persistence.Update<TKey, T>(entity, doPersist);
 
     /// <summary>
     /// Update multiple entity
     /// </summary>
     /// <param name="entities">Entities</param>
-    public virtual void UpdateRange(IEnumerable<T> entities, bool doPersist = true)
-    {
-        var list = entities.Where(x => ObjectHelper.IsNotNull(x)).ToList();
+    public virtual void UpdateRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.UpdateRange<TKey, T>(entities, doPersist);
 
-        list.ForEach(x => ApplyUpdateModification(x));
+    /// <summary>
+    /// Remove entity.
+    /// </summary>
+    /// <param name="entity">Entity</param>
+    public virtual void Delete(T entity, bool doPersist = true) => Persistence.Delete<TKey, T>(entity, doPersist);
 
-        // Update 
-        Context.Set<T>().UpdateRange(list);
+    /// <summary>
+    /// Remove by Id
+    /// </summary>
+    /// <param name="id">Id of entity</param>
+    public virtual void DeleteById(TKey id, bool doPersist = true) => Persistence.DeleteById<TKey, T>(id, doPersist);
 
-        if (doPersist)
-        {
-            // Save
-            Persist();
-        }
-    }
+    /// <summary>
+    /// Remove range
+    /// </summary>
+    /// <param name="entities">Entities</param>
+    public virtual void DeleteRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.DeleteRange<TKey, T>(entities, doPersist);
+
+    /// <summary>
+    /// Save changes
+    /// </summary>
+    public virtual void Persist() => Persistence.Persist();
 
     /// <summary>
     /// Generate entity service
@@ -309,101 +226,5 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
         }
 
         return args;
-    }
-
-    /// <summary>
-    /// Get ordered list
-    /// </summary>
-    /// <param name="orderBy">Ordering by</param>
-    /// <param name="direction">Order direction</param>
-    /// <returns>Ordered all list</returns>
-    public virtual IEnumerable<T> GetAllAsOrdered(string orderBy, string direction)
-    {
-        ExceptionHelper.Throw(string.IsNullOrEmpty(orderBy), () => new ArgumentException("Order by value is empty or null"));
-        var type = typeof(T);
-        var property = ObjectHelper.OrElseThrow(type.GetProperty(orderBy), () => new ArgumentException("Property does not exist"));
-
-        return direction switch
-        {
-            "asc" => GetAll().OrderBy(x => property.GetValue(x)),
-            "desc" => GetAll().OrderByDescending(x => property.GetValue(x)),
-            "none" => GetAll(),
-            _ => throw new ArgumentException("Ordering direction does not exist")
-        };
-    }
-
-    public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null)
-    {
-        ExceptionHelper.Throw(string.IsNullOrEmpty(orderBy), () => new ArgumentException("Order by value is empty or null"));
-        var type = typeof(T);
-        var property = ObjectHelper.OrElseThrow(type.GetProperty(orderBy), () => new ArgumentException("Property does not exist"));
-
-        return direction switch
-        {
-            "asc" => GetList(predicate, count, skip).OrderBy(x => property.GetValue(x)),
-            "desc" => GetList(predicate, count, skip).OrderByDescending(x => property.GetValue(x)),
-            "none" => GetList(predicate, count, skip),
-            _ => throw new ArgumentException("Ordering direction does not exist")
-        };
-    }
-
-    private void ApplyCreateModification(T entity)
-    {
-        if (entity is IEntity<string> e)
-        {
-            if (string.IsNullOrEmpty(e.Id))
-            {
-                e.Id = Guid.NewGuid().ToString();
-            }
-        }
-
-        if (entity is ILastUpdaterEntity<TUserKey> lue)
-        {
-            lue.LastUpdaterId = Utils.GetRequiredCurrentUserId();
-        }
-
-        var dateTime = DateTime.Now;
-        if (entity is ICreationEntity creationEntity)
-        {
-            creationEntity.Creation = dateTime;
-        }
-
-        if (entity is ILastUpdateEntity lastUpdateEntity)
-        {
-            lastUpdateEntity.LastUpdate = dateTime;
-        }
-
-        var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
-        props.ToList().ForEach(p =>
-        {
-            p.SetValue(entity, Utils.GetCurrentUserId());
-        });
-    }
-
-    private void ApplyUpdateModification(T entity)
-    {
-        if (entity is ILastUpdaterEntity<TUserKey> lue)
-        {
-            lue.LastUpdaterId = Utils.GetRequiredCurrentUserId();
-        }
-
-        if (entity is ILastUpdateEntity lastUpdateEntity)
-        {
-            lastUpdateEntity.LastUpdate = DateTime.Now;
-        }
-
-        var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
-        props.ToList().ForEach(p =>
-        {
-            var attr = Attribute.GetCustomAttribute(p, typeof(UserAttribute));
-
-            if (attr is not null)
-            {
-                if (!((UserAttribute)attr).OnlyInit)
-                {
-                    p.SetValue(entity, Utils.GetCurrentUserId());
-                }
-            }
-        });
     }
 }

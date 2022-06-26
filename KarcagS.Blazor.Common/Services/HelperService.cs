@@ -26,19 +26,6 @@ public class HelperService : IHelperService
         navigationManager.NavigateTo(path);
     }
 
-    public async Task<TData> OpenDialog<TComponent, TData>(string title, DialogParameters? parameters, DialogOptions? options, Action action) where TComponent : ComponentBase
-    {
-        var dialog = dialogService.Show<TComponent>(title, parameters, options);
-        var result = await dialog.Result;
-
-        if (!result.Cancelled)
-        {
-            action();
-        }
-
-        return (TData)result.Data;
-    }
-
     public JsonSerializerOptions GetSerializerOptions()
     {
         return new() { PropertyNameCaseInsensitive = true };
@@ -89,5 +76,26 @@ public class HelperService : IHelperService
         }
 
         return date;
+    }
+
+    public async Task OpenDialog<TComponent>(string title, Action action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase
+    {
+        await OpenDialog<TComponent, object>(title, (o) => action(), parameters, options);
+    }
+
+    public async Task<TData?> OpenDialog<TComponent, TData>(string title, Action<TData> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase
+    {
+        var dialog = dialogService.Show<TComponent>(title, parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            action((TData)result.Data);
+            return (TData)result.Data;
+        }
+        else
+        {
+            return default;
+        }
     }
 }
