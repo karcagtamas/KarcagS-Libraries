@@ -40,9 +40,7 @@ public class HttpCall<TKey> : IHttpCall<TKey>
     {
         var settings = new HttpSettings(Url).AddToaster($"{_caption} adding");
 
-        var body = new HttpBody<T>(model);
-
-        return await Http.Post(settings, body).Execute();
+        return await Http.Post(settings, model).Execute();
     }
 
     public async Task<bool> Update<T>(TKey id, T model)
@@ -51,9 +49,7 @@ public class HttpCall<TKey> : IHttpCall<TKey>
 
         var settings = new HttpSettings(Url).AddPathParams(pathParams).AddToaster($"{_caption} updating");
 
-        var body = new HttpBody<T>(model);
-
-        return await Http.Put(settings, body).Execute();
+        return await Http.Put(settings, model).Execute();
     }
 
     public async Task<bool> Delete(TKey id)

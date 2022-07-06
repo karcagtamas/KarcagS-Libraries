@@ -4,11 +4,14 @@
 @using static KarcagS.Blazor.Common.Components.FileUploader.FileUploaderResult
 
 <MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" Color="Color.Primary">@Dialog.Title</MudText>
+    </TitleContent>
     <DialogContent>
         <div class="text-center">
             <InputFile id="fileInput" OnChange="@FilesReady" hidden></InputFile>
             <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary"
-                       StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
+                       StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload</MudButton>
             @if (ObjectHelper.IsNotEmpty(Files))
             {
                 <div style="margin-top: 1rem;">

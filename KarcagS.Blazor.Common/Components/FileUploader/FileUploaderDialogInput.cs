@@ -2,7 +2,7 @@
 
 public class FileUploaderDialogInput
 {
-    public List<string> ImageExtensions { get; set; } = new()
+    public static List<string> ImageExtensions { get; set; } = new()
     {
         "image/jpeg",
         "image/png",
