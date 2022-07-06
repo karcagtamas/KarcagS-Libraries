@@ -79,63 +79,77 @@ public class HttpService : IHttpService
     /// </summary>
     /// <param name="settings">HTTP settings</param>
     /// <param name="body">Body of post request</param>
-    /// <typeparam name="T">Type of the body</typeparam>
+    /// <typeparam name="TBody">Type of the body</typeparam>
     /// <returns>HttpSender</returns>
-    public HttpSender<object> Post<T>(HttpSettings settings, HttpBody<T> body) => PostWithResult<object, T>(settings, body);
+    public HttpSender<object?> Post<TBody>(HttpSettings settings, TBody body) => PostWithResult<object?, TBody>(settings, body);
 
     /// <summary>
     /// POST request with string result
     /// </summary>
     /// <param name="settings">HTTP settings</param>
     /// <param name="body">Body of post request</param>
-    /// <typeparam name="T">Type of the body</typeparam>
+    /// <typeparam name="TBody">Type of the body</typeparam>
     /// <returns>HttpSender</returns>
-    public HttpSender<string> PostString<T>(HttpSettings settings, HttpBody<T> body) => PostWithResult<string, T>(settings, body);
+    public HttpSender<string> PostString<TBody>(HttpSettings settings, TBody body) => PostWithResult<string, TBody>(settings, body);
 
     /// <summary>
     /// POST request with int result
     /// </summary>
     /// <param name="settings">HTTP settings</param>
     /// <param name="body">Body of post request</param>
-    /// <typeparam name="T">Type of the body</typeparam>
+    /// <typeparam name="TBody">Type of the body</typeparam>
     /// <returns>HttpSender</returns>
-    public HttpSender<int> PostInt<T>(HttpSettings settings, HttpBody<T> body) => PostWithResult<int, T>(settings, body);
+    public HttpSender<int> PostInt<TBody>(HttpSettings settings, TBody body) => PostWithResult<int, TBody>(settings, body);
 
     /// <summary>
     /// POST request
     /// </summary>
     /// <param name="settings">HTTP settings</param>
     /// <param name="body">Body of post request</param>
-    /// <typeparam name="T">Type of the result</typeparam>
+    /// <typeparam name="TResult">Type of the result</typeparam>
     /// <typeparam name="TBody">Type of the body</typeparam>
     /// <returns>HttpSender</returns>
-    public HttpSender<T> PostWithResult<T, TBody>(HttpSettings settings, HttpBody<TBody> body) => new(async () => await SendRequest<T>(settings, HttpMethod.Post, body.GetStringContent()));
+    public HttpSender<TResult> PostWithResult<TResult, TBody>(HttpSettings settings, TBody body) => new(async () => await SendRequest<TResult>(settings, HttpMethod.Post, new HttpBody<TBody>(body).GetStringContent()));
+
+    /// <summary>
+    /// POST request without body
+    /// </summary>
+    /// <param name="settings">HTTP settings</param>
+    /// <returns>HttpSender</returns>
+    public HttpSender<object?> PostWithoutBody(HttpSettings settings) => PostWithResult<object?, object?>(settings, null);
 
     /// <summary>
     /// PUT request with any result
     /// </summary>
     /// <param name="settings">HTTP settings</param>
     /// <param name="body">Body of put request</param>
-    /// <typeparam name="T">Type of the body</typeparam>
+    /// <typeparam name="TBody">Type of the body</typeparam>
     /// <returns>HttpSender</returns>
-    public HttpSender<object> Put<T>(HttpSettings settings, HttpBody<T> body) => PutWithResult<object, T>(settings, body);
+    public HttpSender<object?> Put<TBody>(HttpSettings settings, TBody body) => PutWithResult<object?, TBody>(settings, body);
 
     /// <summary>
     /// PUT request
     /// </summary>
     /// <param name="settings">HTTP settings</param>
     /// <param name="body">Body of put request</param>
-    /// <typeparam name="T">Type of the result</typeparam>
+    /// <typeparam name="TResult">Type of the result</typeparam>
     /// <typeparam name="TBody">Type of the body</typeparam>
     /// <returns>HttpSender</returns>
-    public HttpSender<T> PutWithResult<T, TBody>(HttpSettings settings, HttpBody<TBody> body) => new(async () => await SendRequest<T>(settings, HttpMethod.Put, body.GetStringContent()));
+    public HttpSender<TResult> PutWithResult<TResult, TBody>(HttpSettings settings, TBody body) => new(async () => await SendRequest<TResult>(settings, HttpMethod.Put, new HttpBody<TBody>(body).GetStringContent()));
+
+    /// <summary>
+    /// PUT request without body
+    /// </summary>
+    /// <param name="settings">HTTP settings</param>
+    /// <returns>HttpSender</returns>
+    public HttpSender<object?> PutWithoutBody(HttpSettings settings) => PutWithResult<object?, object?>(settings, null);
 
     /// <summary>
     /// DELETE request
     /// </summary>
     /// <param name="settings">HTTP settings</param>
     /// <returns>HttpSender</returns>
-    public HttpSender<object> Delete(HttpSettings settings) => new(async () => await SendRequest<object>(settings, HttpMethod.Delete, null));
+    public HttpSender<object?> Delete(HttpSettings settings) => new(async () => await SendRequest<object?>(settings, HttpMethod.Delete, null));
 
     public async Task<bool> Download(HttpSettings settings)
     {
@@ -152,9 +166,7 @@ public class HttpService : IHttpService
 
     public async Task<bool> Download<T>(HttpSettings settings, T model)
     {
-        var body = new HttpBody<T>(model);
-
-        return await PutWithResult<ExportResult, T>(settings, body)
+        return await PutWithResult<ExportResult, T>(settings, model)
             .Success((res) =>
             {
                 if (res is not null)

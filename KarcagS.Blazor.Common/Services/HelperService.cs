@@ -78,10 +78,8 @@ public class HelperService : IHelperService
         return date;
     }
 
-    public async Task OpenDialog<TComponent>(string title, Action action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase
-    {
-        await OpenDialog<TComponent, object>(title, (o) => action(), parameters, options);
-    }
+    public async Task OpenDialog<TComponent>(string title, Action action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase 
+        => await OpenDialog<TComponent, object>(title, (o) => action(), parameters, options);
 
     public async Task<TData?> OpenDialog<TComponent, TData>(string title, Action<TData> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase
     {

@@ -7,15 +7,17 @@ public interface IHttpService
     HttpSender<int> GetInt(HttpSettings settings);
     HttpSender<bool> GetBool(HttpSettings settings);
 
-    HttpSender<object> Post<T>(HttpSettings settings, HttpBody<T> body);
-    HttpSender<string> PostString<T>(HttpSettings settings, HttpBody<T> body);
-    HttpSender<int> PostInt<T>(HttpSettings settings, HttpBody<T> body);
-    HttpSender<T> PostWithResult<T, TBody>(HttpSettings settings, HttpBody<TBody> body);
+    HttpSender<object?> Post<TBody>(HttpSettings settings, TBody body);
+    HttpSender<string> PostString<TBody>(HttpSettings settings, TBody body);
+    HttpSender<int> PostInt<TBody>(HttpSettings settings, TBody body);
+    HttpSender<TResult> PostWithResult<TResult, TBody>(HttpSettings settings, TBody body);
+    HttpSender<object?> PostWithoutBody(HttpSettings settings);
 
-    HttpSender<object> Put<T>(HttpSettings settings, HttpBody<T> body);
-    HttpSender<T> PutWithResult<T, TBody>(HttpSettings settings, HttpBody<TBody> body);
+    HttpSender<object?> Put<TBody>(HttpSettings settings, TBody body);
+    HttpSender<TResult> PutWithResult<TResult, TBody>(HttpSettings settings, TBody body);
+    HttpSender<object?> PutWithoutBody(HttpSettings settings);
 
-    HttpSender<object> Delete(HttpSettings settings);
+    HttpSender<object?> Delete(HttpSettings settings);
 
     Task<bool> Download(HttpSettings settings);
     Task<bool> Download<T>(HttpSettings settings, T model);

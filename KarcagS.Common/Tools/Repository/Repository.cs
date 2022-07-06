@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq.Expressions;
+using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Entities;
 using KarcagS.Common.Tools.Services;
 using Microsoft.EntityFrameworkCore;
@@ -123,7 +124,16 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     /// Remove by Id
     /// </summary>
     /// <param name="id">Id of entity</param>
-    public virtual void DeleteById(TKey id, bool doPersist = true) => Persistence.DeleteById<TKey, T>(id, doPersist);
+    public virtual void DeleteById(TKey id, bool doPersist = true)
+    {
+        // Get entity
+        var entity = Get(id);
+
+        ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, $"Element not found with id: {id}");
+
+        // Remove
+        Delete(entity, doPersist);
+    }
 
     /// <summary>
     /// Remove range

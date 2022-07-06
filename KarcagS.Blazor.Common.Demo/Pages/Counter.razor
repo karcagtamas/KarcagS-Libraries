@@ -12,16 +12,16 @@
 
 @code {
     [Inject]
-    private IHttpService HttpService { get; set; }
+    private IHttpService HttpService { get; set; } = default!;
 
     [Inject]
-    private HttpClient Client { get; set; }
+    private HttpClient Client { get; set; } = default!;
 
     private int currentCount = 0;
 
     private async void IncrementCount()
     {
-        await HttpService.Post<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast"), new HttpBody<TestModel>(new TestModel { })).Execute();
+        await HttpService.Post<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast"), new TestModel { }).Execute();
         //sawait HttpService.Get<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast")).Execute();
 
         //await Client.GetFromJsonAsync<TestModel>("https://localhost:7205/weatherforecast");

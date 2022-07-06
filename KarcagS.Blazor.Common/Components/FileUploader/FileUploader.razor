@@ -1,0 +1,111 @@
+﻿@using KarcagS.Shared.Helpers
+@using Microsoft.AspNetCore.Components.Forms
+@using System.IO
+@using static KarcagS.Blazor.Common.Components.FileUploader.FileUploaderResult
+
+<MudDialog>
+    <DialogContent>
+        <div class="text-center">
+            <InputFile id="fileInput" OnChange="@FilesReady" hidden></InputFile>
+            <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary"
+                       StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload Image</MudButton>
+            @if (ObjectHelper.IsNotEmpty(Files))
+            {
+                <div style="margin-top: 1rem;">
+                    @foreach (var file in Files)
+                    {
+                        <div style="margin-top: 0.2rem;">@file.Name - @file.ContentType</div>
+                    }
+                </div>
+            }
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Save">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = null!;
+
+    [Parameter]
+    public FileUploaderDialogInput Input { get; set; } = new();
+
+    [Inject]
+    private ISnackbar Snackbar { get; set; } = null!;
+
+    private List<IBrowserFile> Files { get; set; } = new();
+
+    private async void Save()
+    {
+        if (Input.Required && ObjectHelper.IsEmpty(Files))
+        {
+            return;
+        }
+
+        List<FileUploaderFile> files = new();
+
+        foreach (var file in Files)
+        {
+            if (Input.EnabledExtensions.Contains(file.ContentType))
+            {
+                try
+                {
+                    await using var memoryStream = new MemoryStream();
+                    await file.OpenReadStream().CopyToAsync(memoryStream);
+
+                    var f = new FileUploaderFile
+                        {
+                            Name = file.Name,
+                            Size = file.Size,
+                            Extension = file.ContentType,
+                            Content = memoryStream.ToArray()
+                        };
+
+                    files.Add(f);
+                }
+                catch (Exception e)
+                {
+                    Snackbar.Add("Problem during the image uploading. Please try again later.", Severity.Error);
+                    Console.WriteLine(e);
+                }
+            }
+            else
+            {
+                Snackbar.Add($"Invalid file extension [{file.ContentType}]. Please try again with a correct type. [{file.Name}]", Severity.Error);
+            }
+
+            if (await Input.ImageUpload(new FileUploaderResult { Files = files }))
+            {
+                Dialog.Close(DialogResult.Ok(true));
+            }
+        }
+    }
+
+    private void Cancel()
+    {
+        Dialog.Cancel();
+    }
+
+    private void FilesReady(InputFileChangeEventArgs e)
+    {
+        if (Input.Multiple)
+        {
+            Files = e.GetMultipleFiles().ToList();
+
+        }
+        else
+        {
+            var f = e.GetMultipleFiles().FirstOrDefault();
+
+            if (ObjectHelper.IsNotNull(f))
+            {
+                Files = new List<IBrowserFile> { f };
+            }
+        }
+    }
+
+}
