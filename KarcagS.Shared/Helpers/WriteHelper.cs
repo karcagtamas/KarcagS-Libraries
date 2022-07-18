@@ -53,4 +53,5 @@ public static class WriteHelper
 
     public static string HourInterval(DateTime date, int count) => $"{date.ToLocalTime().Hour}h - {date.ToLocalTime().Hour + count}h";
 
+    public static string WriteNumberWithSuffix(int? number, string suffix) => number is null ? "N/A" : $"{number} {suffix}";
 }

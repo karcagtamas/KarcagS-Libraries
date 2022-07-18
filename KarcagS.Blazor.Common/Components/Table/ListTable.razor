@@ -1,20 +1,19 @@
-﻿@typeparam T
+﻿@using KarcagS.Blazor.Common.Models.Interfaces
 
-@if (Columns is not null && Columns.Count > 0)
-{
+@typeparam T where T : class, IIdentified<string>
 
-    <MudTable T="T" Hover="false" Dense="true">
-        <HeaderContent>
-            @foreach (var col in Columns)
-            {
-                <MudTh>@col.Title</MudTh>
-            }
-        </HeaderContent>
-        <RowTemplate>
-            @foreach (var col in Columns)
-            {
-                <MudTd DataLabel="@col.Title">@col.ValueGetter(context)</MudTd>
-            }
-        </RowTemplate>
-    </MudTable>
-}
+<MudTable T="RowItem<T, string>" Items="DataSource.data" Loading="Loading" Dense="Config.Dense" Elevation="Config.Elevation" FixedHeader="Config.FixedHeader" Hover="Config.Hover" Striped="Config.Striped">
+    <HeaderContent>
+        @foreach (var col in Config.Columns)
+        {
+            <MudTh><MudText Color="col.TitleColor">@col.Title</MudText></MudTh>
+        }
+    </HeaderContent>
+    <RowTemplate>
+        @foreach (var col in Config.Columns)
+        {
+            <MudTd DataLabel="@col.Key"><MudText Color="@(context.Disabled ? Color.Error : col.ColorGetter(context.Data, context.Id))">@col.ValueGetter(context.Data)</MudText></MudTd>
+        }
+    </RowTemplate>
+</MudTable>
+

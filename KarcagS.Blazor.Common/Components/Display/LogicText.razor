@@ -1,0 +1,22 @@
+﻿@if (LogicValue)
+{
+    <MudText Color="@(Colorize ? Color.Success : Color.Default)">@TrueText</MudText>
+}
+else
+{
+    <MudText Color="@(Colorize ? Color.Error : Color.Default)">@FalseText</MudText>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public bool LogicValue { get; set; }
+
+    [Parameter, EditorRequired]
+    public string TrueText { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public string FalseText { get; set; } = default!;
+
+    [Parameter]
+    public bool Colorize { get; set; } = false;
+}

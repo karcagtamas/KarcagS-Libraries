@@ -1,23 +1,27 @@
-﻿using KarcagS.Blazor.Common.Enums;
-using KarcagS.Blazor.Common.Models.Interfaces;
+﻿using KarcagS.Blazor.Common.Models.Interfaces;
 using Microsoft.AspNetCore.Components;
 
 namespace KarcagS.Blazor.Common.Components.Table;
 
-public partial class ListTable<T> where T : IIdentified<string>
+public partial class ListTable<T> : ComponentBase where T : class, IIdentified<string>
 {
 
-    [Parameter]
-    public List<T> DataSource { get; set; } = new();
+    [Parameter, EditorRequired]
+    public TableDataSource<T, string> DataSource { get; set; } = default!;
 
-    [Parameter]
-    public List<TableColumn<T>> Columns { get; set; } = new();
-}
+    [Parameter, EditorRequired]
+    public TableConfiguration<T, string> Config { get; set; } = new();
 
-public class TableColumn<T>
-{
-    public string Title { get; set; } = string.Empty;
-    public string Key { get; set; } = string.Empty;
-    public Alignment Alignment { get; set; } = Alignment.Left;
-    public Func<T, string> ValueGetter { get; set; } = (o) => "";
+    private bool Loading { get; set; } = false;
+
+    protected override async void OnInitialized()
+    {
+        Loading = true;
+        StateHasChanged();
+        await DataSource.Init();
+        Loading = false;
+        StateHasChanged();
+
+        base.OnInitialized();
+    }
 }

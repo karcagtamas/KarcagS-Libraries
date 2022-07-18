@@ -1,0 +1,149 @@
+﻿@using KarcagS.Blazor.Common.Components.Tree
+@using KarcagS.Shared.Helpers
+@typeparam Data
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" Color="Color.Primary">@TitleText</MudText>
+    </TitleContent>
+    <DialogContent>
+        <div style="min-width: @(MinWidth)px;">
+            @if (ObjectHelper.IsNotNull(BodyText))
+            {
+                <MudText Class="mb-2" Typo="Typo.body1">@BodyText</MudText>
+            }
+            <MudTreeView Items="DataList">
+                <ItemTemplate>
+                    <MudTreeViewItem @bind-Expanded="context.IsExpanded" Items="context.Items">
+                        <Content>
+                            <MudTreeViewItemToggleButton @bind-Expanded="context.IsExpanded" Visible="context.HasChild" />
+                            <MudCheckBox Checked="context.IsSelected" CheckedChanged="(bool val) => ToggleSelect(context, val)" Disabled="IsSelectDisabled(context)" />
+                            <MudText Class="mr-1">@TitleGetter(context.Data)</MudText>
+                        </Content>
+                    </MudTreeViewItem>
+                </ItemTemplate>
+            </MudTreeView>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudIconButton Icon="@Icons.Filled.ExpandMore" Size="Size.Small" OnClick="ExpandAll" />
+        <MudIconButton Icon="@Icons.Filled.ExpandLess" Size="Size.Small" OnClick="CollapseAll" />
+        <MudSpacer />
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Select</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = null!;
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? BodyText { get; set; }
+
+    [Parameter, EditorRequired]
+    public string EntityName { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Func<Task<List<Data>>> Fetcher { get; set; } = async () => await Task.FromResult<List<Data>>(new());
+
+    [Parameter, EditorRequired]
+    public Func<Data, List<Data>> ItemExtractor { get; set; } = (d) => new();
+
+    [Parameter, EditorRequired]
+    public Func<Data, string> TitleGetter { get; set; } = (d) => "";
+
+    [Parameter]
+    public bool MultiSelect { get; set; } = false;
+
+    [Parameter]
+    public bool SingleItemSelect { get; set; } = true;
+
+    [Parameter]
+    public bool Required { get; set; } = false;
+
+    [Parameter]
+    public int MinWidth { get; set; } = 300;
+
+    public HashSet<TreeItem<Data>> DataList { get; set; } = new();
+
+    private List<Data> Selection { get; set; } = new();
+    private string TitleText { get; set; } = "";
+
+    protected override async void OnInitialized()
+    {
+        if (ObjectHelper.IsNotNull(Title))
+        {
+            TitleText = Title;
+        }
+        else
+        {
+            TitleText = $"Select {EntityName}";
+        }
+
+        await Fetch();
+
+        base.OnInitialized();
+    }
+
+    private async Task Fetch()
+    {
+        DataList = TreeItem<Data>.ConvertList(await Fetcher(), ItemExtractor, false);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void ExpandAll()
+    {
+        DataList.ToList().ForEach(x => x.ExpandAll());
+    }
+
+    private void CollapseAll()
+    {
+        DataList.ToList().ForEach(x => x.CollapseAll());
+    }
+
+    private void ToggleSelect(TreeItem<Data> item, bool val)
+    {
+        item.ToggleSelection(!SingleItemSelect);
+
+        if (SingleItemSelect)
+        {
+            if (val)
+            {
+                Selection.Add(item.Data);
+            }
+            else
+            {
+                Selection.Remove(item.Data);
+            }
+        }
+    }
+
+    private bool HasSelection()
+    {
+        return ObjectHelper.IsNotEmpty(Selection);
+    }
+
+    private bool IsSelectDisabled(TreeItem<Data> item)
+    {
+        return !MultiSelect && HasSelection() && !Selection.Contains(item.Data);
+    }
+
+    private void Submit()
+    {
+        if (Required && !HasSelection())
+        {
+            return;
+        }
+
+        Dialog.Close(DialogResult.Ok(Selection));
+    }
+
+    private void Cancel()
+    {
+        Dialog.Cancel();
+    }
+}

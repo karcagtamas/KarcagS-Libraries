@@ -1,9 +1,8 @@
 ﻿using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
-using KarcagS.Blazor.Common.Services;
 using MudBlazor;
 
-namespace KarcagS.Blazor.Common.Demo;
+namespace KarcagS.Blazor.Common.Services;
 
 public class ToasterService : IToasterService
 {
@@ -27,12 +26,12 @@ public class ToasterService : IToasterService
         _snackbar.Add(GenerateString(settings), GetType(settings));
     }
 
-    private string GenerateString(ToasterSettings settings)
+    private static string GenerateString(ToasterSettings settings)
     {
         return $"<h5>{settings.Caption}</h5><h6>{settings.Message}</h6>";
     }
 
-    private Severity GetType(ToasterSettings settings)
+    private static Severity GetType(ToasterSettings settings)
     {
         Severity type = Severity.Normal;
         switch (settings.Type)

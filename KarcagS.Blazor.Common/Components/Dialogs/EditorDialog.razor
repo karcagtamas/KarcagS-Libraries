@@ -1,0 +1,123 @@
+﻿@using KarcagS.Blazor.Common.Services
+@using KarcagS.Shared.Helpers
+@typeparam Model
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" Color="Color.Primary">@TitleText</MudText>
+    </TitleContent>
+    <DialogContent>
+        <div style="min-width: @(MinWidth)px;">
+            <MudForm @ref="Form">
+                @ChildContent
+            </MudForm>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        @if (Remove is not null && IsEdit)
+        {
+            <MudButton Color="Color.Error" OnClick="Delete">Remove</MudButton>
+        }
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Save">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Func<Task<bool>> Submit { get; set; } = default!;
+
+    [Parameter]
+    public Func<Task<bool>>? Remove { get; set; } = default!;
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter, EditorRequired]
+    public string EntityName { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public bool IsEdit { get; set; }
+
+    [Parameter]
+    public int MinWidth { get; set; } = 300;
+
+    [Parameter]
+    public Func<Model, ISnackbar, Task<bool>>? FormValidator { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Model ModelObj { get; set; } = default!;
+
+    [Inject]
+    private ISnackbar Snackbar { get; set; } = null!;
+
+    [Inject]
+    private IDialogService DialogService { get; set; } = default!;
+
+    [Inject]
+    private IConfirmService ConfirmService { get; set; } = default!;
+
+    private MudForm? Form { get; set; } = null!;
+    private string TitleText { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        if (ObjectHelper.IsNotNull(Title))
+        {
+            TitleText = Title;
+        }
+        else
+        {
+            TitleText = IsEdit ? $"Edit {EntityName}" : $"Create {EntityName}";
+        }
+        base.OnInitialized();
+    }
+
+    private async Task Save()
+    {
+        if (ObjectHelper.IsNull(Form))
+        {
+            return;
+        }
+
+        await Form.Validate();
+        if (!Form.IsValid) return;
+
+        if (ObjectHelper.IsNotNull(FormValidator))
+        {
+            var result = await FormValidator(ModelObj, Snackbar);
+
+            if (!result)
+            {
+                return;
+            }
+        }
+
+        if (await Submit())
+        {
+            Dialog.Close(DialogResult.Ok(true));
+        }
+    }
+
+    private async Task Delete()
+    {
+        if (ObjectHelper.IsNull(Remove) || !IsEdit)
+        {
+            return;
+        }
+
+        await ConfirmService.Open(new ConfirmDialogInput { Name = EntityName, ActionFunction = async () => await Remove() }, "Confirm Delete", () => Dialog.Close(DialogResult.Ok(true)));
+    }
+
+    private void Cancel()
+    {
+        Dialog.Cancel();
+    }
+
+}

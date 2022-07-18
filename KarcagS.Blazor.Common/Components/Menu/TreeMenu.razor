@@ -1,0 +1,20 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+
+@foreach (var item in Items)
+{
+    @if (item.IsGroup)
+    {
+        <MudNavGroup Icon="@item.Icon" IconColor="@(item.IconColor ?? Color.Default)" Title="@item.Title">
+            <TreeMenu Items="@item.Children" />
+        </MudNavGroup>
+    }
+    else
+    {
+        <MudNavLink Icon="@item.Icon" IconColor="@(item.IconColor ?? Color.Default)" Href="@item.Path" Match="NavLinkMatch.All">@item.Title</MudNavLink>
+    }
+}
+
+@code {
+    [Parameter]
+    public List<MenuItem> Items { get; set; } = new();
+}

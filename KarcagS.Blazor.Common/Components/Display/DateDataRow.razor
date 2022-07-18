@@ -1,0 +1,10 @@
+﻿@using KarcagS.Shared.Helpers
+<DataRow Title="@Title" Value="@DateHelper.DateToString(Date)" />
+
+@code {
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = default!;
+
+    [Parameter]
+    public DateTime? Date { get; set; }
+}
