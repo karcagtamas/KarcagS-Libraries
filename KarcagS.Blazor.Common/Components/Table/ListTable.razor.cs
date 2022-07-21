@@ -1,4 +1,4 @@
-﻿using KarcagS.Blazor.Common.Models.Interfaces;
+﻿using KarcagS.Shared.Common;
 using Microsoft.AspNetCore.Components;
 
 namespace KarcagS.Blazor.Common.Components.Table;

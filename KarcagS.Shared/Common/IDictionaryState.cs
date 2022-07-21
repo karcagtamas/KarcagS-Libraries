@@ -1,4 +1,4 @@
-namespace KarcagS.Blazor.Common.Models.Interfaces;
+namespace KarcagS.Shared.Common;
 
 public interface IDictionaryState<TD>
 {

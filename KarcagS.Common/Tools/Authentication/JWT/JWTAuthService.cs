@@ -16,7 +16,7 @@ public class JWTAuthService : IJWTAuthService
         jwtConfigurations = jwtOptions.Value;
     }
 
-    public string BuildAccessToken<T>(IUser user, IList<string> roles)
+    public string BuildAccessToken(IUser user, IList<string> roles)
     {
         var claims = new List<Claim>
         {

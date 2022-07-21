@@ -2,6 +2,6 @@
 
 public interface IJWTAuthService
 {
-    string BuildAccessToken<T>(IUser user, IList<string> roles);
+    string BuildAccessToken(IUser user, IList<string> roles);
     RefreshToken BuildRefreshToken();
 }
