@@ -3,14 +3,17 @@ using Microsoft.AspNetCore.Components;
 
 namespace KarcagS.Blazor.Common.Components.Table;
 
-public partial class ListTable<T> : ComponentBase where T : class, IIdentified<string>
+public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdentified<TKey>
 {
 
     [Parameter, EditorRequired]
-    public TableDataSource<T, string> DataSource { get; set; } = default!;
+    public TableDataSource<T, TKey> DataSource { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public TableConfiguration<T, string> Config { get; set; } = new();
+    public TableConfiguration<T, TKey> Config { get; set; } = TableConfiguration<T, TKey>.Build();
+
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
 
     private bool Loading { get; set; } = false;
 

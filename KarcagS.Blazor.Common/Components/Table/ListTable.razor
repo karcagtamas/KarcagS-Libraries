@@ -1,8 +1,9 @@
 ﻿@using KarcagS.Shared.Common
 
-@typeparam T where T : class, IIdentified<string>
+@typeparam T where T : class, IIdentified<TKey>
+@typeparam TKey
 
-<MudTable T="RowItem<T, string>" Items="DataSource.data" Loading="Loading" Dense="Config.Dense" Elevation="Config.Elevation" FixedHeader="Config.FixedHeader" Hover="Config.Hover" Striped="Config.Striped">
+<MudTable T="RowItem<T, TKey>" Class="@Class" Items="DataSource.data" Loading="Loading" Dense="Config.Dense" Elevation="Config.Elevation" FixedHeader="Config.FixedHeader" Hover="Config.Hover" Striped="Config.Striped">
     <HeaderContent>
         @foreach (var col in Config.Columns)
         {
@@ -12,7 +13,7 @@
     <RowTemplate>
         @foreach (var col in Config.Columns)
         {
-            <MudTd DataLabel="@col.Key"><MudText Color="@(context.Disabled ? Color.Error : col.ColorGetter(context.Data, context.Id))">@col.ValueGetter(context.Data)</MudText></MudTd>
+            <MudTd DataLabel="@col.Key"><MudText Color="@(context.Disabled ? Color.Error : col.ColorGetter(context.Data, context.Id))">@col.Formatter(col.ValueGetter(context.Data))</MudText></MudTd>
         }
     </RowTemplate>
 </MudTable>
