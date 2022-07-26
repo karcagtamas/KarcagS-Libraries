@@ -101,7 +101,7 @@
 
         if (await Submit())
         {
-            Dialog.Close(DialogResult.Ok(true));
+            Dialog.Close(DialogResult.Ok(EditorDialogResult.PerformedResult(EditorCloseEvent.Edit)));
         }
     }
 
@@ -112,12 +112,8 @@
             return;
         }
 
-        await ConfirmService.Open(new ConfirmDialogInput { Name = EntityName, ActionFunction = async () => await Remove() }, "Confirm Delete", () => Dialog.Close(DialogResult.Ok(true)));
+        await ConfirmService.Open(new ConfirmDialogInput { Name = EntityName, ActionFunction = async () => await Remove() }, "Confirm Delete", () => Dialog.Close(DialogResult.Ok(EditorDialogResult.PerformedResult(EditorCloseEvent.Remove))));
     }
 
-    private void Cancel()
-    {
-        Dialog.Cancel();
-    }
-
+    private void Cancel() => Dialog.Cancel();
 }

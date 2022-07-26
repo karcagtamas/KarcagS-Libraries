@@ -11,6 +11,8 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
     private Predicate<T> isDisabled = (data) => false;
     private Predicate<T> isHidden = (data) => false;
 
+    private List<TKey> preSelection = new();
+
     public List<RowItem<T, TKey>> data = new();
 
     public TableDataSource(Func<Task<List<T>>> fetcher)
@@ -30,6 +32,15 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
             return;
         }
 
+        this.preSelection = preSelection;
+
+        await Refresh();
+
+        initialized = true;
+    }
+
+    public async Task Refresh()
+    {
         await Fetch();
 
         data.ForEach(x =>
@@ -39,8 +50,6 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
                 x.Selected = true;
             }
         });
-
-        initialized = true;
     }
 
     public TableDataSource<T, TKey> SetHiddenPredicate(Predicate<T> predicate)

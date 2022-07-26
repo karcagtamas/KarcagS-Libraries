@@ -1,6 +1,10 @@
 ﻿@using KarcagS.Blazor.Common.Components.Tree
+@using KarcagS.Shared.Common
 @using KarcagS.Shared.Helpers
-@typeparam Data
+
+@typeparam TKey
+@typeparam T where T : IIdentified<TKey>
+
 
 <MudDialog>
     <TitleContent>
@@ -48,13 +52,13 @@
     public string EntityName { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public Func<Task<List<Data>>> Fetcher { get; set; } = async () => await Task.FromResult<List<Data>>(new());
+    public Func<Task<List<T>>> Fetcher { get; set; } = async () => await Task.FromResult<List<T>>(new());
 
     [Parameter, EditorRequired]
-    public Func<Data, List<Data>> ItemExtractor { get; set; } = (d) => new();
+    public Func<T, List<T>> ItemExtractor { get; set; } = (d) => new();
 
     [Parameter, EditorRequired]
-    public Func<Data, string> TitleGetter { get; set; } = (d) => "";
+    public Func<T, string> TitleGetter { get; set; } = (d) => "";
 
     [Parameter]
     public bool MultiSelect { get; set; } = false;
@@ -68,9 +72,12 @@
     [Parameter]
     public int MinWidth { get; set; } = 300;
 
-    public HashSet<TreeItem<Data>> DataList { get; set; } = new();
+    [Parameter]
+    public List<TKey> DisabledIds { get; set; } = new();
 
-    private List<Data> Selection { get; set; } = new();
+    public HashSet<TreeItem<T>> DataList { get; set; } = new();
+
+    private List<T> Selection { get; set; } = new();
     private string TitleText { get; set; } = "";
 
     protected override async void OnInitialized()
@@ -91,7 +98,7 @@
 
     private async Task Fetch()
     {
-        DataList = TreeItem<Data>.ConvertList(await Fetcher(), ItemExtractor, false);
+        DataList = TreeItem<T>.ConvertList(await Fetcher(), ItemExtractor, false);
         await InvokeAsync(StateHasChanged);
     }
 
@@ -105,7 +112,7 @@
         DataList.ToList().ForEach(x => x.CollapseAll());
     }
 
-    private void ToggleSelect(TreeItem<Data> item, bool val)
+    private void ToggleSelect(TreeItem<T> item, bool val)
     {
         item.ToggleSelection(!SingleItemSelect);
 
@@ -127,9 +134,9 @@
         return ObjectHelper.IsNotEmpty(Selection);
     }
 
-    private bool IsSelectDisabled(TreeItem<Data> item)
+    private bool IsSelectDisabled(TreeItem<T> item)
     {
-        return !MultiSelect && HasSelection() && !Selection.Contains(item.Data);
+        return (!MultiSelect && HasSelection() && !Selection.Contains(item.Data)) || DisabledIds.Contains(item.Data.Id);
     }
 
     private void Submit()

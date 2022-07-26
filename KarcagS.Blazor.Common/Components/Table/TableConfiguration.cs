@@ -13,6 +13,7 @@ public class TableConfiguration<T, TKey> where T : class, IIdentified<TKey>
     public bool Hover { get; set; } = true;
     public bool Striped { get; set; } = true;
     public int Elevation { get; set; } = 2;
+    public Func<T, bool> ClickDisableOn { get; set; } = (data) => false;
 
     private TableConfiguration() { }
 

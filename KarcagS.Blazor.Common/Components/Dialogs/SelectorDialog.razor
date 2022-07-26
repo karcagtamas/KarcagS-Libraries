@@ -1,0 +1,133 @@
+﻿@using KarcagS.Shared.Common
+@using KarcagS.Shared.Helpers
+@typeparam Key
+@typeparam Data where Data : IIdentified<Key>
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" Color="Color.Primary">@TitleText</MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (ObjectHelper.IsNotNull(BodyText))
+        {
+            <MudText Class="mb-2" Typo="Typo.body1">@BodyText</MudText>
+        }
+        <MudTable Style="margin-top: 2rem;" T="SelectableRowItem<Data, Key>" Items="DataList" Dense="true" Striped="true" OnRowClick="(e) => ToggleSelect(e.Item)" RowClassFunc="RowClassFunc">
+            <HeaderContent>
+                <MudTh>
+                    <MudText Color="Color.Primary">Values</MudText>
+                </MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Value">@TitleGetter(context.Data)</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudSpacer />
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Select</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = null!;
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? BodyText { get; set; }
+
+    [Parameter, EditorRequired]
+    public string EntityName { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Func<Task<List<Data>>> Fetcher { get; set; } = async () => await Task.FromResult<List<Data>>(new());
+
+    [Parameter, EditorRequired]
+    public Func<Data, string> TitleGetter { get; set; } = (d) => "";
+
+    [Parameter]
+    public bool MultiSelect { get; set; } = false;
+
+    [Parameter]
+    public bool Required { get; set; } = false;
+
+    private string TitleText { get; set; } = "";
+    public List<SelectableRowItem<Data, Key>> DataList { get; set; } = new();
+    private List<Data> Selection { get; set; } = new();
+
+    protected override async void OnInitialized()
+    {
+        if (ObjectHelper.IsNotNull(Title))
+        {
+            TitleText = Title;
+        }
+        else
+        {
+            TitleText = $"Select {EntityName}";
+        }
+
+        await Fetch();
+
+        base.OnInitialized();
+    }
+
+    private async Task Fetch()
+    {
+        DataList = (await Fetcher()).Select(x => new SelectableRowItem<Data, Key> { Data = x }).ToList();
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void ToggleSelect(SelectableRowItem<Data, Key> item)
+    {
+        if (MultiSelect)
+        {
+            if (item.Selected)
+            {
+                item.Selected = false;
+                Selection.Remove(item.Data);
+            }
+            else
+            {
+                item.Selected = true;
+                Selection.Add(item.Data);
+            }
+        }
+        else
+        {
+            if (item.Selected)
+            {
+                item.Selected = false;
+                Selection = new();
+            }
+            else
+            {
+                DataList.ForEach(x => x.Selected = false);
+                item.Selected = true;
+                Selection = new List<Data> { item.Data };
+            }
+        }
+    }
+
+    private bool HasSelection() => ObjectHelper.IsNotEmpty(Selection);
+
+    private void Submit()
+    {
+        if (Required && !HasSelection())
+        {
+            return;
+        }
+
+        Dialog.Close(DialogResult.Ok(Selection));
+    }
+
+    private void Cancel()
+    {
+        Dialog.Cancel();
+    }
+
+    private string RowClassFunc(SelectableRowItem<Data, Key> item, int index) => item.Selected ? "mud-info" : "";
+}
