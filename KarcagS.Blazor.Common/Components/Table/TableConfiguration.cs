@@ -65,6 +65,13 @@ public class TableConfiguration<T, TKey> where T : class, IIdentified<TKey>
 
         return this;
     }
+
+    public TableConfiguration<T, TKey> SetElevation(Func<T, bool> func)
+    {
+        ClickDisableOn = func;
+
+        return this;
+    }
 }
 
 public class TableColumn<T, TKey>

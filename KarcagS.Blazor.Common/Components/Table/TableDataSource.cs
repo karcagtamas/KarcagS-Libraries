@@ -15,6 +15,8 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 
     public List<RowItem<T, TKey>> data = new();
 
+    public List<T> RawData { get => data.Select(x => x.Data).ToList(); }
+
     public TableDataSource(Func<Task<List<T>>> fetcher)
     {
         this.fetcher = fetcher;
@@ -90,7 +92,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
         });
     }
 
-    
+
 }
 
 public class RowItem<T, TKey> where T : class, IIdentified<TKey>
