@@ -84,7 +84,7 @@ public class HelperService : IHelperService
 
     public async Task<TData?> OpenDialog<TComponent, TData>(string title, Action<TData> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase
     {
-        var dialog = dialogService.Show<TComponent>(title, parameters, options);
+        var dialog = dialogService.Show<TComponent>(title, parameters ?? new DialogParameters { }, options);
         var result = await dialog.Result;
 
         if (!result.Cancelled)
