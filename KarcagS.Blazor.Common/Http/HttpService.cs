@@ -7,6 +7,7 @@ using KarcagS.Blazor.Common.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using KarcagS.Shared.Http;
+using KarcagS.Shared.Helpers;
 
 namespace KarcagS.Blazor.Common.Http;
 
@@ -351,7 +352,7 @@ public class HttpService : IHttpService
         }
         catch (Exception)
         {
-            Console.WriteLine("ERROR");
+            Console.WriteLine("SERIALIZATION ERROR");
         }
     }
 
@@ -364,7 +365,20 @@ public class HttpService : IHttpService
         }
         catch (Exception)
         {
-            Console.WriteLine("ERROR");
+            Console.WriteLine("CALL ERROR");
+        }
+    }
+
+    private void ConsoleTokenRefreshError(Exception e)
+    {
+        try
+        {
+            ((IJSInProcessRuntime)JsRuntime).Invoke<object>("console.log",
+                new ConsoleError { Error = $"HTTP Token refresh Error", Exception = e.ToString() });
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("TOKEN REFRESH ERROR");
         }
     }
 
@@ -388,9 +402,16 @@ public class HttpService : IHttpService
         try
         {
             using var response = await HttpClient.SendAsync(request);
-            var res = await response.Content.ReadFromJsonAsync<HttpRefreshResult>();
+            var parsedResponse = await Parse<HttpRefreshResult>(response);
 
-            if (res is null || string.IsNullOrEmpty(res.AccessToken) || string.IsNullOrEmpty(res.RefreshToken))
+            if (ObjectHelper.IsNull(parsedResponse))
+            {
+                return false;
+            }
+
+            var res = parsedResponse.Result;
+
+            if (ObjectHelper.IsNull(res) || string.IsNullOrEmpty(res.AccessToken) || string.IsNullOrEmpty(res.RefreshToken))
             {
                 return false;
             }
@@ -401,8 +422,9 @@ public class HttpService : IHttpService
 
             return true;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            ConsoleTokenRefreshError(e);
             return false;
         }
     }
