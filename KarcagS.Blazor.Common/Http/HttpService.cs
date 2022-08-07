@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using KarcagS.Shared.Http;
 using KarcagS.Shared.Helpers;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace KarcagS.Blazor.Common.Http;
 
@@ -214,11 +215,11 @@ public class HttpService : IHttpService
                         return await SendRequest<T>(settings, method, content, true);
                     }
 
-                    NavigationManager.NavigateTo(Configuration.UnauthorizedPath);
+                    HandlingUnauthorizedPathRedirection();
                     return await MakeResult<T>(response, settings.ToasterSettings);
                 }
 
-                NavigationManager.NavigateTo(Configuration.UnauthorizedPath);
+                HandlingUnauthorizedPathRedirection();
                 return await MakeResult<T>(response, settings.ToasterSettings);
             }
 
@@ -426,6 +427,25 @@ public class HttpService : IHttpService
         {
             ConsoleTokenRefreshError(e);
             return false;
+        }
+    }
+
+    private void HandlingUnauthorizedPathRedirection()
+    {
+        var query = new Dictionary<string, string>();
+
+        if (ObjectHelper.IsNotNull(Configuration.UnauthorizedPathRedirectQueryParamName))
+        {
+            query.Add(Configuration.UnauthorizedPathRedirectQueryParamName, NavigationManager.ToBaseRelativePath(NavigationManager.Uri));
+        }
+
+        if (query.Count > 0)
+        {
+            NavigationManager.NavigateTo(QueryHelpers.AddQueryString(Configuration.UnauthorizedPath, query));
+        }
+        else
+        {
+            NavigationManager.NavigateTo(Configuration.UnauthorizedPath);
         }
     }
 
