@@ -11,7 +11,6 @@ public class HttpInterceptor
 {
     private readonly RequestDelegate next;
     private readonly HttpInterceptorOptions options;
-    private const string FatalError = "Something bad happened. Please try again later";
 
     public HttpInterceptor(RequestDelegate next, HttpInterceptorOptions options)
     {
@@ -19,7 +18,7 @@ public class HttpInterceptor
         this.options = options;
     }
 
-    public async Task InvokeAsync(HttpContext context, ILoggerService logger)
+    public async Task InvokeAsync(HttpContext context, ILoggerService logger, IErrorConverter errorConverter)
     {
         logger.LogRequest(context);
 
@@ -59,7 +58,7 @@ public class HttpInterceptor
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(context, ex, logger);
+                await HandleExceptionAsync(context, ex, logger, errorConverter);
             }
             finally
             {
@@ -150,7 +149,7 @@ public class HttpInterceptor
         return context.Response.WriteAsync(JsonConvert.SerializeObject(response));
     }
 
-    private static Task HandleExceptionAsync(HttpContext context, Exception exception, ILoggerService logger)
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception, ILoggerService logger, IErrorConverter errorConverter)
     {
         context.Response.ContentType = "application/json";
         const int statusCode = (int)HttpStatusCode.InternalServerError;
@@ -161,24 +160,7 @@ public class HttpInterceptor
             StatusCode = statusCode,
         };
 
-        if (exception is ServerException)
-        {
-            response.Error = new HttpResultError
-            {
-                Message = exception.Message,
-                SubMessages = Array.Empty<string>(),
-                StackTrace = exception.StackTrace
-            };
-        }
-        else
-        {
-            response.Error = new HttpResultError
-            {
-                Message = FatalError,
-                SubMessages = Array.Empty<string>(),
-                StackTrace = exception.StackTrace
-            };
-        }
+        response.Error = errorConverter.ConvertException(exception);
 
         logger.LogError(exception);
 

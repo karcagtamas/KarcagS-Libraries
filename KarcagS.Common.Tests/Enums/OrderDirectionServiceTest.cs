@@ -1,44 +1,41 @@
 using System;
 using KarcagS.Common.Enums;
-using NUnit.Framework;
 
-namespace KarcagS.Common.Tests.Enums
+namespace KarcagS.Common.Tests.Enums;
+
+public class OrderDirectionServiceTest
 {
-    [TestFixture]
-    public class OrderDirectionServiceTest
+    [Theory]
+    [InlineData(OrderDirection.Ascend, "asc")]
+    [InlineData(OrderDirection.Descend, "desc")]
+    [InlineData(OrderDirection.None, "none")]
+    public void GetValue_GiveValidOrder_ReturnValidDirectionString(OrderDirection direction, string expectedResult)
     {
-        [Test]
-        [TestCase(OrderDirection.Ascend, "asc")]
-        [TestCase(OrderDirection.Descend, "desc")]
-        [TestCase(OrderDirection.None, "none")]
-        public void GetValue_GiveValidOrder_ReturnValidDirectionString(OrderDirection direction, string expectedResult)
-        {
-            var result = OrderDirectionService.GetValue(direction);
-            
-            Assert.That(result, Is.EqualTo(expectedResult));
-        }
+        var result = OrderDirectionService.GetValue(direction);
 
-        [Test]
-        public void GetValue_GiveInvalidOrder_ThrowArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => OrderDirectionService.GetValue((OrderDirection) 4));
-        }
-        
-        [Test]
-        [TestCase("asc", OrderDirection.Ascend)]
-        [TestCase("desc", OrderDirection.Descend)]
-        [TestCase("none", OrderDirection.None)]
-        public void ValueToKey_GiveValidValue_ReturnValidDirection(string directionValue, OrderDirection expectedResult)
-        {
-            var result = OrderDirectionService.ValueToKey(directionValue);
-            
-            Assert.That(result, Is.EqualTo(expectedResult));
-        }
-        
-        [Test]
-        public void ValueToKey_GiveInvalidValue_ThrowArgumentException()
-        {
-            Assert.Throws<ArgumentException>(() => OrderDirectionService.ValueToKey("alma"));
-        }
+        Assert.Equal(expectedResult, result);
+    }
+
+    [Fact]
+    public void GetValue_GiveInvalidOrder_ThrowArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => OrderDirectionService.GetValue((OrderDirection)4));
+    }
+
+    [Theory]
+    [InlineData("asc", OrderDirection.Ascend)]
+    [InlineData("desc", OrderDirection.Descend)]
+    [InlineData("none", OrderDirection.None)]
+    public void ValueToKey_GiveValidValue_ReturnValidDirection(string directionValue, OrderDirection expectedResult)
+    {
+        var result = OrderDirectionService.ValueToKey(directionValue);
+
+        Assert.Equal(expectedResult, result);
+    }
+
+    [Fact]
+    public void ValueToKey_GiveInvalidValue_ThrowArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => OrderDirectionService.ValueToKey("alma"));
     }
 }

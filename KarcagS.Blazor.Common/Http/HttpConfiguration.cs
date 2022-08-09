@@ -16,4 +16,6 @@ public class HttpConfiguration
     public string UnauthorizedPath { get; set; } = "unauthorized";
     public string? UnauthorizedPathRedirectQueryParamName { get; set; }
     public string[] IgnoredPaths { get; set; } = Array.Empty<string>();
+
+    public bool UseErrorDialog { get; set; } = false;
 }

@@ -31,7 +31,7 @@ public class HttpService : IHttpService
     /// </summary>
     /// <param name="httpClient">HTTP Client</param>
     /// <param name="helperService">Helper Service</param>
-    /// <param name="jsRuntime">Js Runtime</param>
+    /// <param name="jsRuntime">JS Runtime</param>
     /// <param name="configuration">HTTP Configuration</param>
     /// <param name="localStorageService">Local Storage Service</param>
     /// <param name="navigationManager">Navigation Manager</param>
