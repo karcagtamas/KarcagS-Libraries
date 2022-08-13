@@ -169,6 +169,10 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
 
                 }
             }
+            else if (value is Enum e)
+            {
+                values.Add($"{key}={Convert.ToInt32(e)}");
+            }
             else
             {
                 values.Add($"{key}={value}");

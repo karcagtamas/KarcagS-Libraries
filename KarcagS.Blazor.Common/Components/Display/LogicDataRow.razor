@@ -1,0 +1,26 @@
+﻿@using KarcagS.Shared.Helpers
+
+<DataRow Title="@Title" Value="@(Value ? TrueValue : FalseValue)" OneRow="OneRow" ValueColor="@(Value ? TrueColor : FalseColor)" />
+
+@code {
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public bool Value { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public string TrueValue { get; set; } = "";
+
+    [Parameter, EditorRequired]
+    public string FalseValue { get; set; } = "";
+
+    [Parameter]
+    public Color TrueColor { get; set; } = Color.Default;
+
+    [Parameter]
+    public Color FalseColor { get; set; } = Color.Default;
+
+    [Parameter]
+    public bool OneRow { get; set; } = false;
+}

@@ -1,6 +1,6 @@
 ﻿@using KarcagS.Shared.Helpers
 
-<DataRow Title="@Title" Value="@WriteHelper.WriteNumberWithSuffix(Number, Suffix)" />
+<DataRow Title="@Title" Value="@WriteHelper.WriteNumberWithSuffix(Number, Suffix)" OneRow="OneRow" />
 
 @code {
     [Parameter, EditorRequired]
@@ -11,4 +11,7 @@
 
     [Parameter]
     public string Suffix { get; set; } = default!;
+
+    [Parameter]
+    public bool OneRow { get; set; } = false;
 }

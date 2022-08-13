@@ -1,8 +1,13 @@
 ﻿@using KarcagS.Shared.Helpers
 
-<div class="mb-2">
-    <MudText Typo="Typo.body1" Color="Color.Primary"><b>@Title:</b></MudText>
-    @WriteHelper.WriteEmptyableField(Value)
+<div class="lib-data-row mb-2">
+    <MudText Typo="Typo.body1" Color="Color.Primary" Inline="OneRow">
+        <b>@Title: </b>
+    </MudText>
+    <MudText Typo="Typo.body1" Color="ValueColor" Inline="OneRow">
+        @WriteHelper.WriteEmptyableField(Value)
+    </MudText>
+
 </div>
 
 @code {
@@ -11,4 +16,10 @@
 
     [Parameter]
     public string? Value { get; set; } = default!;
+
+    [Parameter]
+    public bool OneRow { get; set; } = false;
+
+    [Parameter]
+    public Color ValueColor { get; set; } = Color.Default;
 }
