@@ -36,25 +36,9 @@ public class MongoCollectionService<T, Configuration> : IMongoCollectionService<
 
     public string InsertByModel<M>(M model) => Insert(Mapper.Map<T>(model));
 
-    public void Update(T entity, Dictionary<Expression<Func<T, object>>, object> updateSets)
-    {
-        if (updateSets.Count > 0)
-        {
-            return;
-        }
+    public void Update(T entity, UpdateDefinition<T> definition) => Collection.UpdateOne(Builders<T>.Filter.Eq(x => x.Id, entity.Id), definition);
 
-        var updateBuilder = Builders<T>.Update;
-        UpdateDefinition<T>? def = null;
-
-        foreach (var i in updateSets)
-        {
-            def = updateBuilder.Set(i.Key, i.Value);
-        }
-
-        Collection.UpdateOne(Builders<T>.Filter.Eq(x => x.Id, entity.Id), ObjectHelper.OrElseThrow(def, () => new Exception("Invalid set count")));
-    }
-
-    public void UpdateFromModel<M>(string id, M model, Dictionary<Expression<Func<T, object>>, object> updateSets)
+    public void UpdateFromModel<M>(string id, M model, UpdateDefinition<T> definition)
     {
         var entity = Get(id);
 
@@ -64,7 +48,7 @@ public class MongoCollectionService<T, Configuration> : IMongoCollectionService<
         }
         else
         {
-            Update(Mapper.Map(model, entity), updateSets);
+            Update(Mapper.Map(model, entity), definition);
         }
     }
 
