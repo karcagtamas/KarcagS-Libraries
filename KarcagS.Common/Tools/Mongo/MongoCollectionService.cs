@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using KarcagS.Common.Tools.Entities;
+using KarcagS.Shared.Helpers;
 using MongoDB.Driver;
 using System.Linq.Expressions;
 
@@ -11,7 +12,7 @@ public class MongoCollectionService<T, Configuration> : IMongoCollectionService<
     protected readonly IMapper Mapper;
     protected readonly IMongoCollection<T> Collection;
 
-    public MongoCollectionService(IMongoService<Configuration> mongoService, IMapper mapper, Func<MongoCollectionConfiguration, string> collectionNameGetter)
+    public MongoCollectionService(IMongoService<Configuration> mongoService, IMapper mapper, Func<Configuration, string> collectionNameGetter)
     {
         MongoService = mongoService;
         Mapper = mapper;
@@ -34,4 +35,40 @@ public class MongoCollectionService<T, Configuration> : IMongoCollectionService<
     }
 
     public string InsertByModel<M>(M model) => Insert(Mapper.Map<T>(model));
+
+    public void Update(T entity, Dictionary<Expression<Func<T, object>>, object> updateSets)
+    {
+        if (updateSets.Count > 0)
+        {
+            return;
+        }
+
+        var updateBuilder = Builders<T>.Update;
+        UpdateDefinition<T>? def = null;
+
+        foreach (var i in updateSets)
+        {
+            def = updateBuilder.Set(i.Key, i.Value);
+        }
+
+        Collection.UpdateOne(Builders<T>.Filter.Eq(x => x.Id, entity.Id), ObjectHelper.OrElseThrow(def, () => new Exception("Invalid set count")));
+    }
+
+    public void UpdateFromModel<M>(string id, M model, Dictionary<Expression<Func<T, object>>, object> updateSets)
+    {
+        var entity = Get(id);
+
+        if (ObjectHelper.IsNull(entity))
+        {
+            InsertByModel(model);
+        }
+        else
+        {
+            Update(Mapper.Map(model, entity), updateSets);
+        }
+    }
+
+    public void DeleteById(string id) => Collection.DeleteOne(Builders<T>.Filter.Eq(x => x.Id, id));
+    public void DeleteByIds(params string[] ids) => Collection.DeleteMany(Builders<T>.Filter.In(x => x.Id, ids.ToList()));
+
 }
