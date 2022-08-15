@@ -4,5 +4,5 @@ namespace KarcagS.Common.Tools.HttpInterceptor;
 
 public interface IErrorConverterAgent
 {
-    HttpResultError? TryToConvert(Exception exception);
+    HttpErrorResult? TryToConvert(Exception exception);
 }

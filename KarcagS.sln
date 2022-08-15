@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Blazor.Common.Demo"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Shared", "KarcagS.Shared\KarcagS.Shared.csproj", "{D44B0DA4-B723-423F-914A-5F9149A1FD6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KarcagS.Shared.Tests", "KarcagS.Shared.Tests\KarcagS.Shared.Tests.csproj", "{FA704870-EA84-4686-A220-83042506B98D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Shared.Tests", "KarcagS.Shared.Tests\KarcagS.Shared.Tests.csproj", "{FA704870-EA84-4686-A220-83042506B98D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

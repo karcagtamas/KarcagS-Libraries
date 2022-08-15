@@ -36,7 +36,7 @@ public class LoggerService<TUserKey> : ILoggerService
         }
     }
 
-    public void LogError(HttpResultError error, int code)
+    public void LogError(HttpErrorResult error, int code)
     {
         if (error is not null)
         {

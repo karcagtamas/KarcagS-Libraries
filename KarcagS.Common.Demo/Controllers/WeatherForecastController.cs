@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace KarcagS.Common.Demo.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]
@@ -35,6 +35,12 @@ namespace KarcagS.Common.Demo.Controllers
         public TestModel Test([FromBody] TestModel model) 
         {
             return model;
+        }
+
+        [HttpGet("Test")]
+        public void Test()
+        {
+            throw new Exception("Error");
         }
 
         public class TestModel

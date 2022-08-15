@@ -8,5 +8,5 @@ public interface ILoggerService
     void LogError(Exception e);
     void LogRequest(HttpContext context);
     void LogValidationError();
-    void LogError(HttpResultError error, int code);
+    void LogError(HttpErrorResult error, int code);
 }

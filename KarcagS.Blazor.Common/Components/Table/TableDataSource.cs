@@ -4,12 +4,14 @@ namespace KarcagS.Blazor.Common.Components.Table;
 
 public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 {
-    private readonly Func<Task<List<T>>> fetcher;
+    private readonly Func<TableFilter, Task<List<T>>> fetcher;
     private List<T> rawData = new();
     private bool initialized = false;
 
     private Predicate<T> isDisabled = (data) => false;
     private Predicate<T> isHidden = (data) => false;
+
+    private ListTable<T, TKey> tableInstance = default!;
 
     private List<TKey> preSelection = new();
 
@@ -17,17 +19,17 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 
     public List<T> RawData { get => data.Select(x => x.Data).ToList(); }
 
-    public TableDataSource(Func<Task<List<T>>> fetcher)
+    public TableDataSource(Func<TableFilter, Task<List<T>>> fetcher)
     {
         this.fetcher = fetcher;
     }
 
-    public async Task Init()
+    public async Task Init(ListTable<T, TKey> tableInstance)
     {
-        await Init(new());
+        await Init(tableInstance, new());
     }
 
-    public async Task Init(List<TKey> preSelection)
+    public async Task Init(ListTable<T, TKey> tableInstance, List<TKey> preSelection)
     {
         if (initialized)
         {
@@ -35,6 +37,8 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
         }
 
         this.preSelection = preSelection;
+
+        this.tableInstance = tableInstance;
 
         await Refresh();
 
@@ -80,7 +84,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 
     private async Task Fetch()
     {
-        rawData = await fetcher();
+        rawData = await fetcher(tableInstance.GetCurrentFilter());
 
         data = rawData.Select(x => new RowItem<T, TKey> { Id = x.Id, Data = x })
             .ToList();

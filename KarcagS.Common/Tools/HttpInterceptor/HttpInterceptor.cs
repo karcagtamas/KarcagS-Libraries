@@ -127,7 +127,7 @@ public class HttpInterceptor
 
         if (code == (int)HttpStatusCode.NotFound)
         {
-            response.Error = new HttpResultError
+            response.Error = new HttpErrorResult
             {
                 Message = "Resource not found.",
                 SubMessages = Array.Empty<string>()
@@ -135,7 +135,7 @@ public class HttpInterceptor
         }
         else
         {
-            response.Error = new HttpResultError
+            response.Error = new HttpErrorResult
             {
                 Message = "Request cannot be processed.",
                 SubMessages = Array.Empty<string>()
@@ -158,9 +158,8 @@ public class HttpInterceptor
         {
             IsSuccess = false,
             StatusCode = statusCode,
+            Error = errorConverter.ConvertException(exception, context)
         };
-
-        response.Error = errorConverter.ConvertException(exception);
 
         logger.LogError(exception);
 

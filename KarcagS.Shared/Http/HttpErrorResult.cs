@@ -3,14 +3,14 @@ namespace KarcagS.Shared.Http;
 /// <summary>
 /// Error response model
 /// </summary>
-public class HttpResultError
+public class HttpErrorResult
 {
-    public HttpResultError()
+    public HttpErrorResult()
     {
 
     }
 
-    public HttpResultError(Exception exception)
+    public HttpErrorResult(Exception exception)
     {
         StackTrace = exception.StackTrace;
     }
@@ -18,4 +18,6 @@ public class HttpResultError
     public string Message { get; set; } = string.Empty;
     public string[] SubMessages { get; set; } = Array.Empty<string>();
     public string? StackTrace { get; set; }
+
+    public Dictionary<string, object> Context { get; set; } = new();
 }

@@ -3,18 +3,30 @@
 @typeparam T where T : class, IIdentified<TKey>
 @typeparam TKey
 
-<MudTable T="RowItem<T, TKey>" Class="@Class" Items="DataSource.data" Loading="Loading" Dense="Config.Dense" Elevation="Config.Elevation" FixedHeader="Config.FixedHeader" Hover="Config.Hover" Striped="Config.Striped" OnRowClick="RowClickHandler">
-    <HeaderContent>
-        @foreach (var col in Config.Columns)
-        {
-            <MudTh><MudText Color="col.TitleColor">@col.Title</MudText></MudTh>
-        }
-    </HeaderContent>
-    <RowTemplate>
-        @foreach (var col in Config.Columns)
-        {
-            <MudTd Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key"><MudText Color="@(context.Disabled ? Color.Error : col.ColorGetter(context.Data, context.Id))">@col.Formatter(col.ValueGetter(context.Data))</MudText></MudTd>
-        }
-    </RowTemplate>
-</MudTable>
+<div class="d-flex flex-column w-100" style="max-height: 100%;">
+    <MudTable Virtualize="true" T="RowItem<T, TKey>" Class="@AppendedClass" Items="DataSource.data" Loading="Loading" Dense="Config.Style.Dense" Elevation="Config.Style.Elevation" FixedHeader="Config.Style.FixedHeader" Hover="Config.Style.Hover" Striped="Config.Style.Striped" Bordered="Config.Style.Bordered" OnRowClick="RowClickHandler">
+        <ToolBarContent>
+            <MudText Typo="Typo.h5" Color="Color.Primary" Class="w-100">
+                <b>@Config.Title</b>
+            </MudText>
+            <MudSpacer />
+            @if (Config.Filter.TextFilterEnabled)
+            {
+                <MudTextField Class="mr-3" T="string" DebounceInterval="500" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Style="width: 300px;" Value="TextFilter" ValueChanged="TextFilterHandler" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Search" />
+            }
+        </ToolBarContent>
+        <HeaderContent>
+            @foreach (var col in Config.Columns)
+            {
+                <MudTh><MudText Color="col.TitleColor">@col.Title</MudText></MudTh>
+            }
+        </HeaderContent>
+        <RowTemplate>
+            @foreach (var col in Config.Columns)
+            {
+                <MudTd Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key"><MudText Color="@(context.Disabled ? Color.Error : col.ColorGetter(context.Data, context.Id))">@col.Formatter(col.ValueGetter(context.Data))</MudText></MudTd>
+            }
+        </RowTemplate>
+    </MudTable>
+</div>
 

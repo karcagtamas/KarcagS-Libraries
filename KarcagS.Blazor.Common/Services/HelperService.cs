@@ -42,7 +42,7 @@ public class HelperService : IHelperService
         });
     }
 
-    public void AddHttpErrorToaster(string caption, HttpResultError? errorResult)
+    public void AddHttpErrorToaster(string caption, HttpErrorResult? errorResult)
     {
         string message = errorResult?.Message ?? "Unexpected Error";
         toasterService.Open(new ToasterSettings

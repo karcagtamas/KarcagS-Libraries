@@ -7,17 +7,26 @@ namespace KarcagS.Blazor.Common.Components.Table;
 
 public class TableConfiguration<T, TKey> where T : class, IIdentified<TKey>
 {
+    public string Title { get; set; } = "Table";
+
     public List<TableColumn<T, TKey>> Columns { get; set; } = new();
-    public bool Dense { get; set; } = true;
-    public bool FixedHeader { get; set; } = true;
-    public bool Hover { get; set; } = true;
-    public bool Striped { get; set; } = true;
-    public int Elevation { get; set; } = 2;
+
+    public TableStyleConfiguration Style { get; set; } = TableStyleConfiguration.Build();
+
+    public TableFilterConfiguration Filter { get; set; } = TableFilterConfiguration.Build();
+
     public Func<T, bool> ClickDisableOn { get; set; } = (data) => false;
 
     private TableConfiguration() { }
 
     public static TableConfiguration<T, TKey> Build() => new();
+
+    public TableConfiguration<T, TKey> AddTitle(string title)
+    {
+        Title = title;
+
+        return this;
+    }
 
     public TableConfiguration<T, TKey> AddColumn(TableColumn<T, TKey> column)
     {
@@ -31,37 +40,16 @@ public class TableConfiguration<T, TKey> where T : class, IIdentified<TKey>
         return this;
     }
 
-    public TableConfiguration<T, TKey> IsDense(bool value)
+    public TableConfiguration<T, TKey> AddStyle(TableStyleConfiguration style)
     {
-        Dense = value;
+        Style = style;
 
         return this;
     }
 
-    public TableConfiguration<T, TKey> IsFixedHeader(bool value)
+    public TableConfiguration<T, TKey> AddFilter(TableFilterConfiguration filter)
     {
-        FixedHeader = value;
-
-        return this;
-    }
-
-    public TableConfiguration<T, TKey> IsHover(bool value)
-    {
-        Hover = value;
-
-        return this;
-    }
-
-    public TableConfiguration<T, TKey> IsStriped(bool value)
-    {
-        Striped = value;
-
-        return this;
-    }
-
-    public TableConfiguration<T, TKey> SetElevation(int value)
-    {
-        Elevation = value;
+        Filter = filter;
 
         return this;
     }

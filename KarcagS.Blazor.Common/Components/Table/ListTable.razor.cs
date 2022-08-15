@@ -20,13 +20,16 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
     [Parameter]
     public string Class { get; set; } = string.Empty;
 
+    private string AppendedClass { get => $"w-100 flex-box h-100 {Class}"; }
+
     private bool Loading { get; set; } = false;
+    private string TextFilter { get; set; } = string.Empty;
 
     protected override async void OnInitialized()
     {
         Loading = true;
         StateHasChanged();
-        await DataSource.Init();
+        await DataSource.Init(this);
         Loading = false;
         StateHasChanged();
 
@@ -37,6 +40,14 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
     {
         await DataSource.Refresh();
         await InvokeAsync(StateHasChanged);
+    }
+
+    public TableFilter GetCurrentFilter()
+    {
+        return new TableFilter
+        {
+            TextFilter = Config.Filter.TextFilterEnabled ? TextFilter : null
+        };
     }
 
     private string GetTDStyle(Alignment alignment)
@@ -59,5 +70,11 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
         }
 
         await OnRowClick.InvokeAsync(e.Item);
+    }
+
+    private async void TextFilterHandler(string text)
+    {
+        TextFilter = text;
+        await Refresh();
     }
 }

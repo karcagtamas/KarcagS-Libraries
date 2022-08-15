@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddLogging();
+builder.Services.AddHttpLogging(opt => { });
+
 builder.Services.Configure<UtilsSettings>(builder.Configuration.GetSection("Utils"));
 
 builder.Services.AddCors(opt =>
@@ -26,6 +29,8 @@ builder.Services.AddScoped<ILoggerService, LoggerService<string>>();
 
 builder.Services.AddDbContext<DbContext>();
 
+builder.Services.AddErrorConverter(conf => { });
+
 builder.Services.AddModelValidatedControllers();
 
 var app = builder.Build();
@@ -34,7 +39,7 @@ var app = builder.Build();
 
 app.UseHttpInterceptor((opt) =>
 {
-    
+    opt.OnlyApi = true;
 });
 
 app.UseHttpsRedirection();
@@ -44,5 +49,7 @@ app.UseCors("Policy");
 // app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseHttpLogging();
 
 app.Run();

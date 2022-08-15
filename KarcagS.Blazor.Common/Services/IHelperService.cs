@@ -14,7 +14,7 @@ public interface IHelperService
     Task OpenEditorDialog<TComponent>(string title, Action<EditorDialogResult> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase;
     JsonSerializerOptions GetSerializerOptions();
     void AddHttpSuccessToaster(string caption);
-    void AddHttpErrorToaster(string caption, HttpResultError? error);
+    void AddHttpErrorToaster(string caption, HttpErrorResult? error);
     decimal MinToHour(int min);
     int CurrentYear();
     int CurrentMonth();

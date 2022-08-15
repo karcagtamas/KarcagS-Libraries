@@ -5,7 +5,7 @@ namespace KarcagS.Blazor.Common.Http;
 public class HttpSender<T>
 {
     private readonly List<Action<T?>> successActions = new();
-    private readonly List<Action<HttpResultError?>> errorActions = new();
+    private readonly List<Action<HttpErrorResult?>> errorActions = new();
     private readonly Func<Task<HttpResult<T>?>> sender;
 
     public HttpSender(Func<Task<HttpResult<T>?>> sender)
@@ -19,7 +19,7 @@ public class HttpSender<T>
         return this;
     }
 
-    public HttpSender<T> Error(Action<HttpResultError?> error)
+    public HttpSender<T> Error(Action<HttpErrorResult?> error)
     {
         errorActions.Add(error);
         return this;

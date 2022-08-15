@@ -1,8 +1,9 @@
 ﻿using KarcagS.Shared.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace KarcagS.Common.Tools.HttpInterceptor;
 
 public interface IErrorConverter
 {
-    HttpResultError ConvertException(Exception exception); 
+    HttpErrorResult ConvertException(Exception exception, HttpContext httpContext);
 }

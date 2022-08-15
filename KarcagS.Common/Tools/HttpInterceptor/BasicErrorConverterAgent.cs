@@ -6,7 +6,7 @@ public class BasicErrorConverterAgent : IErrorConverterAgent
 {
     private const string FatalError = "Something bad happened. Please try again later";
 
-    public HttpResultError? TryToConvert(Exception exception)
+    public HttpErrorResult? TryToConvert(Exception exception)
     {
         return new(exception)
         {

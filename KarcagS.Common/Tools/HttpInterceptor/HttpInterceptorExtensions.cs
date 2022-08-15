@@ -27,7 +27,7 @@ public static class HttpInterceptorExtensions
                     {
                         IsSuccess = false,
                         StatusCode = (int)HttpStatusCode.InternalServerError,
-                        Error = new HttpResultError
+                        Error = new HttpErrorResult
                         {
                             Message = "Validation error",
                             SubMessages = context.ModelState
