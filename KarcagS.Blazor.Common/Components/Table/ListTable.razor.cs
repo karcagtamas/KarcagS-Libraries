@@ -50,7 +50,7 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
 
     public async Task Refresh(TableState state) => await DataSource.Refresh(state);
 
-    public void ForceRefresh(TableState state) => ObjectHelper.WhenNotNull(Table, async t => await t.ReloadServerData());
+    public void ForceRefresh() => ObjectHelper.WhenNotNull(Table, async t => await t.ReloadServerData());
 
     public TableFilter GetCurrentFilter()
     {
