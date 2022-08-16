@@ -20,6 +20,8 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
     [Parameter]
     public string Class { get; set; } = string.Empty;
 
+    private MudTable<RowItem<T, TKey>>? Table { get; set; }
+
     private string AppendedClass { get => $"w-100 flex-box h-100 {Class}"; }
 
     private bool Loading { get; set; } = false;
@@ -36,11 +38,17 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
         base.OnInitialized();
     }
 
-    public async Task Refresh()
+    protected override Task OnAfterRenderAsync(bool firstRender)
     {
-        await DataSource.Refresh();
-        await InvokeAsync(StateHasChanged);
+        if (firstRender && Config.Pagination.PaginationEnabled)
+        {
+            ObjectHelper.WhenNotNull(Table, t => t.SetRowsPerPage(Config.Pagination.PageSize));
+        }
+
+        return base.OnAfterRenderAsync(firstRender);
     }
+
+    public async Task Refresh(TableState state) => await DataSource.Refresh(state);
 
     public TableFilter GetCurrentFilter()
     {
@@ -48,6 +56,12 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
         {
             TextFilter = Config.Filter.TextFilterEnabled ? TextFilter : null
         };
+    }
+
+    private async Task<TableData<RowItem<T, TKey>>> TableReload(TableState state)
+    {
+        await Refresh(state);
+        return new TableData<RowItem<T, TKey>> { Items = DataSource.data, TotalItems = DataSource.data.Count };
     }
 
     private string GetTDStyle(Alignment alignment)
@@ -72,9 +86,10 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
         await OnRowClick.InvokeAsync(e.Item);
     }
 
-    private async void TextFilterHandler(string text)
+    private void TextFilterHandler(string text)
     {
         TextFilter = text;
-        await Refresh();
+
+        ObjectHelper.WhenNotNull(Table, async t => await t.ReloadServerData());
     }
 }

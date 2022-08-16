@@ -52,15 +52,18 @@
                 {
                     Key = "number",
                     ValueGetter = (obj) => obj.Number,
-                    Title = "Number"
+                    Title = "Number",
+                    Alignment = Enums.Alignment.Right
                 })
-             .AddColumn(new TableColumn<TestRowItem, string>
-                 {
-                     Key = "boolean",
-                     ValueGetter = (obj) => obj.Boolean,
-                     Title = "Boolean"
-                 })
-                 .AddFilter(TableFilterConfiguration.Build().IsTextFilterEnabled(true));
+            .AddColumn(new TableColumn<TestRowItem, string>
+                {
+                    Key = "boolean",
+                    ValueGetter = (obj) => obj.Boolean,
+                    Title = "Boolean",
+                    Width = 20
+                })
+            .AddFilter(TableFilterConfiguration.Build().IsTextFilterEnabled(true))
+            .AddPagination(TablePaginationConfiguration.Build().IsPaginationEnabled(true));
         base.OnInitialized();
     }
 

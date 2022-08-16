@@ -1,10 +1,11 @@
 ﻿using KarcagS.Shared.Common;
+using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Components.Table;
 
 public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 {
-    private readonly Func<TableFilter, Task<List<T>>> fetcher;
+    private readonly Func<TableOptions, Task<List<T>>> fetcher;
     private List<T> rawData = new();
     private bool initialized = false;
 
@@ -19,7 +20,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 
     public List<T> RawData { get => data.Select(x => x.Data).ToList(); }
 
-    public TableDataSource(Func<TableFilter, Task<List<T>>> fetcher)
+    public TableDataSource(Func<TableOptions, Task<List<T>>> fetcher)
     {
         this.fetcher = fetcher;
     }
@@ -29,25 +30,25 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
         await Init(tableInstance, new());
     }
 
-    public async Task Init(ListTable<T, TKey> tableInstance, List<TKey> preSelection)
+    public Task Init(ListTable<T, TKey> tableInstance, List<TKey> preSelection)
     {
         if (initialized)
         {
-            return;
+            return Task.CompletedTask;
         }
 
         this.preSelection = preSelection;
 
         this.tableInstance = tableInstance;
 
-        await Refresh();
-
         initialized = true;
+
+        return Task.CompletedTask;
     }
 
-    public async Task Refresh()
+    public async Task Refresh(TableState state)
     {
-        await Fetch();
+        await Fetch(state);
 
         data.ForEach(x =>
         {
@@ -82,9 +83,19 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
         return this;
     }
 
-    private async Task Fetch()
+    private async Task Fetch(TableState state)
     {
-        rawData = await fetcher(tableInstance.GetCurrentFilter());
+        rawData = await fetcher(new TableOptions
+        {
+            Filter = tableInstance.GetCurrentFilter(),
+            Pagination = tableInstance.Config.Pagination.PaginationEnabled
+                ? new TablePagination
+                {
+                    Page = state.Page,
+                    Size = state.PageSize
+                }
+                : null
+        });
 
         data = rawData.Select(x => new RowItem<T, TKey> { Id = x.Id, Data = x })
             .ToList();

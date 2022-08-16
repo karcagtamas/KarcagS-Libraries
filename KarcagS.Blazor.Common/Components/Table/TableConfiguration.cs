@@ -1,6 +1,5 @@
 ﻿using KarcagS.Blazor.Common.Enums;
 using KarcagS.Shared.Common;
-using KarcagS.Shared.Helpers;
 using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Components.Table;
@@ -14,6 +13,8 @@ public class TableConfiguration<T, TKey> where T : class, IIdentified<TKey>
     public TableStyleConfiguration Style { get; set; } = TableStyleConfiguration.Build();
 
     public TableFilterConfiguration Filter { get; set; } = TableFilterConfiguration.Build();
+
+    public TablePaginationConfiguration Pagination { get; set; } = TablePaginationConfiguration.Build();
 
     public Func<T, bool> ClickDisableOn { get; set; } = (data) => false;
 
@@ -54,6 +55,13 @@ public class TableConfiguration<T, TKey> where T : class, IIdentified<TKey>
         return this;
     }
 
+    public TableConfiguration<T, TKey> AddPagination(TablePaginationConfiguration pagination)
+    {
+        Pagination = pagination;
+
+        return this;
+    }
+
     public TableConfiguration<T, TKey> DisableClickOn(Func<T, bool> func)
     {
         ClickDisableOn = func;
@@ -71,6 +79,7 @@ public class TableColumn<T, TKey>
     public Func<T, object> ValueGetter { get; set; } = (data) => default!;
     public Func<T, TKey, Color> ColorGetter { get; set; } = (data, key) => Color.Default;
     public Func<object, string> Formatter { get; set; } = (data) => data?.ToString() ?? string.Empty;
+    public int? Width { get; set; } = null;
 
     public TableColumn()
     {

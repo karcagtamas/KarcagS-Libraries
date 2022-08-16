@@ -1,0 +1,1 @@
+﻿global using KarcagS.Shared.Helpers;
