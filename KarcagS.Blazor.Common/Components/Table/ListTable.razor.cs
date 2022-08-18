@@ -63,7 +63,7 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
     private async Task<TableData<RowItem<T, TKey>>> TableReload(TableState state)
     {
         await Refresh(state);
-        return new TableData<RowItem<T, TKey>> { Items = DataSource.data, TotalItems = DataSource.data.Count };
+        return new TableData<RowItem<T, TKey>> { Items = DataSource.data, TotalItems = DataSource.AllDataCount };
     }
 
     private string GetTDStyle(Alignment alignment)

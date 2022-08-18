@@ -2,12 +2,14 @@
 using System.Linq.Expressions;
 
 namespace KarcagS.Common.Tools.Repository;
+
 public interface IPersistence
 {
     T Get<TKey, T>(TKey id) where T : class, IEntity<TKey>;
     T? GetOptional<TKey, T>(TKey id) where T : class, IEntity<TKey>;
     IEnumerable<T> GetAll<TKey, T>() where T : class, IEntity<TKey>;
     IEnumerable<T> GetList<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : class, IEntity<TKey>;
+    int Count<TKey, T>(Expression<Func<T, bool>> predicate) where T : class, IEntity<TKey>;
     IEnumerable<T> GetAllAsOrdered<TKey, T>(string orderBy, string direction) where T : class, IEntity<TKey>;
     IEnumerable<T> GetOrderedList<TKey, T>(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) where T : class, IEntity<TKey>;
     TKey Create<TKey, T>(T entity, bool doPersist = true) where T : class, IEntity<TKey>;

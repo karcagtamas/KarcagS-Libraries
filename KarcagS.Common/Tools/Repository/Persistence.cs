@@ -1,10 +1,7 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.InkML;
-using KarcagS.Common.Attributes;
+﻿using KarcagS.Common.Attributes;
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Entities;
 using KarcagS.Common.Tools.Services;
-using KarcagS.Shared.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -272,6 +269,15 @@ public class Persistence<TUserKey> : IPersistence
             Persist();
         }
     }
+
+    /// <summary>
+    /// Get count of entries
+    /// </summary>
+    /// <typeparam name="TKey">Type of key</typeparam>
+    /// <typeparam name="T">Type of entity</typeparam>
+    /// <param name="predicate">Filter predicate.</param>
+    /// <returns>Count of entries</returns>
+    public int Count<TKey, T>(Expression<Func<T, bool>> predicate) where T : class, IEntity<TKey> => context.Set<T>().Count(predicate);
 
     /// <summary>
     /// Save changes

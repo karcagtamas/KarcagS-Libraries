@@ -1,5 +1,6 @@
 ﻿@page "/table"
 @using KarcagS.Shared.Common
+@using KarcagS.Shared.Table
 
 <div class="flex-box overflow-hidden p-1">
     <ListTable T="TestRowItem" TKey="string" Config="Config" DataSource="DataSource" />
@@ -11,36 +12,40 @@
 
     protected override void OnInitialized()
     {
-        DataSource = new TableDataSource<TestRowItem, string>((filter) => Task.FromResult(new List<TestRowItem>
-        {
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem(),
-            new TestRowItem()
-        }));
+        DataSource = new TableDataSource<TestRowItem, string>((filter) => Task.FromResult(new TableResult<TestRowItem>
+            {
+                Data = new List<TestRowItem>
+                {
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem(),
+                    new TestRowItem()
+                },
+                AllDataCount = 27
+            }));
         Config = TableConfiguration<TestRowItem, string>.Build()
             .AddColumn(new TableColumn<TestRowItem, string>
                 {

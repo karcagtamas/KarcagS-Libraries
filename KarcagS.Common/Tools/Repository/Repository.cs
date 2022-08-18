@@ -88,6 +88,13 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) => Persistence.GetOrderedList<TKey, T>(predicate, orderBy, direction);
 
     /// <summary>
+    /// Get count of entries
+    /// </summary>
+    /// <param name="predicate">Filter predicated</param>
+    /// <returns>Count of entries</returns>
+    public virtual int Count(Expression<Func<T, bool>> predicate) => Persistence.Count<TKey, T>(predicate);
+
+    /// <summary>
     /// Add entity
     /// </summary>
     /// <param name="entity">Entity object</param>

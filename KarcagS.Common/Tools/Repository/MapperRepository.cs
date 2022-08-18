@@ -3,7 +3,6 @@ using AutoMapper;
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Entities;
 using KarcagS.Common.Tools.Services;
-using KarcagS.Shared.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace KarcagS.Common.Tools.Repository;

@@ -1,12 +1,14 @@
 ﻿using KarcagS.Shared.Common;
+using KarcagS.Shared.Table;
 using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Components.Table;
 
 public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 {
-    private readonly Func<TableOptions, Task<List<T>>> fetcher;
+    private readonly Func<TableOptions, Task<TableResult<T>>> fetcher;
     private List<T> rawData = new();
+    private int allDataCount = 0;
     private bool initialized = false;
 
     private Predicate<T> isDisabled = (data) => false;
@@ -19,8 +21,9 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
     public List<RowItem<T, TKey>> data = new();
 
     public List<T> RawData { get => data.Select(x => x.Data).ToList(); }
+    public int AllDataCount { get => allDataCount; }
 
-    public TableDataSource(Func<TableOptions, Task<List<T>>> fetcher)
+    public TableDataSource(Func<TableOptions, Task<TableResult<T>>> fetcher)
     {
         this.fetcher = fetcher;
     }
@@ -85,7 +88,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 
     private async Task Fetch(TableState state)
     {
-        rawData = await fetcher(new TableOptions
+        var result = await fetcher(new TableOptions
         {
             Filter = tableInstance.GetCurrentFilter(),
             Pagination = tableInstance.Config.Pagination.PaginationEnabled
@@ -96,6 +99,9 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
                 }
                 : null
         });
+
+        rawData = result.Data;
+        allDataCount = result.AllDataCount;
 
         data = rawData.Select(x => new RowItem<T, TKey> { Id = x.Id, Data = x })
             .ToList();

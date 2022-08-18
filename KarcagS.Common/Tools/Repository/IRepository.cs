@@ -9,6 +9,7 @@ public interface IRepository<T, TKey> where T : class, IEntity<TKey>
     IEnumerable<T> GetList(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null);
     IEnumerable<T> GetAllAsOrdered(string orderBy, string direction);
     IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null);
+    int Count(Expression<Func<T, bool>> predicate);
     T Get(TKey id);
     T? GetOptional(TKey id);
     void Update(T entity, bool doPersist = true);
