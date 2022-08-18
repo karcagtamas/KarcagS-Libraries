@@ -14,7 +14,7 @@
     {
         DataSource = new TableDataSource<TestRowItem, string>((filter) => Task.FromResult(new TableResult<TestRowItem>
             {
-                Data = new List<TestRowItem>
+                Items = new List<TestRowItem>
                 {
                     new TestRowItem(),
                     new TestRowItem(),
@@ -44,7 +44,7 @@
                     new TestRowItem(),
                     new TestRowItem()
                 },
-                AllDataCount = 27
+                AllItemCount = 27
             }));
         Config = TableConfiguration<TestRowItem, string>.Build()
             .AddColumn(new TableColumn<TestRowItem, string>

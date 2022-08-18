@@ -100,8 +100,8 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
                 : null
         });
 
-        rawData = result.Data;
-        allDataCount = result.AllDataCount;
+        rawData = result.Items;
+        allDataCount = result.All;
 
         data = rawData.Select(x => new RowItem<T, TKey> { Id = x.Id, Data = x })
             .ToList();

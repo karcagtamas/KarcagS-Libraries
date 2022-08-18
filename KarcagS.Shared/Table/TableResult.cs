@@ -2,6 +2,8 @@
 
 public class TableResult<T>
 {
-    public List<T> Data { get; set; } = new();
-    public int AllDataCount { get; set; }
+    public List<T> Items { get; set; } = new();
+    public int AllItemCount { get; set; } = -1;
+
+    public int All { get => AllItemCount == -1 ? Items.Count : AllItemCount; }
 }
