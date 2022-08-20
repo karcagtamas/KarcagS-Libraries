@@ -1,5 +1,6 @@
 ﻿using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Shared.Common;
+using KarcagS.Shared.Table;
 
 namespace KarcagS.Common.Tools.Table;
 
@@ -16,13 +17,7 @@ public abstract class TableService<T, TKey> : ITableService<T, TKey> where T : c
     public abstract DataSource<T, TKey> BuildDataSource();
     public abstract Configuration<T, TKey> BuildConfiguration();
 
-    public List<T> GetData()
-    {
-        return Table.GetData().ToList();
-    }
+    public TableResult GetData(QueryModel query) => Table.ConstructResult(query);
 
-    public TableMetaData<T, TKey> GetTableMetaData()
-    {
-        return Table.GetMetaData();
-    }
+    public TableMetaData<T, TKey> GetTableMetaData() => Table.GetMetaData();
 }

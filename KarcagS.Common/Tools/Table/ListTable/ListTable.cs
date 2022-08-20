@@ -1,5 +1,6 @@
 ﻿using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Shared.Common;
+using KarcagS.Shared.Table;
 
 namespace KarcagS.Common.Tools.Table.ListTable;
 
@@ -9,8 +10,7 @@ public class ListTable<T, TKey> : Table<T, TKey> where T : class, IIdentified<TK
     {
     }
 
-    public override IEnumerable<T> GetData()
-    {
-        throw new NotImplementedException();
-    }
+    public override int GetAllDataCount() => DataSource.LoadAllDataCount();
+
+    public override IEnumerable<T> GetData(QueryModel query) => DataSource.LoadData(query, Configuration);
 }

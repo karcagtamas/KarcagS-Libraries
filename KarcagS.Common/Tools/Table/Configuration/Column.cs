@@ -10,6 +10,7 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
     public Alignment Alignment { get; set; } = Alignment.Left;
     public Func<T, object> ValueGetter { get; set; } = (data) => default!;
     public ColumnFormatter Formatter { get; set; } = ColumnFormatter.Text;
+    public string[] FormatterArgs { get; set; } = new string[0];
     public int? Width { get; set; } = null;
 
     private Column(string key)
@@ -40,9 +41,10 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
         return this;
     }
 
-    public Column<T, TKey> SetFormatter(ColumnFormatter value)
+    public Column<T, TKey> SetFormatter(ColumnFormatter value, params string[] args)
     {
         Formatter = value;
+        FormatterArgs = args;
 
         return this;
     }

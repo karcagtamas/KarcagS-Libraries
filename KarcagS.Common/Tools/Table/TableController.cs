@@ -1,4 +1,5 @@
 ﻿using KarcagS.Shared.Common;
+using KarcagS.Shared.Table;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KarcagS.Common.Tools.Table;
@@ -9,10 +10,7 @@ public abstract class TableController<T, TKey> : ControllerBase where T : class,
     public TableMetaData<T, TKey> GetMetaData() => GetService().GetTableMetaData();
 
     [HttpGet("Data")]
-    public List<T> GetData()
-    {
-        return GetService().GetData();
-    }
+    public TableResult GetData([FromQuery] QueryModel query) => GetService().GetData(query);
 
     public abstract ITableService<T, TKey> GetService();
 }

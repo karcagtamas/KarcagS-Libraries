@@ -21,4 +21,8 @@ public class DemoTableController : TableController<DemoDTO, string>
 public class DemoDTO : IIdentified<string>
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
+    public string Name { get; set; } = string.Empty;
+    public int Age { get; set; }
+    public bool Male { get; set; }
+    public DateTime Date { get; set; }
 }
