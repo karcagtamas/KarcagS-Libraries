@@ -1,3 +1,4 @@
+using KarcagS.Common.Demo;
 using KarcagS.Common.Tools;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Services;
@@ -26,6 +27,7 @@ builder.Services.AddCors(opt =>
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUtilsService<string>, UtilsService<DbContext, string>>();
 builder.Services.AddScoped<ILoggerService, LoggerService<string>>();
+builder.Services.AddScoped<IDemoService, DemoService>();
 
 builder.Services.AddDbContext<DbContext>();
 

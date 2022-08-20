@@ -1,0 +1,69 @@
+﻿using KarcagS.Shared.Common;
+
+namespace KarcagS.Common.Tools.Table.Configuration;
+
+public class Configuration<T, TKey> where T : class, IIdentified<TKey>
+{
+    public string Key { get; set; }
+    public string Title { get; set; } = "Table";
+
+    public List<Column<T, TKey>> Columns { get; set; } = new();
+
+    public FilterConfiguration Filter { get; set; } = FilterConfiguration.Build();
+
+    public PaginationConfiguration Pagination { get; set; } = PaginationConfiguration.Build();
+
+    public Func<T, bool> ClickDisableOn { get; set; } = (data) => false;
+
+    private Configuration()
+    {
+        Key = "table";
+    }
+
+    private Configuration(string key)
+    {
+        Key = key;
+    }
+
+    public static Configuration<T, TKey> Build(string key) => new(key);
+
+    public Configuration<T, TKey> AddTitle(string title)
+    {
+        Title = title;
+
+        return this;
+    }
+
+    public Configuration<T, TKey> AddColumn(Column<T, TKey> column)
+    {
+        if (Columns.Any(col => col.Key == column.Key))
+        {
+            return this;
+        }
+
+        Columns.Add(column);
+
+        return this;
+    }
+
+    public Configuration<T, TKey> AddFilter(FilterConfiguration filter)
+    {
+        Filter = filter;
+
+        return this;
+    }
+
+    public Configuration<T, TKey> AddPagination(PaginationConfiguration pagination)
+    {
+        Pagination = pagination;
+
+        return this;
+    }
+
+    public Configuration<T, TKey> DisableClickOn(Func<T, bool> func)
+    {
+        ClickDisableOn = func;
+
+        return this;
+    }
+}

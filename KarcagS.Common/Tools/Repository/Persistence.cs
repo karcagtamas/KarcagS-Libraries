@@ -58,16 +58,16 @@ public class Persistence<TUserKey> : IPersistence
         // Get
         var query = context.Set<T>().Where(predicate);
 
-        // Count
-        if (count is not null)
-        {
-            query = query.Take((int)count);
-        }
-
         // Skip
         if (skip is not null)
         {
             query = query.Skip((int)skip);
+        }
+
+        // Count
+        if (count is not null)
+        {
+            query = query.Take((int)count);
         }
 
         return query.ToList();

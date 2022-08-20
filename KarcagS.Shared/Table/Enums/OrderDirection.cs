@@ -1,6 +1,6 @@
 using System;
 
-namespace KarcagS.Blazor.Common.Enums;
+namespace KarcagS.Shared.Table.Enums;
 
 public enum OrderDirection
 {
