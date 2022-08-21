@@ -1,6 +1,7 @@
 ﻿using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Table;
+using KarcagS.Shared.Table.Enums;
 using static KarcagS.Shared.Table.TableResult;
 
 namespace KarcagS.Common.Tools.Table;
@@ -22,7 +23,7 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
 
     public abstract int GetAllFilteredCount(QueryModel query);
 
-    public TableMetaData<T, TKey> GetMetaData() => new(Configuration);
+    public TableMetaData GetMetaData() => Configuration.Convert();
 
     public IEnumerable<ResultItem> GetDisplayData(QueryModel query)
     {

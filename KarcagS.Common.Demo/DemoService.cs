@@ -2,6 +2,7 @@
 using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
+using KarcagS.Shared.Table.Enums;
 
 namespace KarcagS.Common.Demo;
 
@@ -22,7 +23,9 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
             .AddColumn(Column<DemoEntry, string>.Build("name").SetTitle("Name").AddValueGetter(x => x.Name))
             .AddColumn(Column<DemoEntry, string>.Build("age").SetTitle("Age").AddValueGetter(x => x.Age).SetFormatter(ColumnFormatter.Number))
             .AddColumn(Column<DemoEntry, string>.Build("date").SetTitle("Date").AddValueGetter(x => x.Date).SetFormatter(ColumnFormatter.Date))
-            .AddColumn(Column<DemoEntry, string>.Build("male").SetTitle("Male").AddValueGetter(x => x.Male).SetFormatter(ColumnFormatter.Logic, "Yes", "No"));
+            .AddColumn(Column<DemoEntry, string>.Build("male").SetTitle("Male").AddValueGetter(x => x.Male).SetFormatter(ColumnFormatter.Logic, "Yes", "No"))
+            .AddFilter(FilterConfiguration.Build().IsTextFilterEnabled(true))
+            .AddPagination(PaginationConfiguration.Build().IsPaginationEnabled(true));
 
     public override DataSource<DemoEntry, string> BuildDataSource() => ListTableDataSource<DemoEntry, string>.Build(() =>
         context.Set<DemoEntry>().AsQueryable())

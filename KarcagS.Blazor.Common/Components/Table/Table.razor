@@ -1,0 +1,54 @@
+﻿@using KarcagS.Shared.Common
+@using static KarcagS.Shared.Table.TableResult
+
+<div class="d-flex flex-column w-100" style="max-height: 100%;">
+    @if (MetaData != null)
+    {
+        <MudTable @ref="TableComponent" ServerData="@(new Func<TableState, Task<TableData<ResultRowItem>>>(TableReload))" Virtualize="true" T="ResultRowItem" Class="@AppendedClass" Loading="Loading" Dense="Style.Dense" Elevation="Style.Elevation" FixedHeader="Style.FixedHeader" FixedFooter="true" Hover="Style.Hover" Striped="Style.Striped" Bordered="Style.Bordered" OnRowClick="RowClickHandler">
+            <ColGroup>
+                @foreach (var col in MetaData.ColumnsData.Columns)
+                {
+                    @if (ObjectHelper.IsNotNull(col.Width))
+                    {
+                        <col style="width: @(col.Width)px;" />
+                    }
+                    else
+                    {
+                        <col />
+                    }
+                }
+            </ColGroup>
+            <ToolBarContent>
+                <MudText Typo="Typo.h5" Color="Color.Primary" Class="w-100">
+                    <b>@MetaData.Title</b>
+                </MudText>
+                <MudSpacer />
+                @if (MetaData.FilterData.TextFilterEnabled)
+                {
+                    <MudTextField Class="mr-3" T="string" DebounceInterval="500" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Style="width: 300px;" Value="TextFilter" ValueChanged="TextFilterHandler" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Search" />
+                }
+            </ToolBarContent>
+            <HeaderContent>
+                @foreach (var col in MetaData.ColumnsData.Columns)
+                {
+                    <MudTh><MudText>@col.Title</MudText></MudTh>
+                }
+            </HeaderContent>
+            <RowTemplate>
+                @foreach (var col in MetaData.ColumnsData.Columns)
+                {
+                    <MudTd Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key"><MudText>@context.Values[col.Key]</MudText></MudTd>
+                }
+            </RowTemplate>
+            <PagerContent>
+                @if (MetaData.PaginationData.PaginationEnabled)
+                {
+                    <div style="min-height: 52px;">
+                        <MudTablePager PageSizeOptions="@(new int[] { MetaData.PaginationData.PageSize })" HideRowsPerPage="true" />
+                    </div>
+                }
+            </PagerContent>
+        </MudTable>
+    }
+</div>
+

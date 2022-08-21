@@ -1,0 +1,52 @@
+﻿@page "/list-table"
+@using KarcagS.Shared.Common
+@using KarcagS.Shared.Table
+
+<div class="flex-box overflow-hidden p-1">
+    <ListTable T="TestRowItem" TKey="string" Config="Config" DataSource="DataSource" />
+</div>
+
+@code {
+    private TableDataSource<TestRowItem, string> DataSource { get; set; } = default!;
+    private TableConfiguration<TestRowItem, string> Config { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        DataSource = new TableDataSource<TestRowItem, string>((filter) => Task.FromResult(new TableResult
+            {
+                Items = new (),
+                AllItemCount = 27
+            }));
+        Config = TableConfiguration<TestRowItem, string>.Build()
+            .AddColumn(new TableColumn<TestRowItem, string>
+                {
+                    Key = "id",
+                    ValueGetter = (obj) => obj.Id,
+                    Title = "Id"
+                })
+            .AddColumn(new TableColumn<TestRowItem, string>
+                {
+                    Key = "number",
+                    ValueGetter = (obj) => obj.Number,
+                    Title = "Number",
+                    Alignment = KarcagS.Shared.Table.Enums.Alignment.Right
+                })
+            .AddColumn(new TableColumn<TestRowItem, string>
+                {
+                    Key = "boolean",
+                    ValueGetter = (obj) => obj.Boolean,
+                    Title = "Boolean",
+                    Width = 20
+                })
+            .AddFilter(TableFilterConfiguration.Build().IsTextFilterEnabled(true))
+            .AddPagination(TablePaginationConfiguration.Build().IsPaginationEnabled(true));
+        base.OnInitialized();
+    }
+
+    class TestRowItem : IIdentified<string>
+    {
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public int Number { get; set; } = Random.Shared.Next(10);
+        public bool Boolean { get; set; } = Random.Shared.Next(2) == 1;
+    }
+}

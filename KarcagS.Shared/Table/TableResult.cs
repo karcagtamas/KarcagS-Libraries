@@ -16,4 +16,24 @@ public class TableResult
         public List<string> Tags { get; set; } = new();
         public bool ClickDisabled { get; set; } = false;
     }
+
+    public class ResultRowItem : ResultItem
+    {
+        public bool Selected { get; set; }
+        public bool Disabled { get; set; }
+        public bool Hidden { get; set; }
+
+        public ResultRowItem()
+        {
+
+        }
+
+        public ResultRowItem(ResultItem item)
+        {
+            ItemKey = item.ItemKey;
+            Values = item.Values;
+            Tags = item.Tags;
+            ClickDisabled = item.ClickDisabled;
+        }
+    }
 }

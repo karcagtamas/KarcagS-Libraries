@@ -3,7 +3,7 @@ using KarcagS.Shared.Table.Enums;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace KarcagS.Blazor.Common.Components.Table;
+namespace KarcagS.Blazor.Common.Components.ListTable;
 
 public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdentified<TKey>
 {

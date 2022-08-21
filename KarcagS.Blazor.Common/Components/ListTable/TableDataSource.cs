@@ -2,7 +2,7 @@
 using KarcagS.Shared.Table;
 using MudBlazor;
 
-namespace KarcagS.Blazor.Common.Components.Table;
+namespace KarcagS.Blazor.Common.Components.ListTable;
 
 public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 {

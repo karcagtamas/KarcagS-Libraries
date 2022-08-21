@@ -1,4 +1,4 @@
-﻿namespace KarcagS.Common.Tools.Table.Configuration;
+﻿namespace KarcagS.Shared.Table.Enums;
 
 public enum ColumnFormatter
 {

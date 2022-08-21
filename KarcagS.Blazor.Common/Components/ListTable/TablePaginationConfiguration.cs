@@ -1,4 +1,4 @@
-﻿namespace KarcagS.Blazor.Common.Components.Table;
+﻿namespace KarcagS.Blazor.Common.Components.ListTable;
 
 public class TablePaginationConfiguration
 {

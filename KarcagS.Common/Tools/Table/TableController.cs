@@ -7,7 +7,7 @@ namespace KarcagS.Common.Tools.Table;
 public abstract class TableController<T, TKey> : ControllerBase where T : class, IIdentified<TKey>
 {
     [HttpGet("Meta")]
-    public TableMetaData<T, TKey> GetMetaData() => GetService().GetTableMetaData();
+    public TableMetaData GetMetaData() => GetService().GetTableMetaData();
 
     [HttpGet("Data")]
     public TableResult GetData([FromQuery] QueryModel query) => GetService().GetData(query);

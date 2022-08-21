@@ -1,6 +1,9 @@
 using Blazored.LocalStorage;
+using KarcagS.Blazor.Common;
 using KarcagS.Blazor.Common.Demo;
+using KarcagS.Blazor.Common.Demo.Services;
 using KarcagS.Blazor.Common.Http;
+using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Services;
 using KarcagS.Blazor.Common.Store;
 using Microsoft.AspNetCore.Components.Web;
@@ -39,6 +42,9 @@ builder.Services.AddStoreService(async (storeService, localStorage) =>
 });
 builder.Services.AddScoped<IHelperService, HelperService>();
 builder.Services.AddScoped<IToasterService, ToasterService>();
+
+builder.Services.AddScoped<IDemoTableService, DemoTableService>();
+
 builder.Services.AddBlazoredLocalStorage(config =>
 {
     config.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
@@ -62,5 +68,10 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.ShowTransitionDuration = 500;
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
+
+ApplicationSettings.BaseUrl = builder.Configuration.GetSection("SecureApi").Value;
+ApplicationSettings.BaseApiUrl = $"{ApplicationSettings.BaseUrl}/api";
+
+ApplicationContext.ApplicationName = "Papyrus";
 
 await builder.Build().RunAsync();

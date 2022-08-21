@@ -7,5 +7,5 @@ public interface ITableService<T, TKey> where T : class, IIdentified<TKey>
 {
     abstract Table<T, TKey> BuildTable();
     TableResult GetData(QueryModel query);
-    TableMetaData<T, TKey> GetTableMetaData();
+    TableMetaData GetTableMetaData();
 }

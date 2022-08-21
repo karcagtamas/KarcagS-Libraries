@@ -2,7 +2,7 @@
 using KarcagS.Shared.Table.Enums;
 using MudBlazor;
 
-namespace KarcagS.Blazor.Common.Components.Table;
+namespace KarcagS.Blazor.Common.Components.ListTable;
 
 public class TableConfiguration<T, TKey> where T : class, IIdentified<TKey>
 {

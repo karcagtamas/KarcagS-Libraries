@@ -19,5 +19,5 @@ public abstract class TableService<T, TKey> : ITableService<T, TKey> where T : c
 
     public TableResult GetData(QueryModel query) => Table.ConstructResult(query);
 
-    public TableMetaData<T, TKey> GetTableMetaData() => Table.GetMetaData();
+    public TableMetaData GetTableMetaData() => Table.GetMetaData();
 }
