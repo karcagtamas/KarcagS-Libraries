@@ -20,6 +20,8 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
 
     public abstract int GetAllDataCount();
 
+    public abstract int GetAllFilteredCount(QueryModel query);
+
     public TableMetaData<T, TKey> GetMetaData() => new(Configuration);
 
     public IEnumerable<ResultItem> GetDisplayData(QueryModel query)
@@ -100,9 +102,23 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
         return value?.ToString() ?? "";
     }
 
-    public TableResult ConstructResult(QueryModel query) => new()
+    public TableResult ConstructResult(QueryModel query)
     {
-        Items = GetDisplayData(query).ToList(),
-        AllItemCount = GetAllDataCount()
-    };
+        var result = new TableResult()
+        {
+            Items = GetDisplayData(query).ToList()
+        };
+
+        if (query.IsPaginationNeeded())
+        {
+            result.AllItemCount = GetAllDataCount();
+        }
+
+        if (query.IsTextFilterNeeded())
+        {
+            result.FilteredAllItemCount = GetAllFilteredCount(query);
+        }
+
+        return result;
+    }
 }

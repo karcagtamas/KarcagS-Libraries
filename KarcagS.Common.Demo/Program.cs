@@ -25,11 +25,14 @@ builder.Services.AddCors(opt =>
 // Add services to the container.
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<IUtilsService<string>, UtilsService<DbContext, string>>();
+builder.Services.AddScoped<IUtilsService<string>, UtilsService<DemoContext, string>>();
 builder.Services.AddScoped<ILoggerService, LoggerService<string>>();
 builder.Services.AddScoped<IDemoService, DemoService>();
 
-builder.Services.AddDbContext<DbContext>();
+var connString = builder.Configuration.GetConnectionString("Default");
+builder.Services.AddDbContextPool<DemoContext>(opt =>
+    opt.UseLazyLoadingProxies()
+        .UseMySql(connString, ServerVersion.AutoDetect(connString), b => b.MigrationsAssembly("KarcagS.Common.Demo")));
 
 builder.Services.AddErrorConverter(conf => { });
 

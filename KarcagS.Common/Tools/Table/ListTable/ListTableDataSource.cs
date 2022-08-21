@@ -1,6 +1,7 @@
 ﻿using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Table;
+using Microsoft.EntityFrameworkCore;
 
 namespace KarcagS.Common.Tools.Table.ListTable;
 
@@ -9,6 +10,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
     protected readonly Func<IQueryable<T>> Fetcher;
 
     protected List<string> TextFilteredColumns = new();
+    protected List<string> EFTextFilteredEntries = new();
 
     private ListTableDataSource(Func<IQueryable<T>> fetcher)
     {
@@ -17,35 +19,61 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
 
     public static ListTableDataSource<T, TKey> Build(Func<IQueryable<T>> fetcher) => new(fetcher);
 
-    public ListTableDataSource<T, TKey> SetListFilteredColumns(params string[] keys)
+    public ListTableDataSource<T, TKey> SetTextFilteredColumns(params string[] keys)
     {
         TextFilteredColumns = keys.ToList();
 
         return this;
     }
 
+    public ListTableDataSource<T, TKey> SetEFFilteredEntries(params string[] names)
+    {
+        EFTextFilteredEntries = names.ToList();
+
+        return this;
+    }
+
     public override int LoadAllDataCount() => Fetcher().Count();
+
+    public override int LoadFilteredAllDataCount(QueryModel query, Configuration<T, TKey> configuration) => GetFilteredQuery(query, configuration, Fetcher()).Count();
 
     public override IEnumerable<T> LoadData(QueryModel query, Configuration<T, TKey> configuration)
     {
         var fetcherQuery = Fetcher();
 
-        ObjectHelper.WhenNotNull(query.TextFilter, filter =>
-        {
-            configuration.Columns
-                .Where(x => TextFilteredColumns.Contains(x.Key))
-                .ToList()
-                .ForEach(x =>
-                {
-                    fetcherQuery = fetcherQuery.Where(obj => ((string)x.ValueGetter(obj)).ToLower().Contains(filter.ToLower()));
-                });
-        });
+        fetcherQuery = GetFilteredQuery(query, configuration, fetcherQuery);
 
         if (ObjectHelper.IsNotNull(query.Size) && ObjectHelper.IsNotNull(query.Page))
         {
             fetcherQuery = fetcherQuery.Skip((int)query.Size * (int)query.Page).Take((int)query.Size);
         }
 
+        fetcherQuery.OrderBy(x => x.Id);
+
         return fetcherQuery.ToList();
+    }
+
+    private static IQueryable<T> ApplyTextFilter(Column<T, TKey> column, IQueryable<T> query, string filter) => query.Where(obj => ((string)column.ValueGetter(obj)).ToLower().Contains(filter.ToLower()));
+
+    private static IQueryable<T> ApplyEFTextFilter(string entry, IQueryable<T> query, string filter) => query.Where(obj => EF.Property<string>(obj, entry).ToLower().Contains(filter.ToLower()));
+
+    private IQueryable<T> GetFilteredQuery(QueryModel query, Configuration<T, TKey> configuration, IQueryable<T> fetcherQuery)
+    {
+        ObjectHelper.WhenNotNull(query.TextFilter, filter =>
+        {
+            if (ObjectHelper.IsNotEmpty(EFTextFilteredEntries))
+            {
+                EFTextFilteredEntries.ForEach(entry => fetcherQuery = ListTableDataSource<T, TKey>.ApplyEFTextFilter(entry, fetcherQuery, filter));
+            }
+            else if (ObjectHelper.IsNotEmpty(TextFilteredColumns))
+            {
+                configuration.Columns
+                    .Where(col => TextFilteredColumns.Contains(col.Key))
+                    .ToList()
+                    .ForEach(col => fetcherQuery = ListTableDataSource<T, TKey>.ApplyTextFilter(col, fetcherQuery, filter));
+            }
+        });
+
+        return fetcherQuery;
     }
 }

@@ -4,8 +4,10 @@ public class TableResult
 {
     public List<ResultItem> Items { get; set; } = new();
     public int AllItemCount { get; set; } = -1;
+    public int FilteredAllItemCount { get; set; } = -1;
 
     public int All { get => AllItemCount == -1 ? Items.Count : AllItemCount; }
+    public int FilteredAll { get => FilteredAllItemCount == -1 ? All : FilteredAllItemCount; }
 
     public class ResultItem
     {

@@ -88,6 +88,27 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey>
     public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) => Persistence.GetOrderedList<TKey, T>(predicate, orderBy, direction);
 
     /// <summary>
+    /// Get all entities as query
+    /// </summary>
+    /// <returns>Queryable object</returns>
+    public virtual IQueryable<T> GetAllAsQuery() => Persistence.GetAllAsQuery<TKey, T>();
+
+    /// <summary>
+    /// Get list of entities as query
+    /// </summary>
+    /// <param name="predicate">Filter predicate.</param>
+    /// <param name="count">Max result count.</param>
+    /// <param name="skip">Skipped element number.</param>
+    /// <returns>Queryable object</returns>
+    public virtual IQueryable<T> GetListAsQuery(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) => Persistence.GetListAsQuery<TKey, T>(predicate, count, skip);
+
+    /// <summary>
+    /// Get count of entries
+    /// </summary>
+    /// <returns>Count of entries</returns>
+    public virtual int Count() => Persistence.Count<TKey, T>();
+
+    /// <summary>
     /// Get count of entries
     /// </summary>
     /// <param name="predicate">Filter predicated</param>

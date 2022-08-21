@@ -12,38 +12,9 @@
 
     protected override void OnInitialized()
     {
-        DataSource = new TableDataSource<TestRowItem, string>((filter) => Task.FromResult(new TableResult<TestRowItem>
+        DataSource = new TableDataSource<TestRowItem, string>((filter) => Task.FromResult(new TableResult
             {
-                Items = new List<TestRowItem>
-                {
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem(),
-                    new TestRowItem()
-                },
+                Items = new (),
                 AllItemCount = 27
             }));
         Config = TableConfiguration<TestRowItem, string>.Build()

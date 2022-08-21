@@ -12,5 +12,17 @@ public class ListTable<T, TKey> : Table<T, TKey> where T : class, IIdentified<TK
 
     public override int GetAllDataCount() => DataSource.LoadAllDataCount();
 
-    public override IEnumerable<T> GetData(QueryModel query) => DataSource.LoadData(query, Configuration);
+    public override int GetAllFilteredCount(QueryModel query) => DataSource.LoadFilteredAllDataCount(query, Configuration);
+
+    public override IEnumerable<T> GetData(QueryModel query)
+    {
+        try
+        {
+            return DataSource.LoadData(query, Configuration);
+        }
+        catch (Exception ex)
+        {
+            throw new TableException("Data cannot be loaded.", ex);
+        }
+    }
 }

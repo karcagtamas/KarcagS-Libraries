@@ -6,7 +6,7 @@ namespace KarcagS.Blazor.Common.Components.Table;
 
 public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 {
-    private readonly Func<TableOptions, Task<TableResult<T>>> fetcher;
+    private readonly Func<TableOptions, Task<TableResult>> fetcher;
     private List<T> rawData = new();
     private int allDataCount = 0;
     private bool initialized = false;
@@ -23,7 +23,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
     public List<T> RawData { get => data.Select(x => x.Data).ToList(); }
     public int AllDataCount { get => allDataCount; }
 
-    public TableDataSource(Func<TableOptions, Task<TableResult<T>>> fetcher)
+    public TableDataSource(Func<TableOptions, Task<TableResult>> fetcher)
     {
         this.fetcher = fetcher;
     }
@@ -100,7 +100,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
                 : null
         });
 
-        rawData = result.Items;
+        //rawData = result.Items;
         allDataCount = result.All;
 
         data = rawData.Select(x => new RowItem<T, TKey> { Id = x.Id, Data = x })
