@@ -12,9 +12,15 @@ public class TableResult
     public class ResultItem
     {
         public string ItemKey { get; set; } = string.Empty;
-        public Dictionary<string, string> Values { get; set; } = new();
+        public Dictionary<string, ItemValue> Values { get; set; } = new();
         public List<string> Tags { get; set; } = new();
         public bool ClickDisabled { get; set; } = false;
+
+        public class ItemValue
+        {
+            public string Value { get; set; } = string.Empty;
+            public List<string> Tags { get; set; } = new();
+        }
     }
 
     public class ResultRowItem : ResultItem

@@ -25,7 +25,18 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
             .AddColumn(Column<DemoEntry, string>.Build("date").SetTitle("Date").AddValueGetter(x => x.Date).SetFormatter(ColumnFormatter.Date))
             .AddColumn(Column<DemoEntry, string>.Build("male").SetTitle("Male").AddValueGetter(x => x.Male).SetFormatter(ColumnFormatter.Logic, "Yes", "No"))
             .AddFilter(FilterConfiguration.Build().IsTextFilterEnabled(true))
-            .AddPagination(PaginationConfiguration.Build().IsPaginationEnabled(true));
+            .AddPagination(PaginationConfiguration.Build().IsPaginationEnabled(true))
+            .AddTagProvider((obj, col) => 
+            {
+                var entry = col.ValueGetter(obj);
+
+                if (entry is bool lo)
+                {
+                    return lo ? "TRUE_VALUE" : "FALSE_VALUE";
+                }
+
+                return "";
+            });
 
     public override DataSource<DemoEntry, string> BuildDataSource() => ListTableDataSource<DemoEntry, string>.Build(() =>
         context.Set<DemoEntry>().AsQueryable())

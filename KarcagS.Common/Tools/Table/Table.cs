@@ -3,6 +3,7 @@ using KarcagS.Shared.Common;
 using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
 using static KarcagS.Shared.Table.TableResult;
+using static KarcagS.Shared.Table.TableResult.ResultItem;
 
 namespace KarcagS.Common.Tools.Table;
 
@@ -35,11 +36,11 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
                     ItemKey = x.Id?.ToString() ?? ""
                 };
 
-                var dict = new Dictionary<string, string>();
+                var dict = new Dictionary<string, ItemValue>();
 
                 Configuration.Columns.ForEach(col =>
                 {
-                    dict.Add(col.Key, GetFormattedValue(col, x));
+                    dict.Add(col.Key, new ItemValue { Value = GetFormattedValue(col, x), Tags = Configuration.TagProviders.Select(provider => provider(x, col)).Where(tag => !string.IsNullOrEmpty(tag)).ToList() });
                 });
 
                 item.Values = dict;

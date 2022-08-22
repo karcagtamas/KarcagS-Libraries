@@ -14,6 +14,7 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
     public PaginationConfiguration Pagination { get; set; } = PaginationConfiguration.Build();
 
     public Func<T, bool> ClickDisableOn { get; set; } = (data) => false;
+    public List<Func<T, Column<T, TKey>, string>> TagProviders { get; set; } = new();
 
     private Configuration()
     {
@@ -63,6 +64,13 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
     public Configuration<T, TKey> DisableClickOn(Func<T, bool> func)
     {
         ClickDisableOn = func;
+
+        return this;
+    }
+
+    public Configuration<T, TKey> AddTagProvider(Func<T, Column<T, TKey>, string> func) 
+    {
+        TagProviders.Add(func);
 
         return this;
     }

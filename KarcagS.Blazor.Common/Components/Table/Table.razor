@@ -31,13 +31,13 @@
             <HeaderContent>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    <MudTh><MudText>@col.Title</MudText></MudTh>
+                    <MudTh><MudText Color="Style.TitleColorGetter(col.Key)"><b>@col.Title</b></MudText></MudTh>
                 }
             </HeaderContent>
             <RowTemplate>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    <MudTd Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key"><MudText>@context.Values[col.Key]</MudText></MudTd>
+                    <MudTd Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key"><MudText Color="Style.ColorGetter(context.Values[col.Key])">@context.Values[col.Key].Value</MudText></MudTd>
                 }
             </RowTemplate>
             <PagerContent>

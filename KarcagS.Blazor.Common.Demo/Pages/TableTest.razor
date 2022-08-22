@@ -3,9 +3,29 @@
 @inject IDemoTableService Service
 
 <div class="flex-box overflow-hidden p-1">
-    <Table Service="Service" />
+    <Table Service="Service" Style="Style" />
 </div>
 
 @code {
+    private StyleConfiguration Style { get; set; } = StyleConfiguration.Build()
+        .AddTitleColorGetter((colKey) => colKey == "id" ? Color.Primary : Color.Secondary)
+        .AddColorGetter((item) =>
+        {
+            if (item.Tags.Contains("TRUE_VALUE"))
+            {
+                return Color.Success;
+            }
 
+            if (item.Tags.Contains("FALSE_VALUE"))
+            {
+                return Color.Error;
+            }
+
+            return Color.Default;    
+        });
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
 }
