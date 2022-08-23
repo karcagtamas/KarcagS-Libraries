@@ -17,7 +17,7 @@ public abstract class TableService<T, TKey> : ITableService<T, TKey> where T : c
     public abstract DataSource<T, TKey> BuildDataSource();
     public abstract Configuration<T, TKey> BuildConfiguration();
 
-    public TableResult GetData(QueryModel query) => Table.ConstructResult(query);
+    public TableResult<TKey> GetData(QueryModel query) => Table.ConstructResult(query);
 
     public TableMetaData GetTableMetaData() => Table.GetMetaData();
 }

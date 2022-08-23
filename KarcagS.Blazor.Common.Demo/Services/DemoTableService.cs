@@ -4,7 +4,7 @@ using KarcagS.Blazor.Common.Services;
 
 namespace KarcagS.Blazor.Common.Demo.Services;
 
-public class DemoTableService : TableService, IDemoTableService
+public class DemoTableService : TableService<string>, IDemoTableService
 {
     public DemoTableService(IHttpService http) : base(http)
     {

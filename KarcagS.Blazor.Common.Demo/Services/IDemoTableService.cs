@@ -2,6 +2,6 @@
 
 namespace KarcagS.Blazor.Common.Demo.Services;
 
-public interface IDemoTableService : ITableService
+public interface IDemoTableService : ITableService<string>
 {
 }

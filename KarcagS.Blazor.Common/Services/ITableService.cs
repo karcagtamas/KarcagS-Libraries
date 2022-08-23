@@ -3,9 +3,9 @@ using KarcagS.Shared.Table;
 
 namespace KarcagS.Blazor.Common.Services;
 
-public interface ITableService
+public interface ITableService<TKey>
 {
     string GetBaseUrl();
-    Task<TableResult?> GetData(TableOptions options);
+    Task<TableResult<TKey>?> GetData(TableOptions options);
     Task<TableMetaData?> GetMetaData();
 }

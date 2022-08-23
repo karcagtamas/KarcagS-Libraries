@@ -12,7 +12,7 @@
 
     protected override void OnInitialized()
     {
-        DataSource = new TableDataSource<TestRowItem, string>((filter) => Task.FromResult(new TableResult
+        DataSource = new TableDataSource<TestRowItem, string>((filter) => Task.FromResult(new TableResult<string>
             {
                 Items = new (),
                 AllItemCount = 27

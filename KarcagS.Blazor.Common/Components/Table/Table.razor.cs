@@ -1,29 +1,26 @@
-﻿using KarcagS.Blazor.Common.Components.ListTable;
-using KarcagS.Blazor.Common.Services;
-using KarcagS.Shared.Common;
+﻿using KarcagS.Blazor.Common.Services;
 using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using static KarcagS.Shared.Table.TableResult;
 
 namespace KarcagS.Blazor.Common.Components.Table;
 
-public partial class Table : ComponentBase
+public partial class Table<TKey> : ComponentBase
 {
     [Parameter, EditorRequired]
-    public ITableService Service { get; set; } = default!;
+    public ITableService<TKey> Service { get; set; } = default!;
 
     [Parameter]
     public StyleConfiguration Style { get; set; } = StyleConfiguration.Build();
 
     [Parameter]
-    public EventCallback<ResultRowItem> OnRowClick { get; set; }
+    public EventCallback<ResultRowItem<TKey>> OnRowClick { get; set; }
 
     [Parameter]
     public string Class { get; set; } = string.Empty;
 
-    private MudTable<ResultRowItem>? TableComponent { get; set; }
+    private MudTable<ResultRowItem<TKey>>? TableComponent { get; set; }
 
     private string AppendedClass { get => $"w-100 flex-box h-100 {Class}"; }
 
@@ -83,7 +80,7 @@ public partial class Table : ComponentBase
         };
     }
 
-    private async Task<TableData<ResultRowItem>> TableReload(TableState state)
+    private async Task<TableData<ResultRowItem<TKey>>> TableReload(TableState state)
     {
         var data = await Service.GetData(new TableOptions
         {
@@ -93,21 +90,21 @@ public partial class Table : ComponentBase
 
         if (ObjectHelper.IsNull(data))
         {
-            return new TableData<ResultRowItem>
+            return new TableData<ResultRowItem<TKey>>
             {
-                Items = new List<ResultRowItem>(),
+                Items = new List<ResultRowItem<TKey>>(),
                 TotalItems = 0,
             };
         }
 
-        return new TableData<ResultRowItem>
+        return new TableData<ResultRowItem<TKey>>
         {
-            Items = data.Items.Select(x => new ResultRowItem(x)).ToList(),
+            Items = data.Items.Select(x => new ResultRowItem<TKey>(x)).ToList(),
             TotalItems = data.FilteredAll
         };
     }
 
-    private async Task RowClickHandler(TableRowClickEventArgs<ResultRowItem> e)
+    private async Task RowClickHandler(TableRowClickEventArgs<ResultRowItem<TKey>> e)
     {
         if (e.Item.Disabled || e.Item.Hidden || e.Item.ClickDisabled)
         {

@@ -2,8 +2,6 @@
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
-using static KarcagS.Shared.Table.TableResult;
-using static KarcagS.Shared.Table.TableResult.ResultItem;
 
 namespace KarcagS.Common.Tools.Table;
 
@@ -26,14 +24,14 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
 
     public TableMetaData GetMetaData() => Configuration.Convert();
 
-    public IEnumerable<ResultItem> GetDisplayData(QueryModel query)
+    public IEnumerable<ResultItem<TKey>> GetDisplayData(QueryModel query)
     {
         return GetData(query)
             .Select(x =>
             {
-                var item = new ResultItem
+                var item = new ResultItem<TKey>
                 {
-                    ItemKey = x.Id?.ToString() ?? ""
+                    ItemKey = x.Id
                 };
 
                 var dict = new Dictionary<string, ItemValue>();
@@ -104,9 +102,9 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
         return value?.ToString() ?? "";
     }
 
-    public TableResult ConstructResult(QueryModel query)
+    public TableResult<TKey> ConstructResult(QueryModel query)
     {
-        var result = new TableResult()
+        var result = new TableResult<TKey>()
         {
             Items = GetDisplayData(query).ToList()
         };

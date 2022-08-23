@@ -5,7 +5,7 @@ using KarcagS.Shared.Table;
 
 namespace KarcagS.Blazor.Common.Services;
 
-public abstract class TableService : ITableService
+public abstract class TableService<TKey> : ITableService<TKey>
 {
     protected readonly IHttpService Http;
 
@@ -16,7 +16,7 @@ public abstract class TableService : ITableService
 
     public abstract string GetBaseUrl();
 
-    public Task<TableResult?> GetData(TableOptions options)
+    public Task<TableResult<TKey>?> GetData(TableOptions options)
     {
         var queryParams = HttpQueryParameters.Build()
             .AddTableParams(options);
@@ -24,7 +24,7 @@ public abstract class TableService : ITableService
         var settings = new HttpSettings(Http.BuildUrl(GetBaseUrl(), "Data"))
             .AddQueryParams(queryParams);
 
-        return Http.Get<TableResult>(settings).ExecuteWithResult();
+        return Http.Get<TableResult<TKey>>(settings).ExecuteWithResult();
     }
 
     public Task<TableMetaData?> GetMetaData()

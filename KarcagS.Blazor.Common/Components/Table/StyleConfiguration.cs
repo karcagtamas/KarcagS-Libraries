@@ -1,5 +1,5 @@
-﻿using MudBlazor;
-using static KarcagS.Shared.Table.TableResult.ResultItem;
+﻿using KarcagS.Shared.Table;
+using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Components.Table;
 
