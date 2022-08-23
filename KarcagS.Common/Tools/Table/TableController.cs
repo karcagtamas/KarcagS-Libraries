@@ -1,4 +1,5 @@
-﻿using KarcagS.Shared.Common;
+﻿using KarcagS.Common.Attributes;
+using KarcagS.Shared.Common;
 using KarcagS.Shared.Table;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,7 @@ public abstract class TableController<T, TKey> : ControllerBase where T : class,
     public TableMetaData GetMetaData() => GetService().GetTableMetaData();
 
     [HttpGet("Data")]
+    [ExtraParamsActionFilter]
     public TableResult<TKey> GetData([FromQuery] QueryModel query) => GetService().GetData(query);
 
     public abstract ITableService<T, TKey> GetService();

@@ -8,6 +8,8 @@ public class QueryModel
     public int? Page { get; set; }
     public int? Size { get; set; }
 
+    public Dictionary<string, object> ExtraParams { get; set; } = new();
+
     public bool IsTextFilterNeeded() => ObjectHelper.IsNotNull(TextFilter);
 
     public bool IsPaginationNeeded() => ObjectHelper.IsNotNull(Page) && ObjectHelper.IsNotNull(Size);

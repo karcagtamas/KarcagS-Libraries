@@ -18,7 +18,7 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
 
     public abstract IEnumerable<T> GetData(QueryModel query);
 
-    public abstract int GetAllDataCount();
+    public abstract int GetAllDataCount(QueryModel query);
 
     public abstract int GetAllFilteredCount(QueryModel query);
 
@@ -111,7 +111,7 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
 
         if (query.IsPaginationNeeded())
         {
-            result.AllItemCount = GetAllDataCount();
+            result.AllItemCount = GetAllDataCount(query);
         }
 
         if (query.IsTextFilterNeeded())

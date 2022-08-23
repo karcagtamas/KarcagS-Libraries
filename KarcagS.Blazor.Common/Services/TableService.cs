@@ -1,6 +1,5 @@
 ﻿using KarcagS.Blazor.Common.Components.Table;
 using KarcagS.Blazor.Common.Http;
-using KarcagS.Shared.Common;
 using KarcagS.Shared.Table;
 
 namespace KarcagS.Blazor.Common.Services;
@@ -16,10 +15,15 @@ public abstract class TableService<TKey> : ITableService<TKey>
 
     public abstract string GetBaseUrl();
 
-    public Task<TableResult<TKey>?> GetData(TableOptions options)
+    public Task<TableResult<TKey>?> GetData(TableOptions options, Dictionary<string, object> extraParams)
     {
         var queryParams = HttpQueryParameters.Build()
             .AddTableParams(options);
+
+        foreach (var item in extraParams)
+        {
+            queryParams.Add(item.Key, item.Value);
+        }
 
         var settings = new HttpSettings(Http.BuildUrl(GetBaseUrl(), "Data"))
             .AddQueryParams(queryParams);

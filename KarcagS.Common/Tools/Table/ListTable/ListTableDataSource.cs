@@ -7,17 +7,17 @@ namespace KarcagS.Common.Tools.Table.ListTable;
 
 public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class, IIdentified<TKey>
 {
-    protected readonly Func<IQueryable<T>> Fetcher;
+    protected readonly Func<QueryModel, IQueryable<T>> Fetcher;
 
     protected List<string> TextFilteredColumns = new();
     protected List<string> EFTextFilteredEntries = new();
 
-    private ListTableDataSource(Func<IQueryable<T>> fetcher)
+    private ListTableDataSource(Func<QueryModel, IQueryable<T>> fetcher)
     {
         Fetcher = fetcher;
     }
 
-    public static ListTableDataSource<T, TKey> Build(Func<IQueryable<T>> fetcher) => new(fetcher);
+    public static ListTableDataSource<T, TKey> Build(Func<QueryModel, IQueryable<T>> fetcher) => new(fetcher);
 
     public ListTableDataSource<T, TKey> SetTextFilteredColumns(params string[] keys)
     {
@@ -33,13 +33,13 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
         return this;
     }
 
-    public override int LoadAllDataCount() => Fetcher().Count();
+    public override int LoadAllDataCount(QueryModel query) => Fetcher(query).Count();
 
-    public override int LoadFilteredAllDataCount(QueryModel query, Configuration<T, TKey> configuration) => GetFilteredQuery(query, configuration, Fetcher()).Count();
+    public override int LoadFilteredAllDataCount(QueryModel query, Configuration<T, TKey> configuration) => GetFilteredQuery(query, configuration, Fetcher(query)).Count();
 
     public override IEnumerable<T> LoadData(QueryModel query, Configuration<T, TKey> configuration)
     {
-        var fetcherQuery = Fetcher();
+        var fetcherQuery = Fetcher(query);
 
         fetcherQuery = GetFilteredQuery(query, configuration, fetcherQuery);
 

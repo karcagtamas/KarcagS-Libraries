@@ -20,6 +20,9 @@ public partial class Table<TKey> : ComponentBase
     [Parameter]
     public string Class { get; set; } = string.Empty;
 
+    [Parameter]
+    public Dictionary<string, object> ExtraParams { get; set; } = new();
+
     private MudTable<ResultRowItem<TKey>>? TableComponent { get; set; }
 
     private string AppendedClass { get => $"w-100 flex-box h-100 {Class}"; }
@@ -86,7 +89,7 @@ public partial class Table<TKey> : ComponentBase
         {
             Filter = GetCurrentFilter(),
             Pagination = (MetaData?.PaginationData.PaginationEnabled ?? false) ? new TablePagination { Page = state.Page, Size = state.PageSize } : null
-        });
+        }, ExtraParams);
 
         if (ObjectHelper.IsNull(data))
         {

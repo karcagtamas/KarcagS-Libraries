@@ -42,7 +42,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="TKey">Type of key</typeparam>
     /// <typeparam name="T">Type of entity</typeparam>
     /// <returns>All existing entity</returns>
-    public IEnumerable<T> GetAll<TKey, T>() where T : class, IEntity<TKey> => context.Set<T>().AsEnumerable();
+    public IEnumerable<T> GetAll<TKey, T>() where T : class, IEntity<TKey> => context.Set<T>().ToList();
 
     /// <summary>
     /// Get list of entities.
@@ -53,7 +53,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <param name="count">Max result count.</param>
     /// <param name="skip">Skipped element number.</param>
     /// <returns>Filtered list of entities with max count and first skip.</returns>
-    public IEnumerable<T> GetList<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : class, IEntity<TKey> => GetListAsQuery<TKey, T>(predicate, count, skip).AsEnumerable();
+    public IEnumerable<T> GetList<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : class, IEntity<TKey> => GetListAsQuery<TKey, T>(predicate, count, skip).ToList();
 
     /// <summary>
     /// Get ordered list
@@ -71,8 +71,8 @@ public class Persistence<TUserKey> : IPersistence
 
         return direction switch
         {
-            "asc" => GetAllAsQuery<TKey, T>().OrderBy(x => property.GetValue(x)).AsEnumerable(),
-            "desc" => GetAllAsQuery<TKey, T>().OrderByDescending(x => property.GetValue(x)).AsEnumerable(),
+            "asc" => GetAllAsQuery<TKey, T>().OrderBy(x => property.GetValue(x)).ToList(),
+            "desc" => GetAllAsQuery<TKey, T>().OrderByDescending(x => property.GetValue(x)).ToList(),
             "none" => GetAll<TKey, T>(),
             _ => throw new ArgumentException("Ordering direction does not exist")
         };
@@ -97,8 +97,8 @@ public class Persistence<TUserKey> : IPersistence
 
         return direction switch
         {
-            "asc" => GetListAsQuery<TKey, T>(predicate, count, skip).OrderBy(x => property.GetValue(x)).AsEnumerable(),
-            "desc" => GetListAsQuery<TKey, T>(predicate, count, skip).OrderByDescending(x => property.GetValue(x)).AsEnumerable(),
+            "asc" => GetListAsQuery<TKey, T>(predicate, count, skip).OrderBy(x => property.GetValue(x)).ToList(),
+            "desc" => GetListAsQuery<TKey, T>(predicate, count, skip).OrderByDescending(x => property.GetValue(x)).ToList(),
             "none" => GetList<TKey, T>(predicate, count, skip),
             _ => throw new ArgumentException("Ordering direction does not exist")
         };

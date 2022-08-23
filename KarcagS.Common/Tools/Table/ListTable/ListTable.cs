@@ -10,7 +10,7 @@ public class ListTable<T, TKey> : Table<T, TKey> where T : class, IIdentified<TK
     {
     }
 
-    public override int GetAllDataCount() => DataSource.LoadAllDataCount();
+    public override int GetAllDataCount(QueryModel query) => DataSource.LoadAllDataCount(query);
 
     public override int GetAllFilteredCount(QueryModel query) => DataSource.LoadFilteredAllDataCount(query, Configuration);
 

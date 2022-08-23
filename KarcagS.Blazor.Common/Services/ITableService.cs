@@ -6,6 +6,6 @@ namespace KarcagS.Blazor.Common.Services;
 public interface ITableService<TKey>
 {
     string GetBaseUrl();
-    Task<TableResult<TKey>?> GetData(TableOptions options);
+    Task<TableResult<TKey>?> GetData(TableOptions options, Dictionary<string, object> extraParams);
     Task<TableMetaData?> GetMetaData();
 }

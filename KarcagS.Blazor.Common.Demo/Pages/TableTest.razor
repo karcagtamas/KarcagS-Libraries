@@ -3,7 +3,7 @@
 @inject IDemoTableService Service
 
 <div class="flex-box overflow-hidden p-1">
-    <Table Service="Service" Style="Style" />
+    <Table Service="Service" Style="Style" ExtraParams="ExtraParams" />
 </div>
 
 @code {
@@ -21,8 +21,13 @@
                 return Color.Error;
             }
 
-            return Color.Default;    
+            return Color.Default;
         });
+
+    private Dictionary<string, object> ExtraParams = new()
+    {
+        {"key", 1}
+    };
 
     protected override void OnInitialized()
     {

@@ -38,7 +38,7 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
                 return "";
             });
 
-    public override DataSource<DemoEntry, string> BuildDataSource() => ListTableDataSource<DemoEntry, string>.Build(() =>
+    public override DataSource<DemoEntry, string> BuildDataSource() => ListTableDataSource<DemoEntry, string>.Build((query) =>
         context.Set<DemoEntry>().AsQueryable())
         .SetEFFilteredEntries("Name");
 
