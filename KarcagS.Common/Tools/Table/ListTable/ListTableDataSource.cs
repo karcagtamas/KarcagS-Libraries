@@ -2,6 +2,7 @@
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Table;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace KarcagS.Common.Tools.Table.ListTable;
 
@@ -11,6 +12,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
 
     protected List<string> TextFilteredColumns = new();
     protected List<string> EFTextFilteredEntries = new();
+    protected Expression<Func<T, object?>> DefaultOrderBy = (x) => x.Id;
 
     private ListTableDataSource(Func<QueryModel, IQueryable<T>> fetcher)
     {
@@ -33,6 +35,13 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
         return this;
     }
 
+    public ListTableDataSource<T, TKey> ApplyDefaultOrdering(Expression<Func<T, object?>> defaultOrderBy)
+    {
+        DefaultOrderBy = defaultOrderBy;
+
+        return this;
+    }
+
     public override int LoadAllDataCount(QueryModel query) => Fetcher(query).Count();
 
     public override int LoadFilteredAllDataCount(QueryModel query, Configuration<T, TKey> configuration) => GetFilteredQuery(query, configuration, Fetcher(query)).Count();
@@ -48,7 +57,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
             fetcherQuery = fetcherQuery.Skip((int)query.Size * (int)query.Page).Take((int)query.Size);
         }
 
-        fetcherQuery.OrderBy(x => x.Id);
+        fetcherQuery = fetcherQuery.OrderBy(DefaultOrderBy);
 
         return fetcherQuery.ToList();
     }
