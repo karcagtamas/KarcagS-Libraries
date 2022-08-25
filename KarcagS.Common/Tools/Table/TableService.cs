@@ -1,4 +1,5 @@
-﻿using KarcagS.Common.Tools.Table.Configuration;
+﻿using KarcagS.Common.Helpers;
+using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Table;
 
@@ -6,9 +7,9 @@ namespace KarcagS.Common.Tools.Table;
 
 public abstract class TableService<T, TKey> : ITableService<T, TKey> where T : class, IIdentified<TKey>
 {
-    protected Table<T, TKey> Table { get; set; }
+    protected Table<T, TKey>? Table { get; set; }
 
-    public TableService()
+    public void Initalize()
     {
         Table = BuildTable();
     }
@@ -17,7 +18,22 @@ public abstract class TableService<T, TKey> : ITableService<T, TKey> where T : c
     public abstract DataSource<T, TKey> BuildDataSource();
     public abstract Configuration<T, TKey> BuildConfiguration();
 
-    public TableResult<TKey> GetData(QueryModel query) => Table.ConstructResult(query);
+    public TableResult<TKey> GetData(QueryModel query)
+    {
+        Check();
 
-    public TableMetaData GetTableMetaData() => Table.GetMetaData();
+        return Table!.ConstructResult(query);
+    }
+
+    public TableMetaData GetTableMetaData()
+    {
+        Check();
+
+        return Table!.GetMetaData();
+    }
+
+    protected void Check()
+    {
+        ExceptionHelper.ThrowIfIsNull<Table<T, TKey>, TableException>(Table, "Table is initialized");
+    }
 }

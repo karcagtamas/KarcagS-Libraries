@@ -12,6 +12,7 @@ public static class TableExtensions
         {
             Key = configuration.Key,
             Title = configuration.Title,
+            ReadOnly = configuration.ReadOnly,
             FilterData = configuration.Filter.Convert(),
             PaginationData = configuration.Pagination.Convert(),
             ColumnsData = configuration.Columns.Convert()

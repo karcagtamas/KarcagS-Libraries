@@ -6,6 +6,7 @@ public class TableMetaData
 {
     public string Key { get; set; } = default!;
     public string Title { get; set; } = default!;
+    public bool ReadOnly { get; set; } = false;
 
     public FilterData FilterData { get; set; } = default!;
     public PaginationData PaginationData { get; set; } = default!;

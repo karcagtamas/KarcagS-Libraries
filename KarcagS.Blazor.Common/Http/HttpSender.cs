@@ -26,7 +26,7 @@ public class HttpSender<T>
     }
 
     public async Task<bool> Execute() => (await Perform())?.IsSuccess ?? false;
-    
+
 
     public async Task<T?> ExecuteWithResult()
     {
@@ -50,6 +50,23 @@ public class HttpSender<T>
         }
 
         return res.Result ?? orElse;
+    }
+
+    public async Task<ResultWrapper<T>> ExcuteWithWrapper()
+    {
+        var wrapper = new ResultWrapper<T>();
+
+        var res = await Perform();
+
+        if (ObjectHelper.IsNull(res))
+        {
+            return wrapper;
+        }
+
+        wrapper.Result = res.Result;
+        wrapper.Error = res.Error;
+
+        return wrapper;
     }
 
     private async Task<HttpResult<T>?> Perform()

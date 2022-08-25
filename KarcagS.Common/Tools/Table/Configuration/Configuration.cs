@@ -6,6 +6,7 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
 {
     public string Key { get; set; }
     public string Title { get; set; } = "Table";
+    public bool ReadOnly { get; set; } = false;
 
     public List<Column<T, TKey>> Columns { get; set; } = new();
 
@@ -28,9 +29,16 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
 
     public static Configuration<T, TKey> Build(string key) => new(key);
 
-    public Configuration<T, TKey> AddTitle(string title)
+    public Configuration<T, TKey> SetTitle(string title)
     {
         Title = title;
+
+        return this;
+    }
+
+    public Configuration<T, TKey> IsReadOnly(bool value)
+    {
+        ReadOnly = value;
 
         return this;
     }
@@ -68,7 +76,7 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
         return this;
     }
 
-    public Configuration<T, TKey> AddTagProvider(Func<T, Column<T, TKey>, string> func) 
+    public Configuration<T, TKey> AddTagProvider(Func<T, Column<T, TKey>, string> func)
     {
         TagProviders.Add(func);
 

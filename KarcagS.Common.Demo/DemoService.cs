@@ -1,5 +1,4 @@
-﻿using KarcagS.Common.Demo.Controllers;
-using KarcagS.Common.Tools.Table;
+﻿using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
 using KarcagS.Shared.Table.Enums;
@@ -13,12 +12,13 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
     public DemoService(DemoContext context)
     {
         this.context = context;
+        Initalize();
     }
 
     public override Configuration<DemoEntry, string> BuildConfiguration() =>
         Configuration<DemoEntry, string>
             .Build("demo-table")
-            .AddTitle("Demo Table")
+            .SetTitle("Demo Table")
             .AddColumn(Column<DemoEntry, string>.Build("id").SetTitle("Id").AddValueGetter(x => x.Id))
             .AddColumn(Column<DemoEntry, string>.Build("name").SetTitle("Name").AddValueGetter(x => x.Name))
             .AddColumn(Column<DemoEntry, string>.Build("age").SetTitle("Age").AddValueGetter(x => x.Age).SetFormatter(ColumnFormatter.Number))

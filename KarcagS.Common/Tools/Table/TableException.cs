@@ -2,6 +2,11 @@
 
 public class TableException : Exception
 {
+    public TableException()
+    {
+
+    }
+
     public TableException(string msg) : base(msg)
     {
 

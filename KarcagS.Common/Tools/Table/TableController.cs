@@ -14,5 +14,5 @@ public abstract class TableController<T, TKey> : ControllerBase where T : class,
     [ExtraParamsActionFilter]
     public TableResult<TKey> GetData([FromQuery] QueryModel query) => GetService().GetData(query);
 
-    public abstract ITableService<T, TKey> GetService();
+    protected abstract ITableService<T, TKey> GetService();
 }

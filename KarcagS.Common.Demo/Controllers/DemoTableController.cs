@@ -15,7 +15,7 @@ public class DemoTableController : TableController<DemoEntry, string>
         this.demoService = demoService;
     }
 
-    public override ITableService<DemoEntry, string> GetService() => demoService;
+    protected override ITableService<DemoEntry, string> GetService() => demoService;
 }
 
 public class DemoDTO : IIdentified<string>

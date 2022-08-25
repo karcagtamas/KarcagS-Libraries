@@ -1,4 +1,5 @@
 ﻿using KarcagS.Blazor.Common.Services;
+using KarcagS.Shared.Http;
 using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
 using Microsoft.AspNetCore.Components;
@@ -31,6 +32,7 @@ public partial class Table<TKey> : ComponentBase
     private string? TextFilter { get; set; }
 
     private TableMetaData? MetaData { get; set; }
+    private HttpErrorResult? ErrorResult { get; set; }
 
     protected override async void OnInitialized()
     {
@@ -44,7 +46,14 @@ public partial class Table<TKey> : ComponentBase
         Loading = true;
         StateHasChanged();
 
-        MetaData = await Service.GetMetaData();
+        var meta = await Service.GetMetaData();
+
+        if (ObjectHelper.IsNotNull(meta.Error))
+        {
+            ErrorResult = meta.Error;
+        }
+
+        MetaData = meta.Result;
 
         Loading = false;
         StateHasChanged();
@@ -85,13 +94,32 @@ public partial class Table<TKey> : ComponentBase
 
     private async Task<TableData<ResultRowItem<TKey>>> TableReload(TableState state)
     {
+        if (ObjectHelper.IsNotNull(ErrorResult))
+        {
+            return new TableData<ResultRowItem<TKey>>
+            {
+                Items = new List<ResultRowItem<TKey>>(),
+                TotalItems = 0,
+            };
+        }
+
         var data = await Service.GetData(new TableOptions
         {
             Filter = GetCurrentFilter(),
             Pagination = (MetaData?.PaginationData.PaginationEnabled ?? false) ? new TablePagination { Page = state.Page, Size = state.PageSize } : null
         }, ExtraParams);
 
-        if (ObjectHelper.IsNull(data))
+        if (ObjectHelper.IsNotNull(data.Error))
+        {
+            ErrorResult = data.Error;
+            return new TableData<ResultRowItem<TKey>>
+            {
+                Items = new List<ResultRowItem<TKey>>(),
+                TotalItems = 0,
+            };
+        }
+
+        if (ObjectHelper.IsNull(data.Result))
         {
             return new TableData<ResultRowItem<TKey>>
             {
@@ -102,14 +130,14 @@ public partial class Table<TKey> : ComponentBase
 
         return new TableData<ResultRowItem<TKey>>
         {
-            Items = data.Items.Select(x => new ResultRowItem<TKey>(x)).ToList(),
-            TotalItems = data.FilteredAll
+            Items = data.Result.Items.Select(x => new ResultRowItem<TKey>(x)).ToList(),
+            TotalItems = data.Result.FilteredAll
         };
     }
 
     private async Task RowClickHandler(TableRowClickEventArgs<ResultRowItem<TKey>> e)
     {
-        if (e.Item.Disabled || e.Item.Hidden || e.Item.ClickDisabled)
+        if (MetaData?.ReadOnly ?? true || e.Item.Disabled || e.Item.Hidden || e.Item.ClickDisabled)
         {
             return;
         }

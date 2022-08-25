@@ -15,7 +15,7 @@ public abstract class TableService<TKey> : ITableService<TKey>
 
     public abstract string GetBaseUrl();
 
-    public Task<TableResult<TKey>?> GetData(TableOptions options, Dictionary<string, object> extraParams)
+    public Task<ResultWrapper<TableResult<TKey>>> GetData(TableOptions options, Dictionary<string, object> extraParams)
     {
         var queryParams = HttpQueryParameters.Build()
             .AddTableParams(options);
@@ -28,13 +28,15 @@ public abstract class TableService<TKey> : ITableService<TKey>
         var settings = new HttpSettings(Http.BuildUrl(GetBaseUrl(), "Data"))
             .AddQueryParams(queryParams);
 
-        return Http.Get<TableResult<TKey>>(settings).ExecuteWithResult();
+        return Http.Get<TableResult<TKey>>(settings)
+            .ExcuteWithWrapper();
     }
 
-    public Task<TableMetaData?> GetMetaData()
+    public Task<ResultWrapper<TableMetaData>> GetMetaData()
     {
         var settings = new HttpSettings(Http.BuildUrl(GetBaseUrl(), "Meta"));
 
-        return Http.Get<TableMetaData>(settings).ExecuteWithResult();
+        return Http.Get<TableMetaData>(settings)
+            .ExcuteWithWrapper();
     }
 }
