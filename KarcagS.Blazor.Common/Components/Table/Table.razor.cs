@@ -80,6 +80,8 @@ public partial class Table<TKey> : ComponentBase
 
     public void Refresh() => ObjectHelper.WhenNotNull(TableComponent, async t => await t.ReloadServerData());
 
+    public List<ResultRowItem<TKey>> GetData() => TableComponent?.Items.ToList() ?? new List<ResultRowItem<TKey>>();
+
     private TableFilter GetCurrentFilter()
     {
         return new TableFilter
@@ -137,7 +139,7 @@ public partial class Table<TKey> : ComponentBase
 
     private async Task RowClickHandler(TableRowClickEventArgs<ResultRowItem<TKey>> e)
     {
-        if (MetaData?.ReadOnly ?? true || e.Item.Disabled || e.Item.Hidden || e.Item.ClickDisabled)
+        if (MetaData?.ReadOnly ?? true || e.Item.Disabled || e.Item.ClickDisabled)
         {
             return;
         }

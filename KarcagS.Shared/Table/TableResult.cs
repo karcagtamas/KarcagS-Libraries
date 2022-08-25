@@ -28,9 +28,8 @@ public class ItemValue
 
 public class ResultRowItem<TKey> : ResultItem<TKey>
 {
-    public bool Selected { get; set; }
-    public bool Disabled { get; set; }
-    public bool Hidden { get; set; }
+    public bool Selected { get; set; } = false;
+    public bool Disabled { get; set; } = false;
 
     public ResultRowItem()
     {

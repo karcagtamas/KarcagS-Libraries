@@ -21,23 +21,25 @@
                 }
             </ColGroup>
             <ToolBarContent>
-                <div class="d-flex flex-row align-items-center">
-                    <MudText Typo="Typo.h5" Color="Color.Primary" Class="w-100 mt-3 mb-3">
-                        <b>@MetaData.Title</b>
-                    </MudText>
-                    <MudSpacer />
-                    @if (MetaData.FilterData.TextFilterEnabled)
+                <div class="d-flex flex-column w-100">
+                    <div class="d-flex flex-row align-items-center w-100">
+                        <MudText Typo="Typo.h5" Color="Color.Primary" Class="w-100 mt-3 mb-3">
+                            <b>@MetaData.Title</b>
+                        </MudText>
+                        <MudSpacer />
+                        @if (MetaData.FilterData.TextFilterEnabled)
+                        {
+                            <MudTextField Class="mr-3" T="string" DebounceInterval="500" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Style="width: 300px;" Value="TextFilter" ValueChanged="TextFilterHandler" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Search" />
+                        }
+                    </div>
+                    @if (ObjectHelper.IsNotNull(ErrorResult))
                     {
-                        <MudTextField Class="mr-3" T="string" DebounceInterval="500" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Style="width: 300px;" Value="TextFilter" ValueChanged="TextFilterHandler" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Search" />
+                        <div class="d-flex flex-row align-items-center w-100">
+                            <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                            <MudText Typo="Typo.body2" Inline="true" Color="Color.Error">@ErrorResult.Message</MudText>
+                        </div>
                     }
                 </div>
-                @if (ObjectHelper.IsNotNull(ErrorResult))
-                {
-                    <div class="d-flex flex-row align-items-center">
-                        <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
-                        <MudText Typo="Typo.body2" Inline="true" Color="Color.Error">@ErrorResult.Message</MudText>
-                    </div>
-                }
             </ToolBarContent>
             <HeaderContent>
                 @foreach (var col in MetaData.ColumnsData.Columns)

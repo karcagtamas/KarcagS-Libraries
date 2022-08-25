@@ -12,7 +12,7 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
     public DemoService(DemoContext context)
     {
         this.context = context;
-        Initalize();
+        Initialize();
     }
 
     public override Configuration<DemoEntry, string> BuildConfiguration() =>

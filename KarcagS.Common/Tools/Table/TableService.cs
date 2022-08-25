@@ -9,7 +9,7 @@ public abstract class TableService<T, TKey> : ITableService<T, TKey> where T : c
 {
     protected Table<T, TKey>? Table { get; set; }
 
-    public void Initalize()
+    public void Initialize()
     {
         Table = BuildTable();
     }
@@ -34,6 +34,6 @@ public abstract class TableService<T, TKey> : ITableService<T, TKey> where T : c
 
     protected void Check()
     {
-        ExceptionHelper.ThrowIfIsNull<Table<T, TKey>, TableException>(Table, "Table is initialized");
+        ExceptionHelper.ThrowIfIsNull<Table<T, TKey>, TableException>(Table, "Table is not initialized");
     }
 }
