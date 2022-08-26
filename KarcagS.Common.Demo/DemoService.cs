@@ -24,7 +24,7 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
             .AddColumn(Column<DemoEntry, string>.Build("name").SetTitle("Name").AddValueGetter(x => x.Name))
             .AddColumn(Column<DemoEntry, string>.Build("age").SetTitle("Age").AddValueGetter(x => x.Age).SetFormatter(ColumnFormatter.Number).SetWidth(50).SetAlignment(Alignment.Right))
             .AddColumn(Column<DemoEntry, string>.Build("date").SetTitle("Date").AddValueGetter(x => x.Date).SetFormatter(ColumnFormatter.Date).SetWidth(200))
-            .AddColumn(Column<DemoEntry, string>.Build("male").SetTitle("Male").AddValueGetter(x => x.Male).SetFormatter(ColumnFormatter.Logic, "Yes", "No").SetWidth(60).SetAlignment(Alignment.Center))
+            .AddColumn(Column<DemoEntry, string>.Build("gender").SetTitle("Gender").AddValueGetter(x => x.Gender.Name).SetWidth(120))
             .AddFilter(FilterConfiguration.Build().IsTextFilterEnabled(true))
             .AddPagination(PaginationConfiguration.Build().IsPaginationEnabled(true))
             .DisableClickOn(obj => obj.Age == 12)
@@ -43,7 +43,7 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
 
     public override DataSource<DemoEntry, string> BuildDataSource() => ListTableDataSource<DemoEntry, string>.Build((query) =>
         context.Set<DemoEntry>().AsQueryable())
-        .SetEFFilteredEntries("Name")
+        .SetEFFilteredEntries("Name", "Gender.Name")
         .OrderBy(x => x.Name, OrderDirection.Descend)
         .ThenBy(x => x.Id)
         .ApplyOrdering();

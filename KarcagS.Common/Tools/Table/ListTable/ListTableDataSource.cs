@@ -1,9 +1,11 @@
-﻿using KarcagS.Common.Tools.Table.Configuration;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.Ordering;
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Enums;
 using KarcagS.Shared.Table;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq.Expressions;
 
 namespace KarcagS.Common.Tools.Table.ListTable;
@@ -73,7 +75,32 @@ public partial class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T 
 
     private static IQueryable<T> ApplyTextFilter(Column<T, TKey> column, IQueryable<T> query, string filter) => query.Where(obj => ((string)column.ValueGetter(obj)).ToLower().Contains(filter.ToLower()));
 
-    private static IQueryable<T> ApplyEFTextFilter(string entry, IQueryable<T> query, string filter) => query.Where(obj => EF.Property<string>(obj, entry).ToLower().Contains(filter.ToLower()));
+    private static IQueryable<T> ApplyEFTextFilter(List<string> entries, IQueryable<T> query, string filter)
+    {
+        var param = Expression.Parameter(typeof(T), "e");
+        var body = entries
+            .Select(entry =>
+            {
+                var subBody = (Expression)param;
+                foreach (var propName in entry.Split('.'))
+                {
+                    subBody = Expression.PropertyOrField(subBody, propName);
+                }
+
+                subBody = Expression.Call(subBody, "ToLower", Type.EmptyTypes);
+                subBody = Expression.Call(typeof(DbFunctionsExtensions), "Like", Type.EmptyTypes,
+                    Expression.Constant(EF.Functions), subBody, Expression.Constant($"%{filter}%".ToLower()));
+
+                return subBody;
+            })
+            .Aggregate((a, b) => Expression.Or(a, b));
+
+        var lambda = Expression.Lambda(body, param);
+
+        var queryExpr = Expression.Call(typeof(Queryable), "Where", new[] { typeof(T) }, query.Expression, lambda);
+
+        return query.Provider.CreateQuery<T>(queryExpr);
+    }
 
     private static IOrderedQueryable<T> ApplyOrdering(IQueryable<T> query, Expression<Func<T, object?>> expression, OrderDirection direction)
     {
@@ -109,7 +136,7 @@ public partial class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T 
         {
             if (ObjectHelper.IsNotEmpty(EFTextFilteredEntries))
             {
-                EFTextFilteredEntries.ForEach(entry => fetcherQuery = ListTableDataSource<T, TKey>.ApplyEFTextFilter(entry, fetcherQuery, filter));
+                fetcherQuery = ListTableDataSource<T, TKey>.ApplyEFTextFilter(EFTextFilteredEntries, fetcherQuery, filter);
             }
             else if (ObjectHelper.IsNotEmpty(TextFilteredColumns))
             {

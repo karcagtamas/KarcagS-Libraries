@@ -1,9 +1,9 @@
+using KarcagS.Shared.Common;
+
 namespace KarcagS.Common.Tools.Entities;
 
-public interface IEntity<T>
+public interface IEntity<T> : IIdentified<T>
 {
-    T Id { get; set; }
-
     bool Equals(object obj);
 
     string? ToString();
