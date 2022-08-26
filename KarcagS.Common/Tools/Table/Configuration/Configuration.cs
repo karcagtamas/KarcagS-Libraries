@@ -6,7 +6,6 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
 {
     public string Key { get; set; }
     public string Title { get; set; } = "Table";
-    public bool ReadOnly { get; set; } = false;
 
     public List<Column<T, TKey>> Columns { get; set; } = new();
 
@@ -32,13 +31,6 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
     public Configuration<T, TKey> SetTitle(string title)
     {
         Title = title;
-
-        return this;
-    }
-
-    public Configuration<T, TKey> IsReadOnly(bool value)
-    {
-        ReadOnly = value;
 
         return this;
     }

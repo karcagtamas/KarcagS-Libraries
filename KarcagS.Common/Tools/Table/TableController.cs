@@ -11,7 +11,7 @@ public abstract class TableController<T, TKey> : ControllerBase where T : class,
     public TableMetaData GetMetaData() => GetService().GetTableMetaData();
 
     [HttpGet("Data")]
-    [ExtraParamsActionFilter]
+    [QueryModelExtraParamsActionFilter]
     public TableResult<TKey> GetData([FromQuery] QueryModel query) => GetService().GetData(query);
 
     protected abstract ITableService<T, TKey> GetService();

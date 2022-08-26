@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace KarcagS.Common.Attributes;
 
-public class ExtraParamsActionFilter : ActionFilterAttribute
+public class QueryModelExtraParamsActionFilter : ActionFilterAttribute
 {
     private const string QueryFieldName = "query";
 

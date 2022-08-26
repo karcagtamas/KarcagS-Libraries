@@ -24,6 +24,9 @@ public partial class Table<TKey> : ComponentBase
     [Parameter]
     public Dictionary<string, object> ExtraParams { get; set; } = new();
 
+    [Parameter]
+    public bool ReadOnly { get; set; } = false;
+
     private MudTable<ResultRowItem<TKey>>? TableComponent { get; set; }
 
     private string AppendedClass { get => $"w-100 flex-box h-100 {Class}"; }
@@ -139,7 +142,7 @@ public partial class Table<TKey> : ComponentBase
 
     private async Task RowClickHandler(TableRowClickEventArgs<ResultRowItem<TKey>> e)
     {
-        if ((MetaData?.ReadOnly ?? true) || e.Item.Disabled || e.Item.ClickDisabled)
+        if (ReadOnly || e.Item.Disabled || e.Item.ClickDisabled)
         {
             return;
         }
