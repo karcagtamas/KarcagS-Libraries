@@ -1,18 +1,20 @@
 ﻿using KarcagS.Common.Tools.Table.Configuration;
+using KarcagS.Common.Tools.Table.Ordering;
 using KarcagS.Shared.Common;
+using KarcagS.Shared.Enums;
 using KarcagS.Shared.Table;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace KarcagS.Common.Tools.Table.ListTable;
 
-public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class, IIdentified<TKey>
+public partial class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class, IIdentified<TKey>
 {
     protected readonly Func<QueryModel, IQueryable<T>> Fetcher;
 
     protected List<string> TextFilteredColumns = new();
     protected List<string> EFTextFilteredEntries = new();
-    protected Expression<Func<T, object?>> DefaultOrderBy = (x) => x.Id;
+    public List<OrderingSetting<T, TKey>> Ordering = new();
 
     private ListTableDataSource(Func<QueryModel, IQueryable<T>> fetcher)
     {
@@ -35,12 +37,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
         return this;
     }
 
-    public ListTableDataSource<T, TKey> ApplyDefaultOrdering(Expression<Func<T, object?>> defaultOrderBy)
-    {
-        DefaultOrderBy = defaultOrderBy;
-
-        return this;
-    }
+    public OrderingBuilder<T, TKey> OrderBy(Expression<Func<T, object?>> expression, OrderDirection direction = OrderDirection.Ascend) => new OrderingBuilder<T, TKey>(this, expression, direction);
 
     public override int LoadAllDataCount(QueryModel query) => Fetcher(query).Count();
 
@@ -57,7 +54,19 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
             fetcherQuery = fetcherQuery.Skip((int)query.Size * (int)query.Page).Take((int)query.Size);
         }
 
-        fetcherQuery = fetcherQuery.OrderBy(DefaultOrderBy);
+        if (ObjectHelper.IsEmpty(Ordering))
+        {
+            fetcherQuery = fetcherQuery.OrderBy(x => x.Id);
+        }
+        else
+        {
+            var orderedQuery = ApplyOrdering(fetcherQuery, Ordering[0].Exp, Ordering[0].Direction);
+            for (int i = 1; i < Ordering.Count; i++)
+            {
+                orderedQuery = ApplyAdditionalOrdering(orderedQuery, Ordering[i].Exp, Ordering[i].Direction);
+            }
+            fetcherQuery = orderedQuery;
+        }
 
         return fetcherQuery.ToList();
     }
@@ -65,6 +74,34 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
     private static IQueryable<T> ApplyTextFilter(Column<T, TKey> column, IQueryable<T> query, string filter) => query.Where(obj => ((string)column.ValueGetter(obj)).ToLower().Contains(filter.ToLower()));
 
     private static IQueryable<T> ApplyEFTextFilter(string entry, IQueryable<T> query, string filter) => query.Where(obj => EF.Property<string>(obj, entry).ToLower().Contains(filter.ToLower()));
+
+    private static IOrderedQueryable<T> ApplyOrdering(IQueryable<T> query, Expression<Func<T, object?>> expression, OrderDirection direction)
+    {
+        if (direction == OrderDirection.Ascend)
+        {
+            return query.OrderBy(expression);
+        }
+        else if (direction == OrderDirection.Descend)
+        {
+            return query.OrderByDescending(expression);
+        }
+
+        throw new TableException("Ordering cannot be applied.");
+    }
+
+    private static IOrderedQueryable<T> ApplyAdditionalOrdering(IOrderedQueryable<T> query, Expression<Func<T, object?>> expression, OrderDirection direction)
+    {
+        if (direction == OrderDirection.Ascend)
+        {
+            return query.ThenBy(expression);
+        }
+        else if (direction == OrderDirection.Descend)
+        {
+            return query.ThenByDescending(expression);
+        }
+
+        throw new TableException("Ordering cannot be applied.");
+    }
 
     private IQueryable<T> GetFilteredQuery(QueryModel query, Configuration<T, TKey> configuration, IQueryable<T> fetcherQuery)
     {

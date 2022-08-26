@@ -1,4 +1,4 @@
-﻿namespace KarcagS.Shared.Table.Enums;
+﻿namespace KarcagS.Shared.Enums;
 
 public enum Alignment
 {

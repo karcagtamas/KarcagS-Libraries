@@ -1,5 +1,5 @@
 ﻿using KarcagS.Shared.Common;
-using KarcagS.Shared.Table.Enums;
+using KarcagS.Shared.Enums;
 using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Components.ListTable;

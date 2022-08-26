@@ -1,4 +1,4 @@
-namespace KarcagS.Common.Enums;
+namespace KarcagS.Shared.Enums;
 
 /// <summary>
 /// Order Direction

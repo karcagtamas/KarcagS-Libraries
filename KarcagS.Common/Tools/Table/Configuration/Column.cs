@@ -1,4 +1,5 @@
 ﻿using KarcagS.Shared.Common;
+using KarcagS.Shared.Enums;
 using KarcagS.Shared.Table.Enums;
 
 namespace KarcagS.Common.Tools.Table.Configuration;

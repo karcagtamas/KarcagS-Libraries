@@ -1,7 +1,7 @@
 ﻿using KarcagS.Blazor.Common.Services;
+using KarcagS.Shared.Enums;
 using KarcagS.Shared.Http;
 using KarcagS.Shared.Table;
-using KarcagS.Shared.Table.Enums;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
@@ -139,7 +139,7 @@ public partial class Table<TKey> : ComponentBase
 
     private async Task RowClickHandler(TableRowClickEventArgs<ResultRowItem<TKey>> e)
     {
-        if (MetaData?.ReadOnly ?? true || e.Item.Disabled || e.Item.ClickDisabled)
+        if ((MetaData?.ReadOnly ?? true) || e.Item.Disabled || e.Item.ClickDisabled)
         {
             return;
         }
@@ -150,7 +150,6 @@ public partial class Table<TKey> : ComponentBase
     private void TextFilterHandler(string text)
     {
         TextFilter = text;
-        // TODO: RESET pagination
         ObjectHelper.WhenNotNull(TableComponent, async t =>
         {
             await t.ReloadServerData();
@@ -158,6 +157,18 @@ public partial class Table<TKey> : ComponentBase
     }
 
     private static string GetTDStyle(Alignment alignment)
+    {
+        var alignmentText = alignment switch
+        {
+            Alignment.Left => "left",
+            Alignment.Center => "center",
+            Alignment.Right => "right",
+            _ => ""
+        };
+        return $"text-align: {alignmentText}";
+    }
+
+    private static string GetTHStyle(Alignment alignment)
     {
         var alignmentText = alignment switch
         {

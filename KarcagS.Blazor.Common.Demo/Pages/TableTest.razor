@@ -1,9 +1,10 @@
 ﻿@page "/table"
 @using KarcagS.Blazor.Common.Demo.Services
+@using KarcagS.Shared.Table
 @inject IDemoTableService Service
 
 <div class="flex-box overflow-hidden p-1">
-    <Table Service="Service" Style="Style" ExtraParams="ExtraParams" />
+    <Table TKey="string" Service="Service" Style="Style" ExtraParams="ExtraParams" OnRowClick="RowClickHandler" />
 </div>
 
 @code {
@@ -28,6 +29,11 @@
     {
         {"key", 1}
     };
+
+    private void RowClickHandler(ResultRowItem<string> item)
+    {
+        Console.WriteLine(item.ItemKey);
+    }
 
     protected override void OnInitialized()
     {

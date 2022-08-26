@@ -1,4 +1,5 @@
-﻿using KarcagS.Shared.Table.Enums;
+﻿using KarcagS.Shared.Enums;
+using KarcagS.Shared.Table.Enums;
 
 namespace KarcagS.Shared.Table;
 

@@ -1,5 +1,5 @@
 using System;
-using KarcagS.Common.Enums;
+using KarcagS.Shared.Enums;
 
 namespace KarcagS.Common.Tests.Enums;
 

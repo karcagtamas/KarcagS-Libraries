@@ -2,6 +2,7 @@ using KarcagS.Common.Demo;
 using KarcagS.Common.Tools;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Services;
+using KarcagS.Common.Tools.Table;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +35,7 @@ builder.Services.AddDbContextPool<DemoContext>(opt =>
     opt.UseLazyLoadingProxies()
         .UseMySql(connString, ServerVersion.AutoDetect(connString), b => b.MigrationsAssembly("KarcagS.Common.Demo")));
 
-builder.Services.AddErrorConverter(conf => { });
+builder.Services.AddErrorConverter(conf => { conf.AddAgent(new TableErrorConverterAgent()); });
 
 builder.Services.AddModelValidatedControllers();
 

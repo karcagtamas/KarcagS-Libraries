@@ -1,5 +1,5 @@
 ﻿using KarcagS.Shared.Common;
-using KarcagS.Shared.Table.Enums;
+using KarcagS.Shared.Enums;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
