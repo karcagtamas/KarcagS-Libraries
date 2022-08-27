@@ -5,6 +5,7 @@ namespace KarcagS.Blazor.Common.Components.Menu;
 public class MenuItem
 {
     public string Title { get; set; }
+    public string? ResourceKey { get; set; }
     public string? Icon { get; set; }
     public Color? IconColor { get; set; }
     public string? Path { get; set; }
@@ -51,6 +52,12 @@ public class MenuItem
     public MenuItem AddItem(MenuItem item)
     {
         Children.Add(item);
+        return this;
+    }
+
+    public MenuItem AddResourceKey(string key)
+    {
+        ResourceKey = key;
         return this;
     }
 
