@@ -1,6 +1,9 @@
 ﻿@using KarcagS.Blazor.Common.Components.Tree
+@using KarcagS.Blazor.Common.Services
+@using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Shared.Common
 @using KarcagS.Shared.Helpers
+@using KarcagS.Shared.Localization
 
 @typeparam TKey
 @typeparam T where T : IIdentified<TKey>
@@ -75,6 +78,9 @@
     [Parameter]
     public List<TKey> DisabledIds { get; set; } = new();
 
+    [Inject]
+    private ILocalizationService LocalizationService { get; set; } = default!;
+
     public HashSet<TreeItem<T>> DataList { get; set; } = new();
 
     private List<T> Selection { get; set; } = new();
@@ -88,7 +94,7 @@
         }
         else
         {
-            TitleText = $"Select {EntityName}";
+            TitleText = LocalizationService.GetValue(LibraryLocalizer.SelectorSelectEntityKey, "Select {0}", EntityName);
         }
 
         await Fetch();

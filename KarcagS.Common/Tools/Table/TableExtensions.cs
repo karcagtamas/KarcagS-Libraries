@@ -12,6 +12,7 @@ public static class TableExtensions
         {
             Key = configuration.Key,
             Title = configuration.Title,
+            ResourceKey = configuration.ResourceKey,
             FilterData = configuration.Filter.Convert(),
             PaginationData = configuration.Pagination.Convert(),
             ColumnsData = configuration.Columns.Convert()
@@ -49,6 +50,7 @@ public static class TableExtensions
         {
             Key = column.Key,
             Title = column.Title,
+            ResourceKey= column.ResourceKey,
             Alignment = column.Alignment,
             Formatter = column.Formatter,
             Width = column.Width,

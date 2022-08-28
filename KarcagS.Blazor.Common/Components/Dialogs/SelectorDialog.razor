@@ -1,5 +1,8 @@
-﻿@using KarcagS.Shared.Common
+﻿@using KarcagS.Blazor.Common.Services
+@using KarcagS.Blazor.Common.Services.Interfaces
+@using KarcagS.Shared.Common
 @using KarcagS.Shared.Helpers
+@using KarcagS.Shared.Localization
 @typeparam Key
 @typeparam Data where Data : IIdentified<Key>
 
@@ -55,6 +58,9 @@
     [Parameter]
     public bool Required { get; set; } = false;
 
+    [Inject]
+    private ILocalizationService LocalizationService { get; set; } = default!;
+
     private string TitleText { get; set; } = "";
     public List<SelectableRowItem<Data, Key>> DataList { get; set; } = new();
     private List<Data> Selection { get; set; } = new();
@@ -67,7 +73,7 @@
         }
         else
         {
-            TitleText = $"Select {EntityName}";
+            TitleText = LocalizationService.GetValue(LibraryLocalizer.SelectorSelectEntityKey, "Select {0}", EntityName);
         }
 
         await Fetch();

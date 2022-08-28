@@ -1,8 +1,9 @@
-﻿using KarcagS.Blazor.Common.Services;
+﻿using KarcagS.Blazor.Common.Services.Interfaces;
 using KarcagS.Shared.Enums;
 using KarcagS.Shared.Http;
 using KarcagS.Shared.Table;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Components.Table;
@@ -26,6 +27,12 @@ public partial class Table<TKey> : ComponentBase
 
     [Parameter]
     public bool ReadOnly { get; set; } = false;
+
+    [Parameter]
+    public IStringLocalizer? Localizer { get; set; }
+
+    [Inject]
+    private ILocalizationService LocalizationService { get; set; } = default!;
 
     private MudTable<ResultRowItem<TKey>>? TableComponent { get; set; }
 
@@ -181,5 +188,35 @@ public partial class Table<TKey> : ComponentBase
             _ => ""
         };
         return $"text-align: {alignmentText}";
+    }
+
+    private static string GetTitle(TableMetaData meta, IStringLocalizer? localizer)
+    {
+        if (ObjectHelper.IsNotNull(meta.ResourceKey) && ObjectHelper.IsNotNull(localizer))
+        {
+            return localizer[meta.ResourceKey];
+        }
+
+        return meta.Title;
+    }
+
+    private static string GetColumnTitle(ColumnData col, IStringLocalizer? localizer)
+    {
+        if (ObjectHelper.IsNotNull(col.ResourceKey) && ObjectHelper.IsNotNull(localizer))
+        {
+            return localizer[col.ResourceKey];
+        }
+
+        return col.Title;
+    }
+
+    private static string GetValue(string value, IStringLocalizer? localizer)
+    {
+        if (ObjectHelper.IsNotNull(localizer))
+        {
+            return localizer[value];
+        }
+
+        return value;
     }
 }

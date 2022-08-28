@@ -6,6 +6,7 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
 {
     public string Key { get; set; }
     public string Title { get; set; } = "Table";
+    public string? ResourceKey { get; set; }
 
     public List<Column<T, TKey>> Columns { get; set; } = new();
 
@@ -28,9 +29,10 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
 
     public static Configuration<T, TKey> Build(string key) => new(key);
 
-    public Configuration<T, TKey> SetTitle(string title)
+    public Configuration<T, TKey> SetTitle(string title, string? resourceKey = null)
     {
         Title = title;
+        ResourceKey = resourceKey;
 
         return this;
     }

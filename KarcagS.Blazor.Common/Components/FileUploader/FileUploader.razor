@@ -1,4 +1,7 @@
-﻿@using KarcagS.Shared.Helpers
+﻿@using KarcagS.Blazor.Common.Services
+@using KarcagS.Blazor.Common.Services.Interfaces
+@using KarcagS.Shared.Helpers
+@using KarcagS.Shared.Localization
 @using Microsoft.AspNetCore.Components.Forms
 @using System.IO
 @using static KarcagS.Blazor.Common.Components.FileUploader.FileUploaderResult
@@ -11,7 +14,7 @@
         <div class="text-center">
             <InputFile id="fileInput" OnChange="@FilesReady" hidden></InputFile>
             <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary"
-                       StartIcon="@Icons.Filled.CloudUpload" for="fileInput">Upload</MudButton>
+                       StartIcon="@Icons.Filled.CloudUpload" for="fileInput">@LocalizationService.GetValue(LibraryLocalizer.UploaderUploadKey, "Upload")</MudButton>
             @if (ObjectHelper.IsNotEmpty(Files))
             {
                 <div style="margin-top: 1rem;">
@@ -24,8 +27,8 @@
         </div>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Save">Save</MudButton>
+        <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.DialogCancelKey, "Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Save">@LocalizationService.GetValue(LibraryLocalizer.DialogSaveKey, "Save")</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -39,6 +42,9 @@
 
     [Inject]
     private ISnackbar Snackbar { get; set; } = null!;
+
+    [Inject]
+    private ILocalizationService LocalizationService { get; set; } = default!;
 
     private List<IBrowserFile> Files { get; set; } = new();
 
@@ -72,13 +78,13 @@
                 }
                 catch (Exception e)
                 {
-                    Snackbar.Add("Problem during the image uploading. Please try again later.", Severity.Error);
+                    Snackbar.Add(LocalizationService.GetValue(LibraryLocalizer.UploaderUploadingErrorKey, "Problem during the image uploading. Please try again later."), Severity.Error);
                     Console.WriteLine(e);
                 }
             }
             else
             {
-                Snackbar.Add($"Invalid file extension [{file.ContentType}]. Please try again with a correct type. [{file.Name}]", Severity.Error);
+                Snackbar.Add(LocalizationService.GetValue(LibraryLocalizer.UploaderInvalidExtensionsKey, "Invalid file extension [{0}]. Please try again with a correct type. [{1}]", file.ContentType, file.Name), Severity.Error);
             }
 
             if (await Input.ImageUpload(new FileUploaderResult { Files = files }))

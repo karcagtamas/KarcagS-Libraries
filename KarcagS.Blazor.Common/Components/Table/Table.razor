@@ -1,4 +1,5 @@
 ﻿@using KarcagS.Shared.Common
+@using KarcagS.Shared.Localization
 @using KarcagS.Shared.Table
 
 @typeparam TKey
@@ -23,7 +24,7 @@
             <ToolBarContent>
                 <div class="d-flex flex-row align-items-center w-100 mr-2">
                     <MudText Typo="Typo.h5" Color="Color.Primary" Class="w-100 mt-3 mb-3">
-                        <b>@MetaData.Title</b>
+                        <b>@GetTitle(MetaData, Localizer)</b>
                     </MudText>
                     <MudSpacer />
                     @if (ObjectHelper.IsNotNull(ErrorResult))
@@ -37,7 +38,7 @@
                     {
                         @if (MetaData.FilterData.TextFilterEnabled)
                         {
-                            <MudTextField Class="mr-3" T="string" DebounceInterval="500" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Style="width: 300px;" Value="TextFilter" ValueChanged="TextFilterHandler" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Search" />
+                            <MudTextField Class="mr-3" T="string" DebounceInterval="500" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Style="width: 300px;" Value="TextFilter" ValueChanged="TextFilterHandler" Placeholder="@LocalizationService.GetValue(LibraryLocalizer.TableSearchLabelKey, "Search")" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Search" />
                         }
                     }
                 </div>
@@ -45,13 +46,13 @@
             <HeaderContent>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    <MudTh Style="@GetTHStyle(col.Alignment)"><MudText Color="Style.TitleColorGetter(col.Key)"><b>@col.Title</b></MudText></MudTh>
+                    <MudTh Style="@GetTHStyle(col.Alignment)"><MudText Color="Style.TitleColorGetter(col.Key)"><b>@GetColumnTitle(col, Localizer)</b></MudText></MudTh>
                 }
             </HeaderContent>
             <RowTemplate>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    <MudTd Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key"><MudText Color="Style.ColorGetter(context.Values[col.Key])">@context.Values[col.Key].Value</MudText></MudTd>
+                    <MudTd Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key"><MudText Color="Style.ColorGetter(context.Values[col.Key])">@GetValue(context.Values[col.Key].Value, Localizer)</MudText></MudTd>
                 }
             </RowTemplate>
             <PagerContent>

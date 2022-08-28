@@ -1,5 +1,6 @@
 ﻿using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
+using KarcagS.Blazor.Common.Services.Interfaces;
 using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Services;

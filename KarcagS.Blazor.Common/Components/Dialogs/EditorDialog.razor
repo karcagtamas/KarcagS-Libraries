@@ -1,5 +1,7 @@
 ﻿@using KarcagS.Blazor.Common.Services
+@using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Shared.Helpers
+@using KarcagS.Shared.Localization
 @typeparam Model
 
 <MudDialog>
@@ -14,12 +16,12 @@
         </div>
     </DialogContent>
     <DialogActions>
-        @if (Remove is not null && IsEdit)
+        @if (ObjectHelper.IsNotNull(Remove) && IsEdit)
         {
-            <MudButton Color="Color.Error" OnClick="Delete">Remove</MudButton>
+            <MudButton Color="Color.Error" OnClick="Delete">@LocalizationService.GetValue(LibraryLocalizer.EditorRemoveKey, "Remove")</MudButton>
         }
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Save">Save</MudButton>
+        <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.EditorCancelKey, "Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Save">@LocalizationService.GetValue(LibraryLocalizer.EditorSaveKey, "Save")</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -63,6 +65,9 @@
     [Inject]
     private IConfirmService ConfirmService { get; set; } = default!;
 
+    [Inject]
+    private ILocalizationService LocalizationService { get; set; } = default!;
+
     private MudForm? Form { get; set; } = null!;
     private string TitleText { get; set; } = "";
 
@@ -74,7 +79,9 @@
         }
         else
         {
-            TitleText = IsEdit ? $"Edit {EntityName}" : $"Create {EntityName}";
+            TitleText = IsEdit
+                ? LocalizationService.GetValue(LibraryLocalizer.EditorEditEntityKey, "Edit {0}", EntityName)
+                : LocalizationService.GetValue(LibraryLocalizer.EditorCreateEntityKey, "Create {0}", EntityName);
         }
         base.OnInitialized();
     }
@@ -112,7 +119,14 @@
             return;
         }
 
-        await ConfirmService.Open(new ConfirmDialogInput { Name = EntityName, ActionFunction = async () => await Remove() }, "Confirm Delete", () => Dialog.Close(DialogResult.Ok(EditorDialogResult.PerformedResult(EditorCloseEvent.Remove))));
+        await ConfirmService.Open(new ConfirmDialogInput
+            {
+                Name = EntityName,
+                ActionName = LocalizationService.GetValue(LibraryLocalizer.ConfirmDeleteActionKey, "delete"),
+                ActionFunction = async () => await Remove()
+            },
+        LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteTitleKey, "Confirm Delete"),
+        () => Dialog.Close(DialogResult.Ok(EditorDialogResult.PerformedResult(EditorCloseEvent.Remove))));
     }
 
     private void Cancel() => Dialog.Cancel();

@@ -1,5 +1,5 @@
 using Blazored.LocalStorage;
-using KarcagS.Blazor.Common.Services;
+using KarcagS.Blazor.Common.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

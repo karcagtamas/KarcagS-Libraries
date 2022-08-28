@@ -1,6 +1,6 @@
 using KarcagS.Blazor.Common.Models;
 
-namespace KarcagS.Blazor.Common.Services;
+namespace KarcagS.Blazor.Common.Services.Interfaces;
 
 public interface IToasterService
 {

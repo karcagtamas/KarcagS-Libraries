@@ -1,13 +1,18 @@
-﻿<MudDialog>
+﻿@using KarcagS.Blazor.Common.Services
+@using KarcagS.Blazor.Common.Services.Interfaces
+@using KarcagS.Shared.Localization
+@inject ILocalizationService LocalizationService
+
+<MudDialog>
     <TitleContent>
         <MudText Typo="Typo.h5" Color="Color.Primary">@Dialog.Title</MudText>
     </TitleContent>
     <DialogContent>
-        @Input.Msg
+        @Input.FormattedMessage(LocalizationService)
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Confirm</MudButton>
+        <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.ConfirmCancelKey, "Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">@LocalizationService.GetValue(LibraryLocalizer.ConfirmConfirmKey, "Confirm")</MudButton>
     </DialogActions>
 </MudDialog>
 

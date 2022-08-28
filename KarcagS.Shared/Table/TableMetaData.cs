@@ -7,6 +7,7 @@ public class TableMetaData
 {
     public string Key { get; set; } = default!;
     public string Title { get; set; } = default!;
+    public string? ResourceKey { get; set; }
 
     public FilterData FilterData { get; set; } = default!;
     public PaginationData PaginationData { get; set; } = default!;
@@ -34,6 +35,7 @@ public class ColumnData
 {
     public string Key { get; set; } = default!;
     public string Title { get; set; } = default!;
+    public string? ResourceKey { get; set; }
     public Alignment Alignment { get; set; }
     public ColumnFormatter Formatter { get; set; }
     public int? Width { get; set; }

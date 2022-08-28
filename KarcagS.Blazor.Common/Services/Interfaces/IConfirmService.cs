@@ -1,6 +1,6 @@
 using KarcagS.Blazor.Common.Components.Confirm;
 
-namespace KarcagS.Blazor.Common.Services;
+namespace KarcagS.Blazor.Common.Services.Interfaces;
 
 public interface IConfirmService
 {

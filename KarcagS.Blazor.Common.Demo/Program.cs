@@ -5,6 +5,7 @@ using KarcagS.Blazor.Common.Demo.Services;
 using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Services;
+using KarcagS.Blazor.Common.Services.Interfaces;
 using KarcagS.Blazor.Common.Store;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;

@@ -2,7 +2,7 @@
 using KarcagS.Blazor.Common.Http;
 using KarcagS.Shared.Table;
 
-namespace KarcagS.Blazor.Common.Services;
+namespace KarcagS.Blazor.Common.Services.Interfaces;
 
 public interface ITableService<TKey>
 {

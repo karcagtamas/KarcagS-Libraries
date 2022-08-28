@@ -8,6 +8,7 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
 {
     public string Key { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
+    public string? ResourceKey { get; set; }
     public Alignment Alignment { get; set; } = Alignment.Left;
     public Func<T, object> ValueGetter { get; set; } = (data) => default!;
     public ColumnFormatter Formatter { get; set; } = ColumnFormatter.Text;
@@ -21,9 +22,10 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
 
     public static Column<T, TKey> Build(string key) => new(key);
 
-    public Column<T, TKey> SetTitle(string value)
+    public Column<T, TKey> SetTitle(string value, string? resourecKey = null)
     {
         Title = value;
+        ResourceKey = resourecKey;
 
         return this;
     }

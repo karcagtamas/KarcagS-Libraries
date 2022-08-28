@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using System.Text.Json;
 
-namespace KarcagS.Blazor.Common.Services;
+namespace KarcagS.Blazor.Common.Services.Interfaces;
 
 public interface IHelperService
 {

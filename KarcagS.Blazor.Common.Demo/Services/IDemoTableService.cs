@@ -1,4 +1,4 @@
-﻿using KarcagS.Blazor.Common.Services;
+﻿using KarcagS.Blazor.Common.Services.Interfaces;
 
 namespace KarcagS.Blazor.Common.Demo.Services;
 

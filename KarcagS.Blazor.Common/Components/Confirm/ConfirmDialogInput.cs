@@ -1,4 +1,5 @@
-﻿using KarcagS.Shared.Helpers;
+﻿using KarcagS.Blazor.Common.Services.Interfaces;
+using KarcagS.Shared.Localization;
 
 namespace KarcagS.Blazor.Common.Components.Confirm;
 
@@ -17,8 +18,15 @@ public class ConfirmDialogInput
     public string ActionName { get; set; } = "delete";
     public string? Message { get; set; }
 
-    public string Msg 
-    { 
-        get => ObjectHelper.OrElse(Message, $"Are you sure want to {ActionName} {Name}?"); 
+    public string FormattedMessage(ILocalizationService localizationService)
+    {
+        if (ObjectHelper.IsNotNull(Message))
+        {
+            return Message;
+        }
+
+        var action = localizationService.GetValue(ActionName).ToLower();
+
+        return localizationService.GetValue(LibraryLocalizer.ConfirmMessageKey, "Are you sure want to {0} {1}?", action, Name);
     }
 }
