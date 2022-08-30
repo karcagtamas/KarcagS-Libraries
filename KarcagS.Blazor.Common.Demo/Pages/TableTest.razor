@@ -4,10 +4,12 @@
 @inject IDemoTableService Service
 
 <div class="flex-box overflow-hidden p-1">
-    <Table TKey="string" Service="Service" Style="Style" ExtraParams="ExtraParams" OnRowClick="RowClickHandler" />
+    <Table @ref="Table" TKey="string" Service="Service" Style="Style" ExtraParams="ExtraParams" OnRowClick="RowClickHandler" />
 </div>
 
 @code {
+    private Table<string>? Table { get; set; } = default!;
+
     private StyleConfiguration Style { get; set; } = StyleConfiguration.Build()
         .AddTitleColorGetter((colKey) => colKey == "id" ? Color.Primary : Color.Secondary)
         .AddColorGetter((item) =>
@@ -32,6 +34,7 @@
 
     private void RowClickHandler(ResultRowItem<string> item)
     {
+        var items = Table?.GetData();
         Console.WriteLine(item.ItemKey);
     }
 

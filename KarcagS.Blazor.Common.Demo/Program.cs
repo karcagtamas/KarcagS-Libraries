@@ -3,6 +3,7 @@ using KarcagS.Blazor.Common;
 using KarcagS.Blazor.Common.Demo;
 using KarcagS.Blazor.Common.Demo.Services;
 using KarcagS.Blazor.Common.Http;
+using KarcagS.Blazor.Common.Localization;
 using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Services;
 using KarcagS.Blazor.Common.Services.Interfaces;
@@ -45,6 +46,8 @@ builder.Services.AddScoped<IHelperService, HelperService>();
 builder.Services.AddScoped<IToasterService, ToasterService>();
 
 builder.Services.AddScoped<IDemoTableService, DemoTableService>();
+
+builder.Services.AddLibraryLocalization();
 
 builder.Services.AddBlazoredLocalStorage(config =>
 {

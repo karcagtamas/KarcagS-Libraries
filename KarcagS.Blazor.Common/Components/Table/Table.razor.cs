@@ -90,7 +90,7 @@ public partial class Table<TKey> : ComponentBase
 
     public void Refresh() => ObjectHelper.WhenNotNull(TableComponent, async t => await t.ReloadServerData());
 
-    public List<ResultRowItem<TKey>> GetData() => TableComponent?.Items.ToList() ?? new List<ResultRowItem<TKey>>();
+    public List<ResultRowItem<TKey>> GetData() => TableComponent?.Context.Rows.Select(x => x.Value).ToList() ?? new List<ResultRowItem<TKey>>();
 
     private TableFilter GetCurrentFilter()
     {
