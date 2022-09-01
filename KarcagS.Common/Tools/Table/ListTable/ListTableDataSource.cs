@@ -81,19 +81,22 @@ public partial class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T 
         var body = entries
             .Select(entry =>
             {
-                var subBody = (Expression)param;
-                foreach (var propName in entry.Split('.'))
+                var segments = entry.Split('.');
+                var p = (Expression)param;
+                foreach (var propName in segments)
                 {
-                    subBody = Expression.PropertyOrField(subBody, propName);
+                    p = Expression.PropertyOrField(p, propName);
                 }
 
-                subBody = Expression.Call(subBody, "ToLower", Type.EmptyTypes);
-                subBody = Expression.Call(typeof(DbFunctionsExtensions), "Like", Type.EmptyTypes,
-                    Expression.Constant(EF.Functions), subBody, Expression.Constant($"%{filter}%".ToLower()));
+                Expression filterBody = Expression.Call(p, "ToLower", Type.EmptyTypes);
+                filterBody = Expression.Call(typeof(DbFunctionsExtensions), "Like", Type.EmptyTypes,
+                    Expression.Constant(EF.Functions), filterBody, Expression.Constant($"%{filter}%".ToLower()));
 
-                return subBody;
+                var checkerBody = Expression.NotEqual(p, Expression.Constant(null));
+
+                return Expression.AndAlso(checkerBody, filterBody);
             })
-            .Aggregate((a, b) => Expression.Or(a, b));
+            .Aggregate((a, b) => Expression.OrElse(a, b));
 
         var lambda = Expression.Lambda(body, param);
 

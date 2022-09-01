@@ -22,6 +22,11 @@ public class DemoContext : DbContext
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
+        modelBuilder.Entity<DemoEntry>()
+            .HasOne(x => x.OtherGender)
+            .WithMany(x => x.OtherEntries)
+            .OnDelete(DeleteBehavior.SetNull);
+
         base.OnModelCreating(modelBuilder);
     }
 }
@@ -44,7 +49,10 @@ public class DemoEntry : IEntity<string>
     [Required]
     public int GenderId { get; set; }
 
+    public int? OtherGenderId { get; set; }
+
     public virtual GenderEntry Gender { get; set; } = default!;
+    public virtual GenderEntry? OtherGender { get; set; }
 }
 
 public class GenderEntry : IEntity<int>
@@ -57,4 +65,5 @@ public class GenderEntry : IEntity<int>
     public string Name { get; set; } = default!;
 
     public virtual ICollection<DemoEntry> Entries { get; set; } = default!;
+    public virtual ICollection<DemoEntry> OtherEntries { get; set; } = default!;
 }
