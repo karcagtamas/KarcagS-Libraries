@@ -28,8 +28,8 @@
     </DialogContent>
     <DialogActions>
         <MudSpacer />
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Select</MudButton>
+        <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
     </DialogActions>
 </MudDialog>
 

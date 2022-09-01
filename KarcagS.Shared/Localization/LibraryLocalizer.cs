@@ -46,6 +46,8 @@ public class LibraryLocalizer
     public const string EditorConfirmDeleteActionKey = "Editor.ConfirmDelete.Action";
 
     public const string SelectorSelectEntityKey = "Selector.SelectEntity";
+    public const string SelectorSelectActionKey = "Selector.Action.Select";
+    public const string SelectorCancelActionKey = "Selector.Action.Cancel";
 
     public const string TableSearchLabelKey = "Table.Search";
 }

@@ -36,8 +36,8 @@
         <MudIconButton Icon="@Icons.Filled.ExpandMore" Size="Size.Small" OnClick="ExpandAll" />
         <MudIconButton Icon="@Icons.Filled.ExpandLess" Size="Size.Small" OnClick="CollapseAll" />
         <MudSpacer />
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Select</MudButton>
+        <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
     </DialogActions>
 </MudDialog>
 
