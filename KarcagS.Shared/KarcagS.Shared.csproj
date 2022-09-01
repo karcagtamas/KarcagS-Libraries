@@ -3,10 +3,10 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageVersion>2.6.9</PackageVersion>
+		<PackageVersion>2.7.0</PackageVersion>
 		<Title>KarcagS Shared C# Library</Title>
-		<AssemblyVersion>2.6.9</AssemblyVersion>
-		<FileVersion>2.6.9</FileVersion>
+		<AssemblyVersion>2.7.0</AssemblyVersion>
+		<FileVersion>2.7.0</FileVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>

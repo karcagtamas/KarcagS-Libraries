@@ -22,15 +22,9 @@ public class ToasterService : IToasterService
     /// Open toaster
     /// </summary>
     /// <param name="settings">Toaster Settings</param>
-    public void Open(ToasterSettings settings)
-    {
-        _snackbar.Add(GenerateString(settings), GetType(settings));
-    }
+    public void Open(ToasterSettings settings) => _snackbar.Add(GenerateString(settings), GetType(settings));
 
-    private static string GenerateString(ToasterSettings settings)
-    {
-        return $"<h5>{settings.Caption}</h5><h6>{settings.Message}</h6>";
-    }
+    private static string GenerateString(ToasterSettings settings) => $"<h5>{settings.Caption}</h5><h6>{settings.Message}</h6>";
 
     private static Severity GetType(ToasterSettings settings)
     {

@@ -1,20 +1,23 @@
-﻿namespace KarcagS.Blazor.Common.Http;
+﻿using Microsoft.Extensions.Localization;
+
+namespace KarcagS.Blazor.Common.Http;
 
 public class HttpCall<TKey> : IHttpCall<TKey>
 {
     protected readonly IHttpService Http;
     protected readonly string Url;
+    protected readonly IStringLocalizer? Localizer;
     private readonly string _caption;
 
-    protected HttpCall(IHttpService http, string url, string caption)
+    protected HttpCall(IHttpService http, string url, string caption, IStringLocalizer? localizer)
     {
         Http = http;
         Url = url;
         _caption = caption;
+        Localizer = localizer;
     }
 
     public Task<List<T>> GetAll<T>() => GetAll<T>("Id");
-    
 
     public async Task<List<T>> GetAll<T>(string orderBy, string direction = "asc")
     {
@@ -38,7 +41,7 @@ public class HttpCall<TKey> : IHttpCall<TKey>
 
     public async Task<bool> Create<T>(T model)
     {
-        var settings = new HttpSettings(Url).AddToaster($"{_caption} adding");
+        var settings = new HttpSettings(Url).AddToaster(GetMessage(MessageType.Add));
 
         return await Http.Post(settings, model).Execute();
     }
@@ -47,7 +50,7 @@ public class HttpCall<TKey> : IHttpCall<TKey>
     {
         var pathParams = HttpPathParameters.Build().Add(id);
 
-        var settings = new HttpSettings(Url).AddPathParams(pathParams).AddToaster($"{_caption} updating");
+        var settings = new HttpSettings(Url).AddPathParams(pathParams).AddToaster(GetMessage(MessageType.Update));
 
         return await Http.Put(settings, model).Execute();
     }
@@ -56,8 +59,31 @@ public class HttpCall<TKey> : IHttpCall<TKey>
     {
         var pathParams = HttpPathParameters.Build().Add(id);
 
-        var settings = new HttpSettings(Url).AddPathParams(pathParams).AddToaster($"{_caption} deleting");
+        var settings = new HttpSettings(Url).AddPathParams(pathParams).AddToaster(GetMessage(MessageType.Delete));
 
         return await Http.Delete(settings).Execute();
+    }
+
+    private string GetMessage(MessageType type)
+    {
+        if (ObjectHelper.IsNotNull(Localizer))
+        {
+            return Localizer[$"Toaster.{type}", Localizer["Entity"]];
+        }
+
+        return type switch
+        {
+            HttpCall<TKey>.MessageType.Delete => $"{_caption} deleting",
+            HttpCall<TKey>.MessageType.Update => $"{_caption} updating",
+            HttpCall<TKey>.MessageType.Add => $"{_caption} adding",
+            _ => "",
+        };
+    }
+
+    private enum MessageType
+    {
+        Delete,
+        Update,
+        Add
     }
 }

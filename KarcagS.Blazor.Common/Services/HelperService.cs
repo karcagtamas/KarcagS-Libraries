@@ -12,20 +12,22 @@ namespace KarcagS.Blazor.Common.Services;
 public class HelperService : IHelperService
 {
     protected const string NA = "N/A";
-    protected readonly NavigationManager navigationManager;
-    protected readonly IToasterService toasterService;
-    protected readonly IDialogService dialogService;
+    protected readonly NavigationManager NavigationManager;
+    protected readonly IToasterService ToasterService;
+    protected readonly IDialogService DialogService;
+    protected readonly ILocalizationService LocalizationService;
 
-    public HelperService(NavigationManager navigationManager, IToasterService toasterService, IDialogService dialogService)
+    public HelperService(NavigationManager navigationManager, IToasterService toasterService, IDialogService dialogService, ILocalizationService localizationService)
     {
-        this.navigationManager = navigationManager;
-        this.toasterService = toasterService;
-        this.dialogService = dialogService;
+        NavigationManager = navigationManager;
+        ToasterService = toasterService;
+        DialogService = dialogService;
+        LocalizationService = localizationService;
     }
 
     public void Navigate(string path)
     {
-        navigationManager.NavigateTo(path);
+        NavigationManager.NavigateTo(path);
     }
 
     public JsonSerializerOptions GetSerializerOptions()
@@ -35,9 +37,9 @@ public class HelperService : IHelperService
 
     public void AddHttpSuccessToaster(string caption)
     {
-        toasterService.Open(new ToasterSettings
+        ToasterService.Open(new ToasterSettings
         {
-            Message = "Event successfully accomplished",
+            Message = LocalizationService.GetValue("Server.Message.SuccessfullyAccomplished", "Event successfully accomplished"),
             Caption = caption,
             Type = ToasterType.Success
         });
@@ -45,8 +47,8 @@ public class HelperService : IHelperService
 
     public void AddHttpErrorToaster(string caption, HttpErrorResult? errorResult)
     {
-        string message = errorResult?.Message.Text ?? "Unexpected Error";
-        toasterService.Open(new ToasterSettings
+        string message = LocalizationService.GetValue(errorResult?.Message.Text ?? "Server.Message.UnexpectedError", errorResult?.Message.Text ?? "Unexpected Error");
+        ToasterService.Open(new ToasterSettings
         {
             Message = message,
             Caption = caption,
@@ -85,7 +87,7 @@ public class HelperService : IHelperService
 
     public async Task<TData?> OpenDialog<TComponent, TData>(string title, Action<TData> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase
     {
-        var dialog = dialogService.Show<TComponent>(title, parameters ?? new DialogParameters { }, options);
+        var dialog = DialogService.Show<TComponent>(title, parameters ?? new DialogParameters { }, options);
         var result = await dialog.Result;
 
         if (!result.Cancelled)
