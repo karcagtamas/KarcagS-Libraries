@@ -1,8 +1,6 @@
-using DocumentFormat.OpenXml.Spreadsheet;
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Entities;
 using KarcagS.Common.Tools.HttpInterceptor;
-using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -35,9 +33,9 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
     {
         TUserKey? userId = GetCurrentUserId();
 
-        ExceptionHelper.ThrowIfIsNull(userId, "User key not found");
+        ExceptionHelper.ThrowIfIsNull(userId, "User key not found", "Server.Message.UserKeyNotFound");
 
-        return ObjectHelper.OrElseThrow(context.Set<T>().Find(userId), () => new ArgumentException($"User not found with this id: {userId}"));
+        return ObjectHelper.OrElseThrow(context.Set<T>().Find(userId), () => new ServerException($"User not found with this id: {userId}", "Server.Message.UserNotFound"));
     }
 
     /// <summary>

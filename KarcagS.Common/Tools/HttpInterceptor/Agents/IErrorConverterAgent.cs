@@ -1,6 +1,6 @@
 ﻿using KarcagS.Shared.Http;
 
-namespace KarcagS.Common.Tools.HttpInterceptor;
+namespace KarcagS.Common.Tools.HttpInterceptor.Agents;
 
 public interface IErrorConverterAgent
 {

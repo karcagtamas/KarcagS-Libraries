@@ -29,18 +29,18 @@ public static class HttpInterceptorExtensions
                         StatusCode = (int)HttpStatusCode.InternalServerError,
                         Error = new HttpErrorResult
                         {
-                            Message = "Validation error",
+                            Message = new ResourceMessage { Text = "Validation error", ResourceKey = "Server.Message.Validation" },
                             SubMessages = context.ModelState
                                 .SelectMany(x =>
                                 {
                                     if (x.Value is null)
                                     {
-                                        return new List<string>();
+                                        return new List<ResourceMessage>();
                                     }
 
                                     return x.Value.Errors.Select(e =>
                                     {
-                                        return $"{x.Key}: {e.ErrorMessage}";
+                                        return new ResourceMessage { Text = $"{x.Key}: {e.ErrorMessage}" };
                                     }).ToList();
                                 })
                                 .ToArray()

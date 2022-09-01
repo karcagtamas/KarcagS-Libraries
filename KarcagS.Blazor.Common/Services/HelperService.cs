@@ -45,7 +45,7 @@ public class HelperService : IHelperService
 
     public void AddHttpErrorToaster(string caption, HttpErrorResult? errorResult)
     {
-        string message = errorResult?.Message ?? "Unexpected Error";
+        string message = errorResult?.Message.Text ?? "Unexpected Error";
         toasterService.Open(new ToasterSettings
         {
             Message = message,

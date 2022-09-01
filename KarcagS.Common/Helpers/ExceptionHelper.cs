@@ -1,15 +1,14 @@
 ﻿using KarcagS.Common.Tools.HttpInterceptor;
-using KarcagS.Shared.Helpers;
 
 namespace KarcagS.Common.Helpers;
 
 public static class ExceptionHelper
 {
-    public static void ThrowIfIsNull<T>(T? obj, string msg)
+    public static void ThrowIfIsNull<T>(T? obj, string msg, string? resourceKey = null)
     {
         if (ObjectHelper.IsNull(obj))
         {
-            throw new ServerException(msg);
+            throw new ServerException(msg, resourceKey);
         }
     }
 
@@ -44,11 +43,11 @@ public static class ExceptionHelper
         }
     }
 
-    public static void Throw(bool expression, string msg)
+    public static void Throw(bool expression, string msg, string? resourceKey = null)
     {
         if (expression)
         {
-            throw new ServerException(msg);
+            throw new ServerException(msg, resourceKey);
         }
     }
 
@@ -83,11 +82,11 @@ public static class ExceptionHelper
         }
     }
 
-    public static void Check(bool expression, string msg)
+    public static void Check(bool expression, string msg, string? resourceKey = null)
     {
         if (!expression)
         {
-            throw new ServerException(msg);
+            throw new ServerException(msg, resourceKey);
         }
     }
 

@@ -1,8 +1,9 @@
-﻿using KarcagS.Shared.Helpers;
+﻿using KarcagS.Common.Tools.HttpInterceptor.Agents;
+using KarcagS.Shared.Helpers;
 using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Http;
 
-namespace KarcagS.Common.Tools.HttpInterceptor;
+namespace KarcagS.Common.Tools.HttpInterceptor.Converters;
 
 public class ErrorConverter : IErrorConverter
 {

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text.RegularExpressions;
+using KarcagS.Common.Tools.HttpInterceptor.Converters;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Http;
@@ -129,16 +130,16 @@ public class HttpInterceptor
         {
             response.Error = new HttpErrorResult
             {
-                Message = "Resource not found.",
-                SubMessages = Array.Empty<string>()
+                Message = new ResourceMessage { Text = "Resource not found.", ResourceKey = "Server.Message.ResourceNotFound" },
+                SubMessages = Array.Empty<ResourceMessage>()
             };
         }
         else
         {
             response.Error = new HttpErrorResult
             {
-                Message = "Request cannot be processed.",
-                SubMessages = Array.Empty<string>()
+                Message = new ResourceMessage { Text = "Request cannot be processed.", ResourceKey = "Server.Message.RequestCannotProcessed" },
+                SubMessages = Array.Empty<ResourceMessage>()
             };
         }
 

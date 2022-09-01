@@ -15,9 +15,15 @@ public class HttpErrorResult
         StackTrace = exception.StackTrace;
     }
 
-    public string Message { get; set; } = string.Empty;
-    public string[] SubMessages { get; set; } = Array.Empty<string>();
+    public ResourceMessage Message { get; set; } = new();
+    public ResourceMessage[] SubMessages { get; set; } = Array.Empty<ResourceMessage>();
     public string? StackTrace { get; set; }
 
     public Dictionary<string, object> Context { get; set; } = new();
+}
+
+public class ResourceMessage
+{
+    public string Text { get; set; } = string.Empty;
+    public string? ResourceKey { get; set; }
 }

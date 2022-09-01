@@ -1,6 +1,6 @@
 ﻿using KarcagS.Shared.Http;
 
-namespace KarcagS.Common.Tools.HttpInterceptor;
+namespace KarcagS.Common.Tools.HttpInterceptor.Agents;
 
 public class BasicErrorConverterAgent : IErrorConverterAgent
 {
@@ -10,8 +10,8 @@ public class BasicErrorConverterAgent : IErrorConverterAgent
     {
         return new(exception)
         {
-            Message = FatalError,
-            SubMessages = Array.Empty<string>()
+            Message = new ResourceMessage { Text = FatalError, ResourceKey = "Server.Message.Fatal" },
+            SubMessages = Array.Empty<ResourceMessage>()
         };
     }
 }

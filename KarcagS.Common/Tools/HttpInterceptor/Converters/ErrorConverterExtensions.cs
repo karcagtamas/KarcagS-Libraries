@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using KarcagS.Common.Tools.HttpInterceptor.Agents;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace KarcagS.Common.Tools.HttpInterceptor;
+namespace KarcagS.Common.Tools.HttpInterceptor.Converters;
 
 public static class ErrorConverterExtensions
 {
