@@ -36,6 +36,12 @@
                     }
                     else
                     {
+                        @if (ObjectHelper.IsNotNull(FilterRow))
+                        {
+                            <div class="d-flex flex-row align-items-center mr-3">
+                                @FilterRow(SetAdditionalFilter)
+                            </div>
+                        }
                         @if (MetaData.FilterData.TextFilterEnabled)
                         {
                             <MudTextField Class="mr-3" T="string" DebounceInterval="500" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Style="width: 300px;" Value="TextFilter" ValueChanged="TextFilterHandler" Placeholder="@LocalizationService.GetValue(LibraryLocalizer.TableSearchLabelKey, "Search")" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Search" />

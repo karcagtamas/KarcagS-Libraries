@@ -10,6 +10,9 @@ namespace KarcagS.Blazor.Common.Components.Table;
 
 public partial class Table<TKey> : ComponentBase
 {
+    [Parameter]
+    public RenderFragment<Action<string, object?>>? FilterRow { get; set; }
+
     [Parameter, EditorRequired]
     public ITableService<TKey> Service { get; set; } = default!;
 
@@ -23,7 +26,7 @@ public partial class Table<TKey> : ComponentBase
     public string Class { get; set; } = string.Empty;
 
     [Parameter]
-    public Dictionary<string, object> ExtraParams { get; set; } = new();
+    public Dictionary<string, object> InitialParams { get; set; } = new();
 
     [Parameter]
     public bool ReadOnly { get; set; } = false;
@@ -40,6 +43,7 @@ public partial class Table<TKey> : ComponentBase
 
     private bool Loading { get; set; } = false;
     private string? TextFilter { get; set; }
+    private Dictionary<string, object> Params { get; set; } = new();
 
     private TableMetaData? MetaData { get; set; }
     private HttpErrorResult? ErrorResult { get; set; }
@@ -47,6 +51,11 @@ public partial class Table<TKey> : ComponentBase
     protected override async void OnInitialized()
     {
         await LoadMetaData();
+
+        foreach (var p in InitialParams)
+        {
+            Params.Add(p.Key, p.Value);
+        }
 
         base.OnInitialized();
     }
@@ -92,6 +101,34 @@ public partial class Table<TKey> : ComponentBase
 
     public List<ResultRowItem<TKey>> GetData() => TableComponent?.Context.Rows.Select(x => x.Value).ToList() ?? new List<ResultRowItem<TKey>>();
 
+    public void SetAdditionalFilter(string key, object? value)
+    {
+        bool needRefresh = false;
+        if (Params.ContainsKey(key))
+        {
+            if (ObjectHelper.IsNotNull(value))
+            {
+                Params[key] = value;
+            }
+            else
+            {
+                Params.Remove(key);
+            }
+
+            needRefresh = true;
+        }
+        else if (ObjectHelper.IsNotNull(value))
+        {
+            Params.Add(key, value);
+            needRefresh = true;
+        }
+
+        if (needRefresh)
+        {
+            Refresh();
+        }
+    }
+
     private TableFilter GetCurrentFilter()
     {
         return new TableFilter
@@ -119,7 +156,7 @@ public partial class Table<TKey> : ComponentBase
         {
             Filter = GetCurrentFilter(),
             Pagination = (MetaData?.PaginationData.PaginationEnabled ?? false) ? new TablePagination { Page = state.Page, Size = state.PageSize } : null
-        }, ExtraParams);
+        }, Params);
 
         if (ObjectHelper.IsNotNull(data.Error))
         {
