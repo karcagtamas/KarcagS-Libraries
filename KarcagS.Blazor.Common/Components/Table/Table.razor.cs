@@ -50,12 +50,12 @@ public partial class Table<TKey> : ComponentBase
 
     protected override async void OnInitialized()
     {
-        await LoadMetaData();
-
         foreach (var p in InitialParams)
         {
             Params.Add(p.Key, p.Value);
         }
+
+        await LoadMetaData();
 
         base.OnInitialized();
     }
