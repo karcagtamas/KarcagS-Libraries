@@ -5,6 +5,7 @@ using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Services.Interfaces;
 using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Services;
@@ -102,4 +103,8 @@ public class HelperService : IHelperService
     }
 
     public async Task OpenEditorDialog<TComponent>(string title, Action<EditorDialogResult> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase => await OpenDialog<TComponent, EditorDialogResult>(title, action, parameters, options);
+
+    public async Task<bool> IsInRole(Task<AuthenticationState> stateTask, params string[] roles) => IsInRole(await stateTask, roles);
+
+    public bool IsInRole(AuthenticationState state, params string[] roles) => roles.ToList().Any(r => state.User.IsInRole(r));
 }

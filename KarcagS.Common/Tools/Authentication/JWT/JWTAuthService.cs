@@ -16,7 +16,11 @@ public class JWTAuthService : IJWTAuthService
         jwtConfigurations = jwtOptions.Value;
     }
 
-    public string BuildAccessToken(IUser user, IList<string> roles)
+    public string BuildAccessToken(IUser user, IList<string> roles) => BuildAccessToken(user, roles, () => new List<Claim>());
+
+    public string BuildAccessToken(IUser user, IList<string> roles, IList<Claim> claims) => BuildAccessToken(user, roles, () => claims);
+
+    public string BuildAccessToken(IUser user, IList<string> roles, Func<IList<Claim>> claimGenerator)
     {
         var claims = new List<Claim>
         {
@@ -29,6 +33,8 @@ public class JWTAuthService : IJWTAuthService
 
         var roleClaims = roles.Select(r => new Claim(ClaimTypes.Role, r));
         claims.AddRange(roleClaims);
+
+        claims.AddRange(claimGenerator());
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfigurations.Key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);

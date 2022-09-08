@@ -1,6 +1,7 @@
 using KarcagS.Blazor.Common.Components.Dialogs;
 using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
 using System.Text.Json;
 
@@ -19,4 +20,6 @@ public interface IHelperService
     int CurrentYear();
     int CurrentMonth();
     DateTime CurrentWeek();
+    Task<bool> IsInRole(Task<AuthenticationState> stateTask, params string[] roles);
+    bool IsInRole(AuthenticationState state, params string[] roles);
 }
