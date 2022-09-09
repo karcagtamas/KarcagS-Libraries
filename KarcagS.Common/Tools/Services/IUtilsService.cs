@@ -1,9 +1,12 @@
 using KarcagS.Common.Tools.Entities;
+using System.Security.Claims;
 
 namespace KarcagS.Common.Tools.Services;
 
 public interface IUtilsService<TUserKey>
 {
+    ClaimsPrincipal? GetUserPrincipal();
+    ClaimsPrincipal GetRequiredUserPrincipal();
     T GetCurrentUser<T>() where T : class, IEntity<TUserKey>;
     TUserKey? GetCurrentUserId();
     TUserKey GetRequiredCurrentUserId();
