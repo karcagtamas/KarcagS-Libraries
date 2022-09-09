@@ -4,6 +4,7 @@ using KarcagS.Common.Tools.HttpInterceptor;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace KarcagS.Common.Tools.Services;
 
@@ -120,4 +121,8 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
 
         return contextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(c => c.Type == name)?.Value ?? string.Empty;
     }
+
+    public ClaimsPrincipal? GetUserPrincipal() => contextAccessor.HttpContext?.User;
+
+    public ClaimsPrincipal GetRequiredUserPrincipal() => ObjectHelper.OrElseThrow(GetUserPrincipal(), () => new ArgumentException("User is required"));
 }
