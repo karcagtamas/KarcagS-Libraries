@@ -18,9 +18,11 @@ public abstract class TableService<T, TKey> : ITableService<T, TKey> where T : c
     public abstract DataSource<T, TKey> BuildDataSource();
     public abstract Configuration<T, TKey> BuildConfiguration();
 
-    public TableResult<TKey> GetData(QueryModel query)
+    public async Task<TableResult<TKey>> GetData(QueryModel query)
     {
         Check();
+
+        ExceptionHelper.Check(await Authorize(query), () => new TableNotAuthorizedException());
 
         return Table!.ConstructResult(query);
     }
@@ -32,8 +34,7 @@ public abstract class TableService<T, TKey> : ITableService<T, TKey> where T : c
         return Table!.GetMetaData();
     }
 
-    protected void Check()
-    {
-        ExceptionHelper.ThrowIfIsNull<Table<T, TKey>, TableException>(Table, "Table is not initialized");
-    }
+    protected void Check() => ExceptionHelper.ThrowIfIsNull<Table<T, TKey>, TableException>(Table, "Table is not initialized");
+
+    public virtual Task<bool> Authorize(QueryModel query) => Task.FromResult(true);
 }
