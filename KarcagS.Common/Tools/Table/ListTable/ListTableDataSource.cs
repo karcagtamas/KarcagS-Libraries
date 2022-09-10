@@ -49,13 +49,6 @@ public partial class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T 
     {
         var fetcherQuery = Fetcher(query);
 
-        fetcherQuery = GetFilteredQuery(query, configuration, fetcherQuery);
-
-        if (ObjectHelper.IsNotNull(query.Size) && ObjectHelper.IsNotNull(query.Page))
-        {
-            fetcherQuery = fetcherQuery.Skip((int)query.Size * (int)query.Page).Take((int)query.Size);
-        }
-
         if (ObjectHelper.IsEmpty(Ordering))
         {
             fetcherQuery = fetcherQuery.OrderBy(x => x.Id);
@@ -68,6 +61,13 @@ public partial class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T 
                 orderedQuery = ApplyAdditionalOrdering(orderedQuery, Ordering[i].Exp, Ordering[i].Direction);
             }
             fetcherQuery = orderedQuery;
+        }
+
+        fetcherQuery = GetFilteredQuery(query, configuration, fetcherQuery);
+
+        if (ObjectHelper.IsNotNull(query.Size) && ObjectHelper.IsNotNull(query.Page))
+        {
+            fetcherQuery = fetcherQuery.Skip((int)query.Size * (int)query.Page).Take((int)query.Size);
         }
 
         return fetcherQuery.ToList();
