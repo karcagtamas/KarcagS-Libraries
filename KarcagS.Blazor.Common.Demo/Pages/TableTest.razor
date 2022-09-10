@@ -7,7 +7,7 @@
     <Table @ref="Table" TKey="string" Service="Service" Style="Style" InitialParams="ExtraParams" OnRowClick="RowClickHandler">
 
         <FilterRow>
-            <MudTextField Style="width: 220px;" T="string" Label="Text Filter" TextChanged="@((arg) => context("text", string.IsNullOrEmpty(arg) ? null : arg))" />
+            <MudTextField Style="width: 220px;" T="string" Label="Text Filter" Variant="Variant.Outlined" Margin="Margin.Dense" TextChanged="@((arg) => context("text", string.IsNullOrEmpty(arg) ? null : arg))" />
         </FilterRow>
 
     </Table>

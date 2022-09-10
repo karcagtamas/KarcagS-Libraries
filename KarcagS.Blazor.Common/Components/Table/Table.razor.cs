@@ -227,6 +227,16 @@ public partial class Table<TKey> : ComponentBase
         return $"text-align: {alignmentText}";
     }
 
+    private static string GetErrorMessage(ResourceMessage message, IStringLocalizer? localizer)
+    {
+        if (ObjectHelper.IsNotNull(message.ResourceKey) && ObjectHelper.IsNotNull(localizer))
+        {
+            return localizer[message.ResourceKey];
+        }
+
+        return message.Text;
+    }
+
     private static string GetTitle(TableMetaData meta, IStringLocalizer? localizer)
     {
         if (ObjectHelper.IsNotNull(meta.ResourceKey) && ObjectHelper.IsNotNull(localizer))

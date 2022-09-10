@@ -2,6 +2,7 @@
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
 using KarcagS.Shared.Enums;
+using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
 
 namespace KarcagS.Common.Demo;
@@ -53,6 +54,11 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
             .AddDataSource(BuildDataSource())
             .AddConfiguration(BuildConfiguration())
             .Build();
+
+    public override Task<bool> Authorize(QueryModel query)
+    {
+        return Task.FromResult(true);
+    }
 }
 
 public interface IDemoService : ITableService<DemoEntry, string>

@@ -31,7 +31,7 @@
                     {
                         <div class="d-flex flex-row align-items-center gap-2">
                             <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
-                            <MudText Style="white-space: nowrap;" Typo="Typo.body2" Inline="true" Color="Color.Error">@ErrorResult.Message</MudText>
+                            <MudText Style="white-space: nowrap;" Typo="Typo.body2" Inline="true" Color="Color.Error">@GetErrorMessage(ErrorResult.Message, Localizer)</MudText>
                         </div>
                     }
                     else
