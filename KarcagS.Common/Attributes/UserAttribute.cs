@@ -1,14 +1,14 @@
-using System;
-
 namespace KarcagS.Common.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
 public class UserAttribute : Attribute
 {
-    public UserAttribute(bool onlyInit = false)
+    public bool OnlyInit { get; }
+    public bool Force { get; }
+
+    public UserAttribute(bool onlyInit = false, bool force = true)
     {
         OnlyInit = onlyInit;
+        Force = force;
     }
-
-    public bool OnlyInit { get; }
 }

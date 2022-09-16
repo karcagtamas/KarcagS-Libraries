@@ -337,11 +337,7 @@ public class Persistence<TUserKey> : IPersistence
             lastUpdateEntity.LastUpdate = dateTime;
         }
 
-        var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
-        props.ToList().ForEach(p =>
-        {
-            p.SetValue(entity, utils.GetCurrentUserId());
-        });
+        UpdateUserAttribute<T, TKey>(entity);
     }
 
     private void ApplyUpdateModification<TKey, T>(T entity) where T : class, IEntity<TKey>
@@ -356,16 +352,22 @@ public class Persistence<TUserKey> : IPersistence
             lastUpdateEntity.LastUpdate = DateTime.Now;
         }
 
+        UpdateUserAttribute<T, TKey>(entity);
+    }
+
+    private void UpdateUserAttribute<T, TKey>(T entity, bool update = false) where T : class, IEntity<TKey>
+    {
         var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
         props.ToList().ForEach(p =>
         {
-            var attr = Attribute.GetCustomAttribute(p, typeof(UserAttribute));
+            var attr = (UserAttribute?)Attribute.GetCustomAttribute(p, typeof(UserAttribute));
 
-            if (attr is not null)
+            if (ObjectHelper.IsNotNull(attr))
             {
-                if (!((UserAttribute)attr).OnlyInit)
+                var userId = utils.GetCurrentUserId();
+                if ((attr.Force || ObjectHelper.IsNotNull(userId)) && (!update || !attr.OnlyInit))
                 {
-                    p.SetValue(entity, utils.GetCurrentUserId());
+                    p.SetValue(entity, userId);
                 }
             }
         });
