@@ -37,5 +37,5 @@ public abstract class MapperRepository<TEntity, TKey, TUserKey> : Repository<TEn
 
     public virtual IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, string orderBy, string direction, int? count = null, int? skip = null) => Mapper.Map<List<T>>(GetOrderedList(expression, orderBy, direction, count, skip));
 
-    public IEnumerable<T> MapFromQuery<T>(IQueryable<T> queryable) => Mapper.Map<List<T>>(queryable.ToList());
+    public IEnumerable<T> MapFromQuery<T>(IQueryable<TEntity> queryable) => Mapper.Map<List<T>>(queryable.ToList());
 }
