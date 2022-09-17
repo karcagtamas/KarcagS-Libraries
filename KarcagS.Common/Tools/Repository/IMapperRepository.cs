@@ -9,6 +9,7 @@ public interface IMapperRepository<TEntity, TKey> : IRepository<TEntity, TKey> w
     IEnumerable<T> GetMappedList<T>(Expression<Func<TEntity, bool>> expression, int? count = null, int? skip = null);
     IEnumerable<T> GetAllMappedAsOrdered<T>(string orderBy, string direction);
     IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, string orderBy, string direction, int? count = null, int? skip = null);
+    IEnumerable<T> MapFromQuery<T>(IQueryable<T> queryable);
     T GetMapped<T>(TKey id);
     T? GetOptionalMapped<T>(TKey id);
     TKey CreateFromModel<TModel>(TModel model, bool doPersist = true);
