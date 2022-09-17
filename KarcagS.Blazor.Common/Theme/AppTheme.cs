@@ -31,7 +31,7 @@ public class AppTheme
                 ActionDefault = palette.MainColor,
                 AppbarText = palette.White
             },
-            PaletteDark = new Palette
+            PaletteDark = ConvertToDarkTheme(new Palette
             {
                 Primary = darkPalette.MainColor,
                 Secondary = darkPalette.SecondaryColor,
@@ -45,8 +45,8 @@ public class AppTheme
                 DrawerText = darkPalette.MainColor,
                 DrawerIcon = darkPalette.MainColor,
                 ActionDefault = darkPalette.MainColor,
-                AppbarText = darkPalette.White
-            },
+                AppbarText = darkPalette.White,
+            }),
             LayoutProperties = new LayoutProperties
             {
                 DrawerWidthLeft = $"{drawerWidthLeft}px",
@@ -98,5 +98,37 @@ public class AppTheme
             SuccessColor = palette.Success;
             White = palette.White;
         }
+    }
+
+    public static Palette ConvertToDarkTheme(Palette palette)
+    {
+        // palette.Primary = "#776be7";
+        palette.Black = "#27272f";
+        palette.Background = "#32333d";
+        palette.BackgroundGrey = "#27272f";
+        palette.Surface = "#373740";
+        // palette.DrawerBackground = "#27272f";
+        // palette.DrawerText = "rgba(255,255,255, 0.50)";
+        // palette.DrawerIcon = "rgba(255,255,255, 0.50)";
+        palette.AppbarBackground = "#27272f";
+        // palette.AppbarText = "rgba(255,255,255, 0.70)";
+        palette.TextPrimary = "rgba(255,255,255, 0.70)";
+        palette.TextSecondary = "rgba(255,255,255, 0.50)";
+        // palette.ActionDefault = "#adadb1";
+        palette.ActionDisabled = "rgba(255,255,255, 0.26)";
+        palette.ActionDisabledBackground = "rgba(255,255,255, 0.12)";
+        // palette.Divider = "rgba(255,255,255, 0.12)";
+        palette.DividerLight = "rgba(255,255,255, 0.06)";
+        palette.TableLines = "rgba(255,255,255, 0.12)";
+        palette.TableStriped = "rgba(255,255,255, 0.2)";
+        palette.LinesDefault = "rgba(255,255,255, 0.12)";
+        palette.LinesInputs = "rgba(255,255,255, 0.3)";
+        palette.TextDisabled = "rgba(255,255,255, 0.2)";
+        // palette.Info = "#3299ff";
+        // palette.Success = "#0bba83";
+        // palette.Warning = "#ffa800";
+        // palette.Error = "#f64e62";
+        palette.Dark = "#27272f";
+        return palette;
     }
 }
