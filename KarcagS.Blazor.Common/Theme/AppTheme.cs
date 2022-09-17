@@ -7,10 +7,12 @@ public class AppTheme
 {
     public MudTheme Theme { get; }
     public AppColorPalette ColorPalette { get; }
+    public AppColorPalette DarkColorPalette { get; }
 
-    public AppTheme(AppColorPalette palette)
+    public AppTheme(AppColorPalette palette, AppColorPalette darkPalette, int drawerWidthLeft = 260, int drawerWidthRight = 300)
     {
         ColorPalette = palette;
+        DarkColorPalette = darkPalette;
         Theme = new()
         {
             Palette = new Palette
@@ -29,10 +31,26 @@ public class AppTheme
                 ActionDefault = palette.MainColor,
                 AppbarText = palette.White
             },
+            PaletteDark = new Palette
+            {
+                Primary = darkPalette.MainColor,
+                Secondary = darkPalette.SecondaryColor,
+                Tertiary = darkPalette.TertiaryColor,
+                Info = darkPalette.InfoColor,
+                Success = darkPalette.SuccessColor,
+                Warning = darkPalette.WarningColor,
+                Error = darkPalette.ErrorColor,
+                Divider = darkPalette.MainColor,
+                DrawerBackground = darkPalette.MainColor.ColorLighten(.71),
+                DrawerText = darkPalette.MainColor,
+                DrawerIcon = darkPalette.MainColor,
+                ActionDefault = darkPalette.MainColor,
+                AppbarText = darkPalette.White
+            },
             LayoutProperties = new LayoutProperties
             {
-                DrawerWidthLeft = "260px",
-                DrawerWidthRight = "300px"
+                DrawerWidthLeft = $"{drawerWidthLeft}px",
+                DrawerWidthRight = $"{drawerWidthRight}px"
             },
             Typography = new Typography
             {
@@ -43,6 +61,13 @@ public class AppTheme
                 }
             }
         };
+    }
+
+    public AppTheme(MudTheme theme)
+    {
+        Theme = theme;
+        ColorPalette = new AppColorPalette(theme.Palette);
+        DarkColorPalette = new AppColorPalette(theme.PaletteDark);
     }
 
     public class AppColorPalette
@@ -56,5 +81,22 @@ public class AppTheme
         public MudColor InfoColor { get; set; } = new("#66ADA1");
         public MudColor SuccessColor { get; set; } = new("#40921A");
         public MudColor White { get; set; } = new("#FFFFFF");
+
+        public AppColorPalette()
+        {
+
+        }
+
+        public AppColorPalette(Palette palette)
+        {
+            MainColor = palette.Primary;
+            SecondaryColor = palette.Secondary;
+            TertiaryColor = palette.Tertiary;
+            WarningColor = palette.Warning;
+            ErrorColor = palette.Error;
+            InfoColor = palette.Info;
+            SuccessColor = palette.Success;
+            White = palette.White;
+        }
     }
 }
