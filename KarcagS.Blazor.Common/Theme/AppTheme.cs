@@ -25,7 +25,7 @@ public class AppTheme
                 Warning = palette.WarningColor,
                 Error = palette.ErrorColor,
                 Divider = palette.MainColor,
-                DrawerBackground = palette.MainColor.ColorLighten(.71),
+                DrawerBackground = palette.DrawerBackground,
                 DrawerText = palette.MainColor,
                 DrawerIcon = palette.MainColor,
                 ActionDefault = palette.MainColor,
@@ -41,7 +41,7 @@ public class AppTheme
                 Warning = darkPalette.WarningColor,
                 Error = darkPalette.ErrorColor,
                 Divider = darkPalette.MainColor,
-                DrawerBackground = darkPalette.MainColor.ColorLighten(.71),
+                DrawerBackground = darkPalette.DrawerBackground,
                 DrawerText = darkPalette.MainColor,
                 DrawerIcon = darkPalette.MainColor,
                 ActionDefault = darkPalette.MainColor,
@@ -73,14 +73,16 @@ public class AppTheme
     public class AppColorPalette
     {
         public string MainColorValue { get => MainColor.Value; }
-        public MudColor MainColor { get; set; } = new("#0D2971");
-        public MudColor SecondaryColor { get; set; } = new("#581043");
-        public MudColor TertiaryColor { get; set; } = new("#361B3A");
-        public MudColor WarningColor { get; set; } = new("#C07C38");
-        public MudColor ErrorColor { get; set; } = new("#850525");
-        public MudColor InfoColor { get; set; } = new("#66ADA1");
-        public MudColor SuccessColor { get; set; } = new("#40921A");
-        public MudColor White { get; set; } = new("#FFFFFF");
+        public MudColor MainColor { get; set; } = "#0D2971";
+        public MudColor SecondaryColor { get; set; } = "#581043";
+        public MudColor TertiaryColor { get; set; } = "#361B3A";
+        public MudColor WarningColor { get; set; } = "#C07C38";
+        public MudColor ErrorColor { get; set; } = "#850525";
+        public MudColor InfoColor { get; set; } = "#66ADA1";
+        public MudColor SuccessColor { get; set; } = "#40921A";
+        public MudColor White { get; set; } = "#FFFFFF";
+
+        public MudColor DrawerBackground { get; set; } = new MudColor("#0D2971").ColorLighten(.71);
 
         public AppColorPalette()
         {
