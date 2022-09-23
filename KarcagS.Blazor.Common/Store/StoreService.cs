@@ -58,7 +58,7 @@ public class StoreService : IStoreService
             Store.Add(key, value);
         }
 
-        OnChanged(key, StoreEvent.Add);
+        OnChanged(key, StoreEvent.Add, value);
     }
 
     /// <inheritdoc />
@@ -71,8 +71,21 @@ public class StoreService : IStoreService
     /// <summary>
     /// On Change event
     /// </summary>
-    protected virtual void OnChanged(string key, StoreEvent type)
+    protected virtual void OnChanged(string key, StoreEvent type, object? value = null)
     {
-        Changed?.Invoke(this, new StoreEventArgs(key, type));
+        Changed?.Invoke(this, new StoreEventArgs(key, type, value, ConstructContext()));
+    }
+
+    private StoreContext ConstructContext()
+    {
+        return new StoreContext
+        {
+            Values = new Dictionary<string, object>(Store)
+        };
+    }
+
+    public class StoreContext
+    {
+        public Dictionary<string, object> Values { get; set; } = new();
     }
 }
