@@ -16,11 +16,11 @@ public class JWTAuthService : IJWTAuthService
         jwtConfigurations = jwtOptions.Value;
     }
 
-    public string BuildAccessToken(IUser user, IList<string> roles) => BuildAccessToken(user, roles, () => new List<Claim>());
+    public TokenResult BuildAccessToken(IUser user, IList<string> roles) => BuildAccessToken(user, roles, () => new List<Claim>());
 
-    public string BuildAccessToken(IUser user, IList<string> roles, IList<Claim> claims) => BuildAccessToken(user, roles, () => claims);
+    public TokenResult BuildAccessToken(IUser user, IList<string> roles, IList<Claim> claims) => BuildAccessToken(user, roles, () => claims);
 
-    public string BuildAccessToken(IUser user, IList<string> roles, Func<IList<Claim>> claimGenerator)
+    public TokenResult BuildAccessToken(IUser user, IList<string> roles, Func<IList<Claim>> claimGenerator)
     {
         var claims = new List<Claim>
         {
@@ -36,13 +36,14 @@ public class JWTAuthService : IJWTAuthService
 
         claims.AddRange(claimGenerator());
 
+        var expiration = DateTime.Now.AddMinutes(jwtConfigurations.ExpirationInMinutes);
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfigurations.Key));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
         var tokenDescriptor = new JwtSecurityToken(jwtConfigurations.Issuer, jwtConfigurations.Issuer, claims,
-            expires: DateTime.Now.AddMinutes(jwtConfigurations.ExpirationInMinutes),
+            expires: expiration,
             signingCredentials: credentials);
 
-        return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+        return new TokenResult { Token = new JwtSecurityTokenHandler().WriteToken(tokenDescriptor), Expiration = expiration };
     }
 
     public RefreshToken BuildRefreshToken()
@@ -50,6 +51,7 @@ public class JWTAuthService : IJWTAuthService
         var randomNumber = new byte[32];
         using var generator = RandomNumberGenerator.Create();
         generator.GetBytes(randomNumber);
+
         return new RefreshToken
         {
             Token = Guid.NewGuid().ToString(),
