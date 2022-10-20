@@ -44,6 +44,7 @@ builder.Services.AddStoreService(async (storeService, localStorage) =>
 });
 builder.Services.AddScoped<IHelperService, HelperService>();
 builder.Services.AddScoped<IToasterService, ToasterService>();
+builder.Services.AddScoped<IConfirmService, ConfirmService>();
 
 builder.Services.AddScoped<IDemoTableService, DemoTableService>();
 

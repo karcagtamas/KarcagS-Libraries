@@ -43,7 +43,7 @@ public class LibraryLocalizer
     public const string EditorEditEntityKey = "Editor.EditEntity";
     public const string EditorCreateEntityKey = "Editor.CreateEntity";
     public const string EditorConfirmDeleteTitleKey = "Editor.ConfirmDelete.Title";
-    public const string EditorConfirmDeleteActionKey = "Editor.ConfirmDelete.Action";
+    public const string EditorConfirmDeleteMessageKey = "Editor.ConfirmDelete.Message";
 
     public const string SelectorSelectEntityKey = "Selector.SelectEntity";
     public const string SelectorSelectActionKey = "Selector.Action.Select";

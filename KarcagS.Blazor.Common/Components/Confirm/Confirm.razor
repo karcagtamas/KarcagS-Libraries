@@ -8,7 +8,9 @@
         <MudText Typo="Typo.h5" Color="Color.Primary">@Dialog.Title</MudText>
     </TitleContent>
     <DialogContent>
-        @Input.FormattedMessage(LocalizationService)
+        <MudText Style="@($"min-width: {Input.MinContentWidth}px;")">
+            @LocalizationService.GetValue(Input.Message)
+        </MudText>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.ConfirmCancelKey, "Cancel")</MudButton>
@@ -25,7 +27,7 @@
     [Parameter]
     public ConfirmDialogInput Input { get; set; } = null!;
 
-    private async void Submit()
+    private async Task Submit()
     {
         if (await Input.ActionFunction())
         {
@@ -33,8 +35,5 @@
         }
     }
 
-    private void Cancel()
-    {
-        Dialog.Cancel();
-    }
+    private void Cancel() => Dialog.Cancel();
 }

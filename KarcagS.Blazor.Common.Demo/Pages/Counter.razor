@@ -1,6 +1,7 @@
 ﻿@page "/counter"
 @using KarcagS.Blazor.Common.Http
 @using System.ComponentModel.DataAnnotations
+@using KarcagS.Blazor.Common.Services.Interfaces
 
 <PageTitle>Counter</PageTitle>
 
@@ -17,15 +18,20 @@
     [Inject]
     private HttpClient Client { get; set; } = default!;
 
+    [Inject]
+    private IConfirmService Confirm { get; set; } = default!;
+
     private int currentCount = 0;
 
-    private async void IncrementCount()
+    private async Task IncrementCount()
     {
-        await HttpService.Post<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast"), new TestModel { }).Execute();
+        // await HttpService.Post<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast"), new TestModel { }).Execute();
         //sawait HttpService.Get<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast")).Execute();
 
         //await Client.GetFromJsonAsync<TestModel>("https://localhost:7205/weatherforecast");
-        await Client.PostAsJsonAsync<TestModel>("https://localhost:7205/weatherforecast", new TestModel { });
+        // await Client.PostAsJsonAsync<TestModel>("https://localhost:7205/weatherforecast", new TestModel { });
+
+        await Confirm.Open(new Components.Confirm.ConfirmDialogInput { ActionFunction = async () => await Task.FromResult(true), Message = "HELLO" }, "Confirm Action Log Delete");
     }
 
     public class TestModel

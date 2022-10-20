@@ -39,6 +39,12 @@
     public Func<Task<bool>>? Remove { get; set; } = default!;
 
     [Parameter]
+    public string RemoveConfirmMessage { get; set; } = default!;
+
+    [Parameter]
+    public string RemoveConfirmTitle { get; set; } = default!;
+
+    [Parameter]
     public string? Title { get; set; }
 
     [Parameter, EditorRequired]
@@ -121,11 +127,14 @@
 
         await ConfirmService.Open(new ConfirmDialogInput
             {
-                Name = EntityName,
-                ActionName = LocalizationService.GetValue(LibraryLocalizer.ConfirmDeleteActionKey, "delete"),
+                Message = !string.IsNullOrEmpty(RemoveConfirmMessage) 
+                    ? RemoveConfirmMessage 
+                    : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteMessageKey, $"Are you sure you want to delete {EntityName}", EntityName),
                 ActionFunction = async () => await Remove()
             },
-        LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteTitleKey, "Confirm Delete"),
+        !string.IsNullOrEmpty(RemoveConfirmTitle) 
+            ? RemoveConfirmTitle 
+            : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteTitleKey, "Confirm Delete"),
         () => Dialog.Close(DialogResult.Ok(EditorDialogResult.PerformedResult(EditorCloseEvent.Remove))));
     }
 

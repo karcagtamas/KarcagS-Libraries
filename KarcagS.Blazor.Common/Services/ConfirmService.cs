@@ -13,12 +13,9 @@ public class ConfirmService : IConfirmService
         this.dialogService = dialogService;
     }
 
-    public async Task<bool> Open(ConfirmDialogInput input, string title)
-    {
-        return await Open(input, title, () => { });
-    }
+    public async Task<bool> Open(ConfirmDialogInput input, string title) => await Open(input, title, () => { });
 
-    public async Task<bool> Open(ConfirmDialogInput input, string title, Action action)
+    public async Task<bool> Open(ConfirmDialogInput input, string title, Action action, DialogOptions? options = null)
     {
         var parameters = new DialogParameters
         {
@@ -27,7 +24,7 @@ public class ConfirmService : IConfirmService
                 input
             }
         };
-        var dialog = dialogService.Show<Confirm>(title, parameters);
+        var dialog = dialogService.Show<Confirm>(title, parameters, options);
         var result = await dialog.Result;
 
         if (result.Cancelled) return false;
