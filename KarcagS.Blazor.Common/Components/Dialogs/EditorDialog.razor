@@ -129,7 +129,7 @@
             {
                 Message = !string.IsNullOrEmpty(RemoveConfirmMessage) 
                     ? RemoveConfirmMessage 
-                    : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteMessageKey, $"Are you sure you want to delete {EntityName}", EntityName),
+                    : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteMessageKey, $"Are you sure you want to delete {EntityName}?", EntityName),
                 ActionFunction = async () => await Remove()
             },
         !string.IsNullOrEmpty(RemoveConfirmTitle) 
