@@ -12,7 +12,7 @@
     </TitleContent>
     <DialogContent>
         <div class="text-center">
-            <InputFile id="fileInput" OnChange="@FilesReady" hidden></InputFile>
+            <InputFile id="fileInput" OnChange="@FilesReady" hidden multipe="@Input.Multiple" accept="@ConstructAccept()" />
             <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary"
                        StartIcon="@Icons.Filled.CloudUpload" for="fileInput">@LocalizationService.GetValue(LibraryLocalizer.UploaderUploadKey, "Upload")</MudButton>
             @if (ObjectHelper.IsNotEmpty(Files))
@@ -94,17 +94,18 @@
         }
     }
 
-    private void Cancel()
-    {
-        Dialog.Cancel();
-    }
+    private string ConstructAccept() => string.Join(", ", Input.EnabledExtensions.Select(x => $".{x.Split("/")[1]}"));
+
+    private void Cancel() => Dialog.Cancel();
 
     private void FilesReady(InputFileChangeEventArgs e)
     {
         if (Input.Multiple)
         {
-            Files = e.GetMultipleFiles().ToList();
-
+            Files = e.GetMultipleFiles()
+                .ToList()
+                .Where(x => Input.EnabledExtensions.Contains(x.ContentType))
+                .ToList();
         }
         else
         {
@@ -112,7 +113,14 @@
 
             if (ObjectHelper.IsNotNull(f))
             {
-                Files = new List<IBrowserFile> { f };
+                if (!Input.EnabledExtensions.Contains(f.ContentType))
+                {
+                    Snackbar.Add(LocalizationService.GetValue(LibraryLocalizer.UploaderInvalidExtensionsKey, "Invalid file extension [{0}]. Please try again with a correct type. [{1}]", f.ContentType, f.Name), Severity.Error);
+                }
+                else
+                {
+                    Files = new List<IBrowserFile> { f };
+                }
             }
         }
     }
