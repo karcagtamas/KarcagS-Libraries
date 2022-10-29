@@ -31,6 +31,7 @@ public class LibraryLocalizer
     public const string UploaderUploadKey = "Uploader.Upload";
     public const string UploaderUploadingErrorKey = "Uploader.Message.UploadingError";
     public const string UploaderInvalidExtensionsKey = "Uploader.Message.InvalidExtensions";
+    public const string UploaderInvalidSizeKey = "Uploader.Message.InvalidSize";
 
     public const string ConfirmConfirmKey = "Confirm.Confirm";
     public const string ConfirmCancelKey = "Confirm.Cancel";
