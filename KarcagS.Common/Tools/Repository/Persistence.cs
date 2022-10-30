@@ -352,7 +352,7 @@ public class Persistence<TUserKey> : IPersistence
             lastUpdateEntity.LastUpdate = DateTime.Now;
         }
 
-        UpdateUserAttribute<T, TKey>(entity);
+        UpdateUserAttribute<T, TKey>(entity, true);
     }
 
     private void UpdateUserAttribute<T, TKey>(T entity, bool update = false) where T : class, IEntity<TKey>
