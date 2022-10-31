@@ -16,7 +16,7 @@
         </div>
     </DialogContent>
     <DialogActions>
-        @if (ObjectHelper.IsNotNull(Remove) && IsEdit)
+        @if (ObjectHelper.IsNotNull(Remove) && IsEdit && !RemoveDisabled)
         {
             <MudButton Color="Color.Error" OnClick="Delete">@LocalizationService.GetValue(LibraryLocalizer.EditorRemoveKey, "Remove")</MudButton>
         }
@@ -61,6 +61,9 @@
 
     [Parameter, EditorRequired]
     public Model ModelObj { get; set; } = default!;
+
+    [Parameter]
+    public bool RemoveDisabled { get; set; } = false;
 
     [Inject]
     private ISnackbar Snackbar { get; set; } = null!;
