@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageVersion>2.8.9</PackageVersion>
+		<PackageVersion>2.9.0</PackageVersion>
 		<Title>KarcagS Shared C# Library</Title>
-		<AssemblyVersion>2.8.9</AssemblyVersion>
-		<FileVersion>2.8.9</FileVersion>
+		<AssemblyVersion>2.9.0</AssemblyVersion>
+		<FileVersion>2.9.0</FileVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="6.0.10" />
+	  <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.0" />
 	</ItemGroup>
 
 </Project>

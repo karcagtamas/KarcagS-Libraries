@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageVersion>2.8.9</PackageVersion>
+		<PackageVersion>2.9.0</PackageVersion>
 		<Title>KarcagS Common C# Library</Title>
-		<AssemblyVersion>2.8.9</AssemblyVersion>
-		<FileVersion>2.8.9</FileVersion>
+		<AssemblyVersion>2.9.0</AssemblyVersion>
+		<FileVersion>2.9.0</FileVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
@@ -21,7 +21,7 @@
 		<PackageReference Include="DinkToPdf" Version="1.0.8" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
 		<PackageReference Include="MongoDB.Driver" Version="2.18.0" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.0" />
 	</ItemGroup>

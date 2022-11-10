@@ -302,8 +302,9 @@ public class HttpService : IHttpService
     {
         if (JsRuntime is IJSUnmarshalledRuntime unmarshalledRuntime)
         {
-            unmarshalledRuntime.InvokeUnmarshalled<string, string, byte[], bool>("manageDownload", result.FileName,
-                result.ContentType, result.Content);
+#pragma warning disable CS0618 // Type or member is obsolete
+            unmarshalledRuntime.InvokeUnmarshalled<string, string, byte[], bool>("manageDownload", result.FileName, result.ContentType, result.Content);
+#pragma warning restore CS0618 // Type or member is obsolete
         }
 
         return true;

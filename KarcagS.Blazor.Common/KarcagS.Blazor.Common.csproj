@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<OutputType>Library</OutputType>
 		<IsPackable>true</IsPackable>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageVersion>2.8.9</PackageVersion>
+		<PackageVersion>2.9.0</PackageVersion>
 		<Title>KarcagS Blazor Common</Title>
-		<AssemblyVersion>2.8.9</AssemblyVersion>
-		<FileVersion>2.8.9</FileVersion>
+		<AssemblyVersion>2.9.0</AssemblyVersion>
+		<FileVersion>2.9.0</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -31,14 +31,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.10" />
+		<PackageReference Include="Blazored.LocalStorage" Version="4.3.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="7.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="6.0.10" />
-		<PackageReference Include="MudBlazor" Version="6.0.17" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.10" />
+		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.0" />
+		<PackageReference Include="MudBlazor" Version="6.0.18" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-		<PackageReference Include="System.Text.Json" Version="6.0.6" />
+		<PackageReference Include="System.Text.Json" Version="7.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

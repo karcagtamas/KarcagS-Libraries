@@ -75,7 +75,7 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
 });
 
-ApplicationSettings.BaseUrl = builder.Configuration.GetSection("SecureApi").Value;
+ApplicationSettings.BaseUrl = builder.Configuration.GetSection("SecureApi").Value ?? "";
 ApplicationSettings.BaseApiUrl = $"{ApplicationSettings.BaseUrl}/api";
 
 ApplicationContext.ApplicationName = "Papyrus";
