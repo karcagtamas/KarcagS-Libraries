@@ -30,7 +30,7 @@
                     @if (ObjectHelper.IsNotNull(ErrorResult))
                     {
                         <div class="d-flex flex-row align-items-center gap-2">
-                            <MudIcon Icon="@Icons.Filled.Error" Color="Color.Error" />
+                            <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" />
                             <MudText Style="white-space: nowrap;" Typo="Typo.body2" Inline="true" Color="Color.Error">@GetErrorMessage(ErrorResult.Message, Localizer)</MudText>
                         </div>
                     }
@@ -44,7 +44,7 @@
                         }
                         @if (MetaData.FilterData.TextFilterEnabled)
                         {
-                            <MudTextField Class="mr-3" T="string" DebounceInterval="500" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Style="width: 300px;" Value="TextFilter" ValueChanged="TextFilterHandler" Placeholder="@LocalizationService.GetValue(LibraryLocalizer.TableSearchLabelKey, "Search")" Adornment="Adornment.Start" AdornmentIcon="@Icons.Filled.Search" />
+                            <MudTextField Class="mr-3" T="string" DebounceInterval="500" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Style="width: 300px;" Value="TextFilter" ValueChanged="TextFilterHandler" Placeholder="@LocalizationService.GetValue(LibraryLocalizer.TableSearchLabelKey, "Search")" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" />
                         }
                     }
                 </div>

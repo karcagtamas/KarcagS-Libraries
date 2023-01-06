@@ -1,5 +1,4 @@
 ﻿using KarcagS.Common.Tools.HttpInterceptor.Agents;
-using KarcagS.Shared.Helpers;
 using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Http;
 

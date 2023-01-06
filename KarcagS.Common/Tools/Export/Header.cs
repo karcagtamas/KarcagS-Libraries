@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace KarcagS.Common.Tools.Export;
+﻿namespace KarcagS.Common.Tools.Export;
 
 /// <summary>
 /// Table header object

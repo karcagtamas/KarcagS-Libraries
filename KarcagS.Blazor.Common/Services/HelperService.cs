@@ -1,4 +1,3 @@
-using System.Text.Json;
 using KarcagS.Blazor.Common.Components.Dialogs;
 using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
@@ -7,6 +6,7 @@ using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
+using System.Text.Json;
 
 namespace KarcagS.Blazor.Common.Services;
 
@@ -91,7 +91,7 @@ public class HelperService : IHelperService
         var dialog = DialogService.Show<TComponent>(title, parameters ?? new DialogParameters { }, options);
         var result = await dialog.Result;
 
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             action((TData)result.Data);
             return (TData)result.Data;

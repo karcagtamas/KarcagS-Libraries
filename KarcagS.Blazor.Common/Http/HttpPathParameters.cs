@@ -19,7 +19,7 @@ public class HttpPathParameters : IListState<HttpPathParameters>
     }
 
     public static HttpPathParameters Build() => new HttpPathParameters();
-    
+
 
     /// <summary>
     /// Add value to a specified index into a row (insert).

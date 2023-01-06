@@ -1,10 +1,10 @@
-﻿using System.Net;
-using System.Text.RegularExpressions;
-using KarcagS.Common.Tools.HttpInterceptor.Converters;
+﻿using KarcagS.Common.Tools.HttpInterceptor.Converters;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Http;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace KarcagS.Common.Tools.HttpInterceptor;
 

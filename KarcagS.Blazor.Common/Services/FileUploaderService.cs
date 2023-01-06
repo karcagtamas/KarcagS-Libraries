@@ -19,6 +19,6 @@ public class FileUploaderService : IFileUploaderService
         var dialog = dialogService.Show<FileUploader>(title, parameters, new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true });
         var result = await dialog.Result;
 
-        return !result.Cancelled;
+        return !result.Canceled;
     }
 }

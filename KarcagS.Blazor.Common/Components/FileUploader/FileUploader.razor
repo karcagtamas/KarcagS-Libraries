@@ -14,7 +14,7 @@
         <div class="text-center">
             <InputFile id="fileInput" OnChange="@FilesReady" hidden multipe="@Input.Multiple" accept="@ConstructAccept()" />
             <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary"
-                       StartIcon="@Icons.Filled.CloudUpload" for="fileInput">@LocalizationService.GetValue(LibraryLocalizer.UploaderUploadKey, "Upload")</MudButton>
+                       StartIcon="@Icons.Material.Filled.CloudUpload" for="fileInput">@LocalizationService.GetValue(LibraryLocalizer.UploaderUploadKey, "Upload")</MudButton>
             @if (ObjectHelper.IsNotEmpty(Files))
             {
                 <div style="margin-top: 1rem;">

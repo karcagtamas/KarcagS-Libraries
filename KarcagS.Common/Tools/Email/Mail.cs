@@ -32,7 +32,7 @@ public class Mail
     /// <param name="address">E-mail address</param>
     /// <param name="displayName">Display name</param>
     public void AddTo(string address, string displayName) => ToList.Add(new MailRecipient(address, displayName));
-    
+
 
     /// <summary>
     /// Add To element
@@ -41,7 +41,7 @@ public class Mail
     /// <param name="emailGetter">Email getter</param>
     /// <param name="nameGetter">Name getter</param>
     public void AddTo<T>(T person, Func<T, string> emailGetter, Func<T, string> nameGetter) => ToList.Add(new MailRecipient(emailGetter(person), nameGetter(person)));
-    
+
 
     /// <summary>
     /// Add CC element
@@ -49,7 +49,7 @@ public class Mail
     /// <param name="address">E-mail address</param>
     /// <param name="displayName">Display name</param>
     public void AddCc(string address, string displayName) => CcList.Add(new MailRecipient(address, displayName));
-    
+
 
     /// <summary>
     /// Add CC element
@@ -58,15 +58,15 @@ public class Mail
     /// <param name="emailGetter">Email getter</param>
     /// <param name="nameGetter">Name getter</param>
     public void AddCc<T>(T person, Func<T, string> emailGetter, Func<T, string> nameGetter) => CcList.Add(new MailRecipient(emailGetter(person), nameGetter(person)));
-    
+
 
     /// <summary>
     /// Add BCC element
     /// </summary>
     /// <param name="address">E-mail address</param>
     /// <param name="displayName">Display name</param>
-    public void AddBcc(string address, string displayName) =>  BccList.Add(new MailRecipient(address, displayName));
-    
+    public void AddBcc(string address, string displayName) => BccList.Add(new MailRecipient(address, displayName));
+
 
     /// <summary>
     /// Add BCC element
@@ -75,5 +75,5 @@ public class Mail
     /// <param name="emailGetter">Email getter</param>
     /// <param name="nameGetter">Name getter</param>
     public void AddBcc<T>(T person, Func<T, string> emailGetter, Func<T, string> nameGetter) => BccList.Add(new MailRecipient(emailGetter(person), nameGetter(person)));
-    
+
 }

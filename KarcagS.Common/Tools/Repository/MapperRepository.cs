@@ -1,9 +1,9 @@
-using System.Linq.Expressions;
 using AutoMapper;
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Entities;
 using KarcagS.Common.Tools.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace KarcagS.Common.Tools.Repository;
 

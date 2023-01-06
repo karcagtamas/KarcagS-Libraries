@@ -50,7 +50,7 @@ public static class TableExtensions
         {
             Key = column.Key,
             Title = column.Title,
-            ResourceKey= column.ResourceKey,
+            ResourceKey = column.ResourceKey,
             Alignment = column.Alignment,
             Formatter = column.Formatter,
             Width = column.Width,

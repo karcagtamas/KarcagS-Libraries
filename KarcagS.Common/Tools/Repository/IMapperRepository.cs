@@ -1,5 +1,5 @@
-using System.Linq.Expressions;
 using KarcagS.Common.Tools.Entities;
+using System.Linq.Expressions;
 
 namespace KarcagS.Common.Tools.Repository;
 

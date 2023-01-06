@@ -1,5 +1,5 @@
 using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace KarcagS.Blazor.Common.Http;
 
@@ -25,13 +25,13 @@ public class HttpBody<T>
     /// </summary>
     /// <returns>String content</returns>
     public StringContent GetStringContent() => Body == null ? new StringContent("") : HttpBody<T>.CreateContent(Body);
-    
+
 
     /// <summary>
     /// Create String Content
     /// </summary>
     /// <param name="obj">Object for creation</param>
     /// <returns>String content</returns>
-    private static StringContent CreateContent(object obj) => new(JsonConvert.SerializeObject(obj), Encoding.UTF8, "application/json");
-    
+    private static StringContent CreateContent(object obj) => new(JsonSerializer.Serialize(obj), Encoding.UTF8, "application/json");
+
 }

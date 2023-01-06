@@ -26,5 +26,5 @@ public class MailRecipient
     /// </summary>
     /// <returns></returns>
     public MailAddress GetMailAddress() => new MailAddress(EmailAddress, DisplayName);
-    
+
 }

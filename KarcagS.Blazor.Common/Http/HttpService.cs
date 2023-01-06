@@ -1,13 +1,13 @@
+using Blazored.LocalStorage;
+using KarcagS.Blazor.Common.Models;
+using KarcagS.Blazor.Common.Services.Interfaces;
+using KarcagS.Shared.Http;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.JSInterop;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Blazored.LocalStorage;
-using KarcagS.Blazor.Common.Models;
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using KarcagS.Shared.Http;
-using Microsoft.AspNetCore.WebUtilities;
-using KarcagS.Blazor.Common.Services.Interfaces;
 
 namespace KarcagS.Blazor.Common.Http;
 

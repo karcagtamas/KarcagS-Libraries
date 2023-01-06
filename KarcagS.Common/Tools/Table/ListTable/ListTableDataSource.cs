@@ -1,11 +1,9 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using KarcagS.Common.Tools.Table.Configuration;
+﻿using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.Ordering;
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Enums;
 using KarcagS.Shared.Table;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq.Expressions;
 
 namespace KarcagS.Common.Tools.Table.ListTable;

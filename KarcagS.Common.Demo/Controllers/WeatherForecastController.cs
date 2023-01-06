@@ -32,7 +32,7 @@ namespace KarcagS.Common.Demo.Controllers
         }
 
         [HttpPost]
-        public TestModel Test([FromBody] TestModel model) 
+        public TestModel Test([FromBody] TestModel model)
         {
             return model;
         }

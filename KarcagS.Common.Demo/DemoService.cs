@@ -30,7 +30,7 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
             .AddFilter(FilterConfiguration.Build().IsTextFilterEnabled(true))
             .AddPagination(PaginationConfiguration.Build().IsPaginationEnabled(true))
             .DisableClickOn(obj => obj.Age == 12)
-            .AddTagProvider((obj, col) => 
+            .AddTagProvider((obj, col) =>
             {
                 var entry = col.ValueGetter(obj);
 
