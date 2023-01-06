@@ -46,7 +46,7 @@ public class HttpInterceptor
                 {
                     var body = JsonConvert.DeserializeObject(await FormatResponse(context.Response));
 
-                    ObjectHelper.WhenNotNull(body, async b => await HandleSuccessRequestAsync(context, b, context.Response.StatusCode));
+                    await HandleSuccessRequestAsync(context, body, context.Response.StatusCode);
                 }
                 else if (context.Response.StatusCode == ValidationErrorActionResult.ValidationErrorCode)
                 {
@@ -102,7 +102,7 @@ public class HttpInterceptor
         });
     }
 
-    private static Task HandleSuccessRequestAsync(HttpContext context, object body, int code)
+    private static Task HandleSuccessRequestAsync(HttpContext context, object? body, int code)
     {
         context.Response.ContentType = "application/json";
 
