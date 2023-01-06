@@ -3,10 +3,10 @@
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageVersion>2.9.1</PackageVersion>
+		<PackageVersion>2.9.3</PackageVersion>
 		<Title>KarcagS Common C# Library</Title>
-		<AssemblyVersion>2.9.1</AssemblyVersion>
-		<FileVersion>2.9.1</FileVersion>
+		<AssemblyVersion>2.9.3</AssemblyVersion>
+		<FileVersion>2.9.3</FileVersion>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
@@ -23,6 +23,7 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
 		<PackageReference Include="MongoDB.Driver" Version="2.18.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.25.1" />
 	</ItemGroup>
 

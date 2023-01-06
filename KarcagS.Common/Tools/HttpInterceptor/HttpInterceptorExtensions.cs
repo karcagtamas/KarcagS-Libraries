@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net;
+using System.Text.Json;
 
 namespace KarcagS.Common.Tools.HttpInterceptor;
 
@@ -18,6 +19,10 @@ public static class HttpInterceptorExtensions
     public static IServiceCollection AddModelValidatedControllers(this IServiceCollection services)
     {
         services.AddControllers()
+            .AddJsonOptions(conf =>
+            {
+                conf.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            })
             .ConfigureApiBehaviorOptions(
             opt =>
             {

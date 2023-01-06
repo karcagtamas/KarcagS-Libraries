@@ -45,7 +45,8 @@ public class HttpInterceptor
                 if (context.Response.StatusCode == (int)HttpStatusCode.OK)
                 {
                     var body = JsonConvert.DeserializeObject(await FormatResponse(context.Response));
-                    await HandleSuccessRequestAsync(context, body, context.Response.StatusCode);
+
+                    ObjectHelper.WhenNotNull(body, async b => await HandleSuccessRequestAsync(context, b, context.Response.StatusCode));
                 }
                 else if (context.Response.StatusCode == ValidationErrorActionResult.ValidationErrorCode)
                 {
