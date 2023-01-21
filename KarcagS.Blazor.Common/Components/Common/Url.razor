@@ -1,0 +1,12 @@
+﻿@if (!string.IsNullOrEmpty(Uri))
+{
+    <MudText Class="mb-2" Color="Color.Warning"><b><a href="@Uri" target="_blank">@Label</a></b></MudText>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public string? Uri { get; set; }
+}

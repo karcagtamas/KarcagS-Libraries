@@ -1,0 +1,8 @@
+<MudTooltip Text="@Text">
+    <MudIcon Icon="@Icons.Material.Filled.Info" Color="Color.Primary" />
+</MudTooltip>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Text { get; set; } = string.Empty;
+}

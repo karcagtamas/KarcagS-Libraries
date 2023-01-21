@@ -1,0 +1,13 @@
+@inject NavigationManager Navigation
+
+@code {
+    [Parameter, EditorRequired]
+    public string Path { get; set; } = "/not-found";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Navigation.NavigateTo(Path);
+    }
+}

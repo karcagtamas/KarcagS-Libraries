@@ -1,0 +1,7 @@
+<MudIcon Color="Color.Warning" Icon="@Icons.Material.Filled.Warning" Class="mr-1" />
+<MudText Color="Color.Warning" Inline="true">@Message</MudText>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Message { get; set; } = default!;
+}

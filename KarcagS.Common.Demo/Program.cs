@@ -1,4 +1,6 @@
+using AutoMapper;
 using KarcagS.Common.Demo;
+using KarcagS.Common.Demo.Mappers;
 using KarcagS.Common.Tools;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.HttpInterceptor.Converters;
@@ -30,6 +32,14 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUtilsService<string>, UtilsService<DemoContext, string>>();
 builder.Services.AddScoped<ILoggerService, LoggerService<string>>();
 builder.Services.AddScoped<IDemoService, DemoService>();
+builder.Services.AddScoped<IGenderService, GenderService>();
+
+// Add AutoMapper
+var mapperConfig = new MapperConfiguration(conf =>
+{
+    conf.AddProfile<GenderMapper>();
+});
+builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
 var connString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContextPool<DemoContext>(opt =>

@@ -58,6 +58,12 @@
     [Parameter]
     public bool Required { get; set; } = false;
 
+    [Parameter]
+    public Key? PreSelectedId { get; set; }
+
+    [Parameter]
+    public List<Key> PreSelectedIds { get; set; } = new();
+
     [Inject]
     private ILocalizationService LocalizationService { get; set; } = default!;
 
@@ -84,6 +90,31 @@
     private async Task Fetch()
     {
         DataList = (await Fetcher()).Select(x => new SelectableRowItem<Data, Key> { Data = x }).ToList();
+
+        if (MultiSelect)
+        {
+            var items = DataList.Where(x => PreSelectedIds.Contains(x.Data.Id)).ToList();
+
+            items.ForEach(i =>
+            {
+                i.Selected = true;
+                Selection.Add(i.Data);
+            });
+        }
+        else
+        {
+            ObjectHelper.WhenNotNull(PreSelectedId, pId =>
+            {
+                var item = DataList.FirstOrDefault(x => x.Data.Id.Equals(pId));
+
+                ObjectHelper.WhenNotNull(item, i =>
+                {
+                    i.Selected = true;
+                    Selection.Add(i.Data);
+                });
+            });
+        }
+
         await InvokeAsync(StateHasChanged);
     }
 

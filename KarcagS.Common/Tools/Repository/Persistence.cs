@@ -1,4 +1,6 @@
-﻿using KarcagS.Common.Attributes;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
+using KarcagS.Common.Attributes;
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Entities;
 using KarcagS.Common.Tools.Services;
@@ -63,20 +65,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <param name="orderBy">Ordering by</param>
     /// <param name="direction">Order direction</param>
     /// <returns>Ordered all list</returns>
-    public IEnumerable<T> GetAllAsOrdered<TKey, T>(string orderBy, string direction) where T : class, IEntity<TKey>
-    {
-        ExceptionHelper.Throw(string.IsNullOrEmpty(orderBy), () => new ArgumentException("Order by value is empty or null"));
-        var type = typeof(T);
-        var property = ObjectHelper.OrElseThrow(type.GetProperty(orderBy), () => new ArgumentException("Property does not exist"));
-
-        return direction switch
-        {
-            "asc" => GetAllAsQuery<TKey, T>().OrderBy(x => property.GetValue(x)).ToList(),
-            "desc" => GetAllAsQuery<TKey, T>().OrderByDescending(x => property.GetValue(x)).ToList(),
-            "none" => GetAll<TKey, T>(),
-            _ => throw new ArgumentException("Ordering direction does not exist")
-        };
-    }
+    public IEnumerable<T> GetAllAsOrdered<TKey, T>(string orderBy, string direction) where T : class, IEntity<TKey> => GetOrderedListByQuery<TKey, T>(GetAllAsQuery<TKey, T>(), orderBy, direction);
 
     /// <summary>
     /// Get ordered list
@@ -89,19 +78,32 @@ public class Persistence<TUserKey> : IPersistence
     /// <param name="count">Max result count.</param>
     /// <param name="skip">Skipped element number.</param>
     /// <returns>Ordered list</returns>
-    public IEnumerable<T> GetOrderedList<TKey, T>(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) where T : class, IEntity<TKey>
+    public IEnumerable<T> GetOrderedList<TKey, T>(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) where T : class, IEntity<TKey> => GetOrderedListByQuery<TKey, T>(GetListAsQuery<TKey, T>(predicate, count, skip), orderBy, direction);
+
+    public IEnumerable<T> GetOrderedListByQuery<TKey, T>(IQueryable<T> queryable, string orderBy, string direction) where T : class, IEntity<TKey>
     {
         ExceptionHelper.Throw(string.IsNullOrEmpty(orderBy), () => new ArgumentException("Order by value is empty or null"));
-        var type = typeof(T);
-        var property = ObjectHelper.OrElseThrow(type.GetProperty(orderBy), () => new ArgumentException("Property does not exist"));
 
-        return direction switch
+        if (direction != "asc" && direction != "desc")
         {
-            "asc" => GetListAsQuery<TKey, T>(predicate, count, skip).OrderBy(x => property.GetValue(x)).ToList(),
-            "desc" => GetListAsQuery<TKey, T>(predicate, count, skip).OrderByDescending(x => property.GetValue(x)).ToList(),
-            "none" => GetList<TKey, T>(predicate, count, skip),
-            _ => throw new ArgumentException("Ordering direction does not exist")
-        };
+            return queryable.ToList();
+        }
+
+        var entityType = typeof(T);
+        var propertyInfo = entityType.GetProperty(orderBy);
+
+        if (ObjectHelper.IsNull(propertyInfo))
+        {
+            throw new ArgumentException("Invalid property name");
+        }
+
+        var param = Expression.Parameter(entityType);
+        Expression body = Expression.Property(param, orderBy);
+        var lamdba = Expression.Lambda(body, param);
+
+        var queryExpr = Expression.Call(typeof(Queryable), direction == "asc" ? "OrderBy" : "OrderByDescending", new[] { typeof(T), lamdba.ReturnType }, queryable.Expression, lamdba);
+
+        return queryable.Provider.CreateQuery<T>(queryExpr).ToList();
     }
 
     /// <summary>

@@ -1,0 +1,24 @@
+<MudDateRangePicker Style="@Style" Class="@Class" DateRange="DateRange" DateRangeChanged="DateRangeChanged" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="Clearable" Placeholder="@Placeholder" Label="@Label" />
+
+@code {
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = default!;
+
+    [Parameter]
+    public string Placeholder { get; set; } = default!;
+
+    [Parameter]
+    public string Style { get; set; } = default!;
+
+    [Parameter]
+    public string Class { get; set; } = default!;
+
+    [Parameter]
+    public bool Clearable { get; set; } = false;
+
+    [Parameter]
+    public DateRange? DateRange { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<DateRange?> DateRangeChanged { get; set; }
+}

@@ -11,6 +11,7 @@ public interface IPersistence
     IEnumerable<T> GetList<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : class, IEntity<TKey>;
     IEnumerable<T> GetAllAsOrdered<TKey, T>(string orderBy, string direction) where T : class, IEntity<TKey>;
     IEnumerable<T> GetOrderedList<TKey, T>(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) where T : class, IEntity<TKey>;
+    IEnumerable<T> GetOrderedListByQuery<TKey, T>(IQueryable<T> queryable, string orderBy, string direction) where T : class, IEntity<TKey>;
     IQueryable<T> GetAllAsQuery<TKey, T>() where T : class, IEntity<TKey>;
     IQueryable<T> GetListAsQuery<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : class, IEntity<TKey>;
     int Count<TKey, T>() where T : class, IEntity<TKey>;

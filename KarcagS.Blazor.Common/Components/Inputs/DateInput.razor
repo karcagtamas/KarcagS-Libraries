@@ -1,0 +1,32 @@
+@using System.Linq.Expressions
+
+<MudDatePicker Style="@Style" Class="@Class" Date="Date" DateChanged="DateChanged" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="Clearable" Placeholder="@Placeholder" Label="@Label" For="For" Required="Required" />
+
+@code {
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = default!;
+
+    [Parameter]
+    public string Placeholder { get; set; } = default!;
+
+    [Parameter]
+    public string Style { get; set; } = default!;
+
+    [Parameter]
+    public string Class { get; set; } = default!;
+
+    [Parameter]
+    public bool Clearable { get; set; } = false;
+
+    [Parameter]
+    public bool Required { get; set; } = false;
+
+    [Parameter]
+    public DateTime? Date { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<DateTime?> DateChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<DateTime?>>? For { get; set; }
+}

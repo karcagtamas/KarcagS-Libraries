@@ -1,0 +1,17 @@
+﻿<div class="rates mb-2">
+    @foreach (var rate in Enumerable.Range(1, Number))
+    {
+        <MudIcon Color="Color.Warning" Icon="@(rate <= Value ? Icons.Material.Filled.Star : Icons.Material.Filled.StarBorder)" @onclick="@(async () => await OnChange.InvokeAsync(rate))" Tag="@rate" />
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public int Number { get; set; }
+
+    [Parameter]
+    public int Value { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnChange { get; set; }
+}
