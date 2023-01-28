@@ -14,6 +14,8 @@ public class StyleConfiguration
 
     public Func<ItemValue, Color> ColorGetter = (item) => Color.Default;
     public Func<string, Color> TitleColorGetter = (colKey) => Color.Primary;
+    public Func<string, string> IconGetter = (colKey) => Icons.Material.Filled.Info;
+    public Func<string, Color> IconColorGetter = (colKey) => Color.Primary;
 
     private StyleConfiguration()
     {
@@ -74,6 +76,20 @@ public class StyleConfiguration
     public StyleConfiguration AddTitleColorGetter(Func<string, Color> getter)
     {
         TitleColorGetter = getter;
+
+        return this;
+    }
+    
+    public StyleConfiguration AddIconGetter(Func<string, string> getter)
+    {
+        IconGetter = getter;
+
+        return this;
+    }
+    
+    public StyleConfiguration AddIconColorGetter(Func<string, Color> getter)
+    {
+        IconColorGetter = getter;
 
         return this;
     }

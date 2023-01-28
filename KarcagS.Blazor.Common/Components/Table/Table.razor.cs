@@ -29,21 +29,25 @@ public partial class Table<TKey> : ComponentBase
     public Dictionary<string, object> InitialParams { get; set; } = new();
 
     [Parameter]
-    public bool ReadOnly { get; set; } = false;
+    public bool ReadOnly { get; set; }
 
     [Parameter]
     public IStringLocalizer? Localizer { get; set; }
+    
+    [Parameter]
+    public EventCallback<KeyValuePair<string, ResultRowItem<TKey>>> OnAction { get; set; }
 
     [Inject]
     private ILocalizationService LocalizationService { get; set; } = default!;
 
     private MudTable<ResultRowItem<TKey>>? TableComponent { get; set; }
 
-    private string AppendedClass { get => $"w-100 flex-box h-100 {Class}"; }
+    private string AppendedClass => $"w-100 flex-box h-100 {Class}";
 
     private bool Loading { get; set; } = false;
     private string? TextFilter { get; set; }
     private Dictionary<string, object> Params { get; set; } = new();
+    private List<Order> Orders { get; set; } = new();
 
     private TableMetaData? MetaData { get; set; }
     private HttpErrorResult? ErrorResult { get; set; }
@@ -57,7 +61,7 @@ public partial class Table<TKey> : ComponentBase
 
         await LoadMetaData();
 
-        base.OnInitialized();
+        await base.OnInitializedAsync();
     }
 
     private async Task LoadMetaData()
@@ -75,7 +79,7 @@ public partial class Table<TKey> : ComponentBase
         MetaData = meta.Result;
 
         Loading = false;
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
@@ -155,7 +159,8 @@ public partial class Table<TKey> : ComponentBase
         var data = await Service.GetData(new TableOptions
         {
             Filter = GetCurrentFilter(),
-            Pagination = (MetaData?.PaginationData.PaginationEnabled ?? false) ? new TablePagination { Page = state.Page, Size = state.PageSize } : null
+            Pagination = (MetaData?.PaginationData.PaginationEnabled ?? false) ? new TablePagination { Page = state.Page, Size = state.PageSize } : null,
+            Ordering = new List<Order>(),
         }, Params);
 
         if (ObjectHelper.IsNotNull(data.Error))
@@ -192,6 +197,36 @@ public partial class Table<TKey> : ComponentBase
         }
 
         await OnRowClick.InvokeAsync(e.Item);
+    }
+
+    private async Task ActionHandler(ColumnData col, ResultRowItem<TKey> item)
+    {
+        if (ReadOnly || item.Disabled || item.ClickDisabled)
+        {
+            return;
+        }
+
+        await OnAction.InvokeAsync(KeyValuePair.Create(col.Key, item));
+    }
+
+    private Task HandleOrdering(ColumnData col)
+    {
+        if (!MetaData?.OrderingData.OrderingEnabled ?? true)
+        {
+            return Task.CompletedTask;
+        }
+
+        Orders = new List<Order>
+        {
+            new() { Key = col.Key, Direction = OrderDirection.Ascend }
+        };
+        
+        ObjectHelper.WhenNotNull(TableComponent, async t =>
+        {
+            await t.ReloadServerData();
+        });
+        
+        return Task.CompletedTask;
     }
 
     private void TextFilterHandler(string text)
@@ -257,13 +292,5 @@ public partial class Table<TKey> : ComponentBase
         return col.Title;
     }
 
-    private static string GetValue(string value, IStringLocalizer? localizer)
-    {
-        if (ObjectHelper.IsNotNull(localizer))
-        {
-            return localizer[value];
-        }
-
-        return value;
-    }
+    private static string GetValue(string value, IStringLocalizer? localizer) => ObjectHelper.IsNotNull(localizer) ? localizer[value] : value;
 }

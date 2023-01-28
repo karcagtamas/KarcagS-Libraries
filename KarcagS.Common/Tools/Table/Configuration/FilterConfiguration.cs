@@ -2,7 +2,7 @@
 
 public class FilterConfiguration
 {
-    public bool TextFilterEnabled { get; set; } = false;
+    public bool TextFilterEnabled { get; set; }
 
     private FilterConfiguration()
     {

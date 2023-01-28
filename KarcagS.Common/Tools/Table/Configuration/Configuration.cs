@@ -11,10 +11,10 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
     public List<Column<T, TKey>> Columns { get; set; } = new();
 
     public FilterConfiguration Filter { get; set; } = FilterConfiguration.Build();
-
+    public OrderingConfiguration Ordering { get; set; } = OrderingConfiguration.Build();
     public PaginationConfiguration Pagination { get; set; } = PaginationConfiguration.Build();
 
-    public Func<T, bool> ClickDisableOn { get; set; } = (data) => false;
+    public Func<T, bool> ClickDisableOn { get; set; } = _ => false;
     public List<Func<T, Column<T, TKey>, string>> TagProviders { get; set; } = new();
 
     private Configuration()
@@ -52,6 +52,13 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
     public Configuration<T, TKey> AddFilter(FilterConfiguration filter)
     {
         Filter = filter;
+
+        return this;
+    }
+
+    public Configuration<T, TKey> AddOrdering(OrderingConfiguration ordering)
+    {
+        Ordering = ordering;
 
         return this;
     }

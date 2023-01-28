@@ -99,9 +99,9 @@ public class Persistence<TUserKey> : IPersistence
 
         var param = Expression.Parameter(entityType);
         Expression body = Expression.Property(param, orderBy);
-        var lamdba = Expression.Lambda(body, param);
+        var lambda = Expression.Lambda(body, param);
 
-        var queryExpr = Expression.Call(typeof(Queryable), direction == "asc" ? "OrderBy" : "OrderByDescending", new[] { typeof(T), lamdba.ReturnType }, queryable.Expression, lamdba);
+        var queryExpr = Expression.Call(typeof(Queryable), direction == "asc" ? "OrderBy" : "OrderByDescending", new[] { typeof(T), lambda.ReturnType }, queryable.Expression, lambda);
 
         return queryable.Provider.CreateQuery<T>(queryExpr).ToList();
     }

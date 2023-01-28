@@ -8,25 +8,24 @@ namespace KarcagS.Common.Tools.Table.Ordering;
 public class OrderingBuilder<T, TKey> where T : class, IIdentified<TKey>
 {
     private readonly ListTableDataSource<T, TKey> dataSource;
-
-    protected List<OrderingSetting<T, TKey>> Ordering = new();
+    private readonly List<OrderingSetting<T, TKey>> ordering = new();
 
     public OrderingBuilder(ListTableDataSource<T, TKey> dataSource, Expression<Func<T, object?>> expression, OrderDirection direction)
     {
         this.dataSource = dataSource;
-        Ordering.Add(new OrderingSetting<T, TKey> { Exp = expression, Direction = direction });
+        ordering.Add(new OrderingSetting<T, TKey> { Exp = expression, Direction = direction });
     }
 
     public OrderingBuilder<T, TKey> ThenBy(Expression<Func<T, object?>> expression, OrderDirection direction = OrderDirection.Ascend)
     {
-        Ordering.Add(new OrderingSetting<T, TKey> { Exp = expression, Direction = direction });
+        ordering.Add(new OrderingSetting<T, TKey> { Exp = expression, Direction = direction });
 
         return this;
     }
 
     public ListTableDataSource<T, TKey> ApplyOrdering()
     {
-        dataSource.Ordering = Ordering;
+        dataSource.DefaultOrdering = ordering;
         return dataSource;
     }
 }

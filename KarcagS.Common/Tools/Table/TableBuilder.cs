@@ -8,11 +8,6 @@ public abstract class TableBuilder<T, TKey> where T : class, IIdentified<TKey>
     protected DataSource<T, TKey> DataSource { get; set; } = default!;
     protected Configuration<T, TKey> Configuration { get; set; } = default!;
 
-    protected TableBuilder()
-    {
-
-    }
-
     public TableBuilder<T, TKey> AddDataSource(DataSource<T, TKey> dataSource)
     {
         DataSource = dataSource;

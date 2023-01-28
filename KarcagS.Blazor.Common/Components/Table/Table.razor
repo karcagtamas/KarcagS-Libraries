@@ -52,20 +52,31 @@
             <HeaderContent>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    <MudTh Style="@GetTHStyle(col.Alignment)"><MudText Color="Style.TitleColorGetter(col.Key)"><b>@GetColumnTitle(col, Localizer)</b></MudText></MudTh>
+                    <MudTh Style="@GetTHStyle(col.Alignment)" @onclick="@(() => HandleOrdering(col))"><MudText Color="Style.TitleColorGetter(col.Key)"><b>@GetColumnTitle(col, Localizer)</b></MudText></MudTh>
                 }
             </HeaderContent>
             <RowTemplate>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    <MudTd Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key"><MudText Color="Style.ColorGetter(context.Values[col.Key])">@GetValue(context.Values[col.Key].Value, Localizer)</MudText></MudTd>
+                    <MudTd Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key">
+                        @if (!col.IsAction)
+                        {
+                            <MudText Color="Style.ColorGetter(context.Values[col.Key])">
+                                @GetValue(context.Values[col.Key].Value, Localizer)
+                            </MudText>
+                        }
+                        else
+                        {
+                            <MudIconButton Color="Style.IconColorGetter(col.Key)" Icon="@Style.IconGetter(col.Key)" Size="Size.Small" Disabled="context.Disabled" OnClick="@(() => ActionHandler(col, context))" />   
+                        }
+                    </MudTd>
                 }
             </RowTemplate>
             <PagerContent>
                 @if (MetaData.PaginationData.PaginationEnabled)
                 {
                     <div style="min-height: 52px;">
-                        <MudTablePager PageSizeOptions="@(new int[] { MetaData.PaginationData.PageSize })" HideRowsPerPage="true" />
+                        <MudTablePager PageSizeOptions="@(new[] { MetaData.PaginationData.PageSize })" HideRowsPerPage="true" />
                     </div>
                 }
             </PagerContent>

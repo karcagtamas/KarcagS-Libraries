@@ -6,14 +6,15 @@ namespace KarcagS.Common.Tools.Table.Configuration;
 
 public class Column<T, TKey> where T : class, IIdentified<TKey>
 {
-    public string Key { get; set; } = string.Empty;
+    public string Key { get; }
     public string Title { get; set; } = string.Empty;
     public string? ResourceKey { get; set; }
     public Alignment Alignment { get; set; } = Alignment.Left;
-    public Func<T, object> ValueGetter { get; set; } = (data) => default!;
+    public Func<T, object> ValueGetter { get; set; } = _ => default!;
     public ColumnFormatter Formatter { get; set; } = ColumnFormatter.Text;
-    public string[] FormatterArgs { get; set; } = new string[0];
-    public int? Width { get; set; } = null;
+    public string[] FormatterArgs { get; set; } = Array.Empty<string>();
+    public int? Width { get; set; }
+    public bool IsAction { get; set; }
 
     private Column(string key)
     {
@@ -22,10 +23,10 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
 
     public static Column<T, TKey> Build(string key) => new(key);
 
-    public Column<T, TKey> SetTitle(string value, string? resourecKey = null)
+    public Column<T, TKey> SetTitle(string value, string? resourceKey = null)
     {
         Title = value;
-        ResourceKey = resourecKey;
+        ResourceKey = resourceKey;
 
         return this;
     }
@@ -55,6 +56,13 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
     public Column<T, TKey> SetWidth(int value)
     {
         Width = value;
+
+        return this;
+    }
+
+    public Column<T, TKey> MarkAsAction(bool isAction = true)
+    {
+        IsAction = isAction;
 
         return this;
     }

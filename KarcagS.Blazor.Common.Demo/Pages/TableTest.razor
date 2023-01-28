@@ -31,9 +31,11 @@
             }
 
             return Color.Default;
-        });
+        })
+        .AddIconGetter(colKey => colKey == "open" ? Icons.Material.Filled.OpenWith : Icons.Material.Filled.Info)
+        .AddIconColorGetter(colKey => colKey == "open" ? Color.Error : Color.Default);
 
-    private Dictionary<string, object> ExtraParams = new()
+    private readonly Dictionary<string, object> ExtraParams = new()
     {
         {"key", 1}
     };
@@ -44,8 +46,4 @@
         Console.WriteLine(item.ItemKey);
     }
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
 }

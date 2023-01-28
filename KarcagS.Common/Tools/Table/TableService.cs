@@ -9,7 +9,7 @@ public abstract class TableService<T, TKey> : ITableService<T, TKey> where T : c
 {
     protected Table<T, TKey>? Table { get; set; }
 
-    public void Initialize()
+    protected void Initialize()
     {
         Table = BuildTable();
     }

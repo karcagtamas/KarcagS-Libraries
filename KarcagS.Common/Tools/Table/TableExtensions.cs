@@ -14,6 +14,7 @@ public static class TableExtensions
             Title = configuration.Title,
             ResourceKey = configuration.ResourceKey,
             FilterData = configuration.Filter.Convert(),
+            OrderingData = configuration.Ordering.Convert(),
             PaginationData = configuration.Pagination.Convert(),
             ColumnsData = configuration.Columns.Convert()
         };
@@ -24,6 +25,14 @@ public static class TableExtensions
         return new FilterData
         {
             TextFilterEnabled = configuration.TextFilterEnabled
+        };
+    }
+    
+    public static OrderingData Convert(this OrderingConfiguration configuration)
+    {
+        return new OrderingData
+        {
+            OrderingEnabled = configuration.OrderingEnabled
         };
     }
 
@@ -54,6 +63,7 @@ public static class TableExtensions
             Alignment = column.Alignment,
             Formatter = column.Formatter,
             Width = column.Width,
+            IsAction = column.IsAction
         };
     }
 }

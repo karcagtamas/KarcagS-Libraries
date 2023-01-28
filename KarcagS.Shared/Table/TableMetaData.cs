@@ -10,6 +10,7 @@ public class TableMetaData
     public string? ResourceKey { get; set; }
 
     public FilterData FilterData { get; set; } = default!;
+    public OrderingData OrderingData { get; set; } = default!;
     public PaginationData PaginationData { get; set; } = default!;
     public ColumnsData ColumnsData { get; set; } = default!;
 }
@@ -17,6 +18,11 @@ public class TableMetaData
 public class FilterData
 {
     public bool TextFilterEnabled { get; set; }
+}
+
+public class OrderingData
+{
+    public bool OrderingEnabled { get; set; }
 }
 
 public class PaginationData
@@ -39,4 +45,5 @@ public class ColumnData
     public Alignment Alignment { get; set; }
     public ColumnFormatter Formatter { get; set; }
     public int? Width { get; set; }
+    public bool IsAction { get; set; }
 }

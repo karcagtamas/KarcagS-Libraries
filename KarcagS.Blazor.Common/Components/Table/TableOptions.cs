@@ -1,4 +1,5 @@
 ﻿using KarcagS.Blazor.Common.Http;
+using KarcagS.Shared.Enums;
 
 namespace KarcagS.Blazor.Common.Components.Table;
 
@@ -6,6 +7,7 @@ public class TableOptions
 {
     public TableFilter Filter { get; set; } = new();
     public TablePagination? Pagination { get; set; }
+    public List<Order> Ordering { get; set; } = new();
 }
 
 public static class TableOptionsExtensions
@@ -19,6 +21,11 @@ public static class TableOptionsExtensions
             queryParams.Add("page", pagination.Page);
             queryParams.Add("size", pagination.Size);
         });
+
+        if (options.Ordering.Count > 0)
+        {
+            queryParams.AddMultiple("ordering", options.Ordering);
+        }
 
         return queryParams;
     }
