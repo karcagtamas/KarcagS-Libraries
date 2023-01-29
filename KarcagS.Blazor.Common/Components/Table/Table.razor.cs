@@ -10,35 +10,25 @@ namespace KarcagS.Blazor.Common.Components.Table;
 
 public partial class Table<TKey> : ComponentBase
 {
-    [Parameter]
-    public RenderFragment<Action<string, object?>>? FilterRow { get; set; }
+    [Parameter] public RenderFragment<Action<string, object?>>? FilterRow { get; set; }
 
-    [Parameter, EditorRequired]
-    public ITableService<TKey> Service { get; set; } = default!;
+    [Parameter, EditorRequired] public ITableService<TKey> Service { get; set; } = default!;
 
-    [Parameter]
-    public StyleConfiguration Style { get; set; } = StyleConfiguration.Build();
+    [Parameter] public StyleConfiguration Style { get; set; } = StyleConfiguration.Build();
 
-    [Parameter]
-    public EventCallback<ResultRowItem<TKey>> OnRowClick { get; set; }
+    [Parameter] public EventCallback<ResultRowItem<TKey>> OnRowClick { get; set; }
 
-    [Parameter]
-    public string Class { get; set; } = string.Empty;
+    [Parameter] public string Class { get; set; } = string.Empty;
 
-    [Parameter]
-    public Dictionary<string, object> InitialParams { get; set; } = new();
+    [Parameter] public Dictionary<string, object> InitialParams { get; set; } = new();
 
-    [Parameter]
-    public bool ReadOnly { get; set; }
+    [Parameter] public bool ReadOnly { get; set; }
 
-    [Parameter]
-    public IStringLocalizer? Localizer { get; set; }
-    
-    [Parameter]
-    public EventCallback<KeyValuePair<string, ResultRowItem<TKey>>> OnAction { get; set; }
+    [Parameter] public IStringLocalizer? Localizer { get; set; }
 
-    [Inject]
-    private ILocalizationService LocalizationService { get; set; } = default!;
+    [Parameter] public EventCallback<KeyValuePair<string, ResultRowItem<TKey>>> OnAction { get; set; }
+
+    [Inject] private ILocalizationService LocalizationService { get; set; } = default!;
 
     private MudTable<ResultRowItem<TKey>>? TableComponent { get; set; }
 
@@ -160,7 +150,7 @@ public partial class Table<TKey> : ComponentBase
         {
             Filter = GetCurrentFilter(),
             Pagination = (MetaData?.PaginationData.PaginationEnabled ?? false) ? new TablePagination { Page = state.Page, Size = state.PageSize } : null,
-            Ordering = new List<Order>(),
+            Ordering = Orders
         }, Params);
 
         if (ObjectHelper.IsNotNull(data.Error))
@@ -201,7 +191,7 @@ public partial class Table<TKey> : ComponentBase
 
     private async Task ActionHandler(ColumnData col, ResultRowItem<TKey> item)
     {
-        if (ReadOnly || item.Disabled || item.ClickDisabled)
+        if (ReadOnly || item.Disabled || item.ClickDisabled || item.Values[col.Key].ActionDisabled)
         {
             return;
         }
@@ -211,31 +201,55 @@ public partial class Table<TKey> : ComponentBase
 
     private Task HandleOrdering(ColumnData col)
     {
-        if (!MetaData?.OrderingData.OrderingEnabled ?? true)
+        if (!(MetaData?.OrderingData.OrderingEnabled ?? false) || !col.IsSortable)
         {
             return Task.CompletedTask;
         }
 
-        Orders = new List<Order>
-        {
-            new() { Key = col.Key, Direction = OrderDirection.Ascend }
-        };
-        
-        ObjectHelper.WhenNotNull(TableComponent, async t =>
-        {
-            await t.ReloadServerData();
-        });
-        
+        var status = GetOrderingStatus(col);
+        var increased = OrderDirectionIncrease(status);
+
+        Orders = increased == OrderDirection.None
+            ? new List<Order>()
+            : new List<Order>
+            {
+                new() { Key = col.Key, Direction = increased }
+            };
+
+        ObjectHelper.WhenNotNull(TableComponent, async t => { await t.ReloadServerData(); });
+
         return Task.CompletedTask;
     }
 
     private void TextFilterHandler(string text)
     {
         TextFilter = text;
-        ObjectHelper.WhenNotNull(TableComponent, async t =>
+        ObjectHelper.WhenNotNull(TableComponent, async t => { await t.ReloadServerData(); });
+    }
+
+    private OrderDirection GetOrderingStatus(ColumnData col) => Orders.FirstOrDefault(o => o.Key == col.Key)?.Direction ?? OrderDirection.None;
+
+    private bool IsOrderedColumn(ColumnData col) => GetOrderingStatus(col) != OrderDirection.None;
+
+    private static string GetOrderingIcon(OrderDirection direction)
+    {
+        return direction switch
         {
-            await t.ReloadServerData();
-        });
+            OrderDirection.Ascend => Icons.Material.Filled.ArrowDropDown,
+            OrderDirection.Descend => Icons.Material.Filled.ArrowDropUp,
+            _ => Icons.Material.Filled.Info
+        };
+    }
+
+    private static OrderDirection OrderDirectionIncrease(OrderDirection direction)
+    {
+        return direction switch
+        {
+            OrderDirection.None => OrderDirection.Ascend,
+            OrderDirection.Ascend => OrderDirection.Descend,
+            OrderDirection.Descend => OrderDirection.None,
+            _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+        };
     }
 
     private static string GetTDStyle(Alignment alignment)
@@ -259,7 +273,7 @@ public partial class Table<TKey> : ComponentBase
             Alignment.Right => "right",
             _ => ""
         };
-        return $"text-align: {alignmentText}";
+        return $"display: flex; flex-direction: row; align-items: center; justify-content: {alignmentText};";
     }
 
     private static string GetErrorMessage(ResourceMessage message, IStringLocalizer? localizer)

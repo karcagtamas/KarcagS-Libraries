@@ -52,7 +52,17 @@
             <HeaderContent>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    <MudTh Style="@GetTHStyle(col.Alignment)" @onclick="@(() => HandleOrdering(col))"><MudText Color="Style.TitleColorGetter(col.Key)"><b>@GetColumnTitle(col, Localizer)</b></MudText></MudTh>
+                    <MudTh @onclick="@(() => HandleOrdering(col))">
+                        <div style="@GetTHStyle(col.Alignment)">
+                            <MudText Color="Style.TitleColorGetter(col.Key)" Inline>
+                                <b>@GetColumnTitle(col, Localizer)</b>
+                            </MudText>
+                            @if (MetaData.OrderingData.OrderingEnabled && col.IsSortable && IsOrderedColumn(col))
+                            {
+                                <MudIcon Icon="@GetOrderingIcon(GetOrderingStatus(col))" Color="Color.Primary" Size="Size.Small"/>
+                            }
+                        </div>
+                    </MudTh>
                 }
             </HeaderContent>
             <RowTemplate>
@@ -67,7 +77,7 @@
                         }
                         else
                         {
-                            <MudIconButton Color="Style.IconColorGetter(col.Key)" Icon="@Style.IconGetter(col.Key)" Size="Size.Small" Disabled="context.Disabled" OnClick="@(() => ActionHandler(col, context))" />   
+                            <MudIconButton Color="Style.IconColorGetter(col.Key)" Icon="@Style.IconGetter(col.Key)" Size="Size.Small" Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled)" OnClick="@(() => ActionHandler(col, context))" />   
                         }
                     </MudTd>
                 }

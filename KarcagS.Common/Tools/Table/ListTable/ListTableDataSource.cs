@@ -50,7 +50,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
         var fetcherQuery = Fetcher(query);
 
         var ordering = query.IsOrderingNeeded()
-            ? ConstructOrderingSettingsFromModel(query)
+            ? ConstructOrderingSettingsFromModel(query, configuration.Columns)
             : DefaultOrdering;
 
         if (ObjectHelper.IsEmpty(ordering))
@@ -59,11 +59,11 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
         }
         else
         {
-            var orderedQuery = ApplyOrdering(fetcherQuery, DefaultOrdering[0].Exp, DefaultOrdering[0].Direction);
-            for (var i = 1; i < DefaultOrdering.Count; i++)
+            var orderedQuery = ApplyOrdering(fetcherQuery, ordering[0].Exp, ordering[0].Direction);
+            for (var i = 1; i < ordering.Count; i++)
             {
                 orderedQuery =
-                    ApplyAdditionalOrdering(orderedQuery, DefaultOrdering[i].Exp, DefaultOrdering[i].Direction);
+                    ApplyAdditionalOrdering(orderedQuery, ordering[i].Exp, ordering[i].Direction);
             }
 
             orderedQuery = orderedQuery.ThenBy(x => x.Id);
@@ -134,8 +134,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
         };
     }
 
-    private IQueryable<T> GetFilteredQuery(QueryModel query, Configuration<T, TKey> configuration,
-        IQueryable<T> fetcherQuery)
+    private IQueryable<T> GetFilteredQuery(QueryModel query, Configuration<T, TKey> configuration, IQueryable<T> fetcherQuery)
     {
         ObjectHelper.WhenNotNull(query.TextFilter, filter =>
         {
@@ -155,7 +154,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
         return fetcherQuery;
     }
 
-    private static List<OrderingSetting<T, TKey>> ConstructOrderingSettingsFromModel(QueryModel model)
+    private List<OrderingSetting<T, TKey>> ConstructOrderingSettingsFromModel(QueryModel model, List<Column<T, TKey>> columns)
     {
         return model.Ordering.Select(x =>
         {
@@ -173,7 +172,14 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
         }).Select(e =>
         {
             var entityType = typeof(T);
-            var propertyInfo = entityType.GetProperty(e.Key);
+            var col = columns.FirstOrDefault(c => c.Key == e.Key);
+
+            if (ObjectHelper.IsNull(col))
+            {
+                throw new ArgumentException("Invalid column key");
+            }
+            
+            var propertyInfo = entityType.GetProperty(col.OrderBy);
 
             if (ObjectHelper.IsNull(propertyInfo))
             {

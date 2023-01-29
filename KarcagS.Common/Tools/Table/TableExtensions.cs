@@ -63,7 +63,8 @@ public static class TableExtensions
             Alignment = column.Alignment,
             Formatter = column.Formatter,
             Width = column.Width,
-            IsAction = column.IsAction
+            IsAction = column.IsAction,
+            IsSortable = column.IsSortable
         };
     }
 }

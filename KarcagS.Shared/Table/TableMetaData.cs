@@ -46,4 +46,5 @@ public class ColumnData
     public ColumnFormatter Formatter { get; set; }
     public int? Width { get; set; }
     public bool IsAction { get; set; }
+    public bool IsSortable { get; set; }
 }

@@ -15,6 +15,8 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
     public string[] FormatterArgs { get; set; } = Array.Empty<string>();
     public int? Width { get; set; }
     public bool IsAction { get; set; }
+    public string OrderBy { get; set; } = string.Empty;
+    public bool IsSortable { get; set; }
 
     private Column(string key)
     {
@@ -63,6 +65,14 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
     public Column<T, TKey> MarkAsAction(bool isAction = true)
     {
         IsAction = isAction;
+
+        return this;
+    }
+
+    public Column<T, TKey> MarkAsSortable(string by, bool sortable = true)
+    {
+        OrderBy = by;
+        IsSortable = sortable;
 
         return this;
     }

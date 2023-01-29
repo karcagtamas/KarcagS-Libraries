@@ -12,10 +12,10 @@ public class StyleConfiguration
     public int Elevation { get; set; } = 2;
     public bool Bordered { get; set; } = true;
 
-    public Func<ItemValue, Color> ColorGetter = (item) => Color.Default;
-    public Func<string, Color> TitleColorGetter = (colKey) => Color.Primary;
-    public Func<string, string> IconGetter = (colKey) => Icons.Material.Filled.Info;
-    public Func<string, Color> IconColorGetter = (colKey) => Color.Primary;
+    public Func<ItemValue, Color> ColorGetter = _ => Color.Default;
+    public Func<string, Color> TitleColorGetter = _ => Color.Primary;
+    public Func<string, string> IconGetter = _ => Icons.Material.Filled.Info;
+    public Func<string, Color> IconColorGetter = _ => Color.Primary;
 
     private StyleConfiguration()
     {

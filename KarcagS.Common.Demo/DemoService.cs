@@ -22,7 +22,7 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
             .Build("demo-table")
             .SetTitle("Demo Table")
             .AddColumn(Column<DemoEntry, string>.Build("id").SetTitle("Id").AddValueGetter(x => x.Id).SetWidth(80).SetAlignment(Alignment.Center))
-            .AddColumn(Column<DemoEntry, string>.Build("name").SetTitle("Name").AddValueGetter(x => x.Name))
+            .AddColumn(Column<DemoEntry, string>.Build("name").SetTitle("Name").AddValueGetter(x => x.Name).MarkAsSortable("Name"))
             .AddColumn(Column<DemoEntry, string>.Build("age").SetTitle("Age").AddValueGetter(x => x.Age).SetFormatter(ColumnFormatter.Number).SetWidth(50).SetAlignment(Alignment.Right))
             .AddColumn(Column<DemoEntry, string>.Build("date").SetTitle("Date").AddValueGetter(x => x.Date).SetFormatter(ColumnFormatter.Date).SetWidth(200))
             .AddColumn(Column<DemoEntry, string>.Build("gender").SetTitle("Gender").AddValueGetter(x => x.Gender.Name).SetWidth(120))
@@ -32,6 +32,7 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
             .AddPagination(PaginationConfiguration.Build().IsPaginationEnabled(true))
             .AddOrdering(OrderingConfiguration.Build().IsEnabled())
             .DisableClickOn(obj => obj.Age == 12)
+            .ActionsDisabledOn((obj, col) => false)
             .AddTagProvider((obj, col) =>
             {
                 var entry = col.ValueGetter(obj);

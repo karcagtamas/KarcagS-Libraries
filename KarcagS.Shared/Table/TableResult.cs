@@ -24,6 +24,7 @@ public class ItemValue
 {
     public string Value { get; set; } = string.Empty;
     public List<string> Tags { get; set; } = new();
+    public bool ActionDisabled { get; set; }
 }
 
 public class ResultRowItem<TKey> : ResultItem<TKey>

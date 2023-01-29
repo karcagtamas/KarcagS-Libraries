@@ -15,6 +15,7 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
     public PaginationConfiguration Pagination { get; set; } = PaginationConfiguration.Build();
 
     public Func<T, bool> ClickDisableOn { get; set; } = _ => false;
+    public Func<T, Column<T, TKey>, bool> IsActionsDisabled = (_, _) => false;
     public List<Func<T, Column<T, TKey>, string>> TagProviders { get; set; } = new();
 
     private Configuration()
@@ -73,6 +74,13 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
     public Configuration<T, TKey> DisableClickOn(Func<T, bool> func)
     {
         ClickDisableOn = func;
+
+        return this;
+    }
+
+    public Configuration<T, TKey> ActionsDisabledOn(Func<T, Column<T, TKey>, bool> func)
+    {
+        IsActionsDisabled = func;
 
         return this;
     }

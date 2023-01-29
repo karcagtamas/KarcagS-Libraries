@@ -38,7 +38,12 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
 
                 Configuration.Columns.ForEach(col =>
                 {
-                    dict.Add(col.Key, new ItemValue { Value = GetFormattedValue(col, x), Tags = Configuration.TagProviders.Select(provider => provider(x, col)).Where(tag => !string.IsNullOrEmpty(tag)).ToList() });
+                    dict.Add(col.Key, new ItemValue
+                    {
+                        Value = GetFormattedValue(col, x), 
+                        Tags = Configuration.TagProviders.Select(provider => provider(x, col)).Where(tag => !string.IsNullOrEmpty(tag)).ToList(),
+                        ActionDisabled = Configuration.IsActionsDisabled(x, col)
+                    });
                 });
 
                 item.Values = dict;
@@ -104,7 +109,7 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
 
     public TableResult<TKey> ConstructResult(QueryModel query)
     {
-        var result = new TableResult<TKey>()
+        var result = new TableResult<TKey>
         {
             Items = GetDisplayData(query).ToList()
         };

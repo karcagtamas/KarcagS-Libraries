@@ -4,7 +4,7 @@
 @inject IDemoTableService Service
 
 <div class="flex-box overflow-hidden p-1">
-    <Table @ref="Table" TKey="string" Service="Service" Style="Style" InitialParams="ExtraParams" OnRowClick="RowClickHandler">
+    <Table @ref="Table" TKey="string" Service="Service" Style="Style" InitialParams="ExtraParams" OnRowClick="RowClickHandler" OnAction="ActionHandler">
 
         <FilterRow>
             <MudTextField Style="width: 220px;" T="string" Label="Text Filter" Variant="Variant.Outlined" Margin="Margin.Dense" TextChanged="@((arg) => context("text", string.IsNullOrEmpty(arg) ? null : arg))" />
@@ -46,4 +46,8 @@
         Console.WriteLine(item.ItemKey);
     }
 
+    private void ActionHandler(KeyValuePair<string, ResultRowItem<string>> pair)
+    {
+        Console.WriteLine(pair.Key);
+    }
 }
