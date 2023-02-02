@@ -13,11 +13,11 @@
                 {
                     @if (ObjectHelper.IsNotNull(col.Width))
                     {
-                        <col style="width: @(col.Width)px;" />
+                        <col style="width: @(col.Width)px;"/>
                     }
                     else
                     {
-                        <col />
+                        <col/>
                     }
                 }
             </ColGroup>
@@ -26,11 +26,11 @@
                     <MudText Typo="Typo.h5" Color="Color.Primary" Class="w-100 mt-3 mb-3">
                         <b>@GetTitle(MetaData, Localizer)</b>
                     </MudText>
-                    <MudSpacer />
+                    <MudSpacer/>
                     @if (ObjectHelper.IsNotNull(ErrorResult))
                     {
                         <div class="d-flex flex-row align-items-center gap-2">
-                            <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error" />
+                            <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error"/>
                             <MudText Style="white-space: nowrap;" Typo="Typo.body2" Inline="true" Color="Color.Error">@GetErrorMessage(ErrorResult.Message, Localizer)</MudText>
                         </div>
                     }
@@ -44,7 +44,7 @@
                         }
                         @if (MetaData.FilterData.TextFilterEnabled)
                         {
-                            <MudTextField Class="mr-3" T="string" DebounceInterval="500" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Style="width: 300px;" Value="TextFilter" ValueChanged="TextFilterHandler" Placeholder="@LocalizationService.GetValue(LibraryLocalizer.TableSearchLabelKey, "Search")" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" />
+                            <MudTextField Class="mr-3" T="string" DebounceInterval="500" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Style="width: 300px;" Value="TextFilter" ValueChanged="TextFilterHandler" Placeholder="@LocalizationService.GetValue(LibraryLocalizer.TableSearchLabelKey, "Search")" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"/>
                         }
                     }
                 </div>
@@ -77,7 +77,7 @@
                         }
                         else
                         {
-                            <MudIconButton Color="Style.IconColorGetter(col.Key)" Icon="@Style.IconGetter(col.Key)" Size="Size.Small" Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled)" OnClick="@(() => ActionHandler(col, context))" />   
+                            <MudIconButton Color="Style.IconColorGetter(context.Values[col.Key])" Icon="@Style.IconGetter(context.Values[col.Key])" Size="Size.Small" Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled)" OnClick="@(() => ActionHandler(col, context))"/>
                         }
                     </MudTd>
                 }
@@ -86,11 +86,10 @@
                 @if (MetaData.PaginationData.PaginationEnabled)
                 {
                     <div style="min-height: 52px;">
-                        <MudTablePager PageSizeOptions="@(new[] { MetaData.PaginationData.PageSize })" HideRowsPerPage="true" />
+                        <MudTablePager PageSizeOptions="@(new[] { MetaData.PaginationData.PageSize })" HideRowsPerPage="true"/>
                     </div>
                 }
             </PagerContent>
         </MudTable>
     }
 </div>
-

@@ -14,12 +14,11 @@ public class StyleConfiguration
 
     public Func<ItemValue, Color> ColorGetter = _ => Color.Default;
     public Func<string, Color> TitleColorGetter = _ => Color.Primary;
-    public Func<string, string> IconGetter = _ => Icons.Material.Filled.Info;
-    public Func<string, Color> IconColorGetter = _ => Color.Primary;
+    public Func<ItemValue, string> IconGetter = _ => Icons.Material.Filled.Info;
+    public Func<ItemValue, Color> IconColorGetter = _ => Color.Primary;
 
     private StyleConfiguration()
     {
-
     }
 
     public static StyleConfiguration Build() => new();
@@ -79,15 +78,15 @@ public class StyleConfiguration
 
         return this;
     }
-    
-    public StyleConfiguration AddIconGetter(Func<string, string> getter)
+
+    public StyleConfiguration AddIconGetter(Func<ItemValue, string> getter)
     {
         IconGetter = getter;
 
         return this;
     }
-    
-    public StyleConfiguration AddIconColorGetter(Func<string, Color> getter)
+
+    public StyleConfiguration AddIconColorGetter(Func<ItemValue, Color> getter)
     {
         IconColorGetter = getter;
 

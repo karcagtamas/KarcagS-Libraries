@@ -7,7 +7,7 @@
     <Table @ref="Table" TKey="string" Service="Service" Style="Style" InitialParams="ExtraParams" OnRowClick="RowClickHandler" OnAction="ActionHandler">
 
         <FilterRow>
-            <MudTextField Style="width: 220px;" T="string" Label="Text Filter" Variant="Variant.Outlined" Margin="Margin.Dense" TextChanged="@((arg) => context("text", string.IsNullOrEmpty(arg) ? null : arg))" />
+            <MudTextField Style="width: 220px;" T="string" Label="Text Filter" Variant="Variant.Outlined" Margin="Margin.Dense" TextChanged="@((arg) => context("text", string.IsNullOrEmpty(arg) ? null : arg))"/>
         </FilterRow>
 
     </Table>
@@ -17,8 +17,8 @@
     private Table<string>? Table { get; set; } = default!;
 
     private StyleConfiguration Style { get; set; } = StyleConfiguration.Build()
-        .AddTitleColorGetter((colKey) => colKey == "id" ? Color.Primary : Color.Secondary)
-        .AddColorGetter((item) =>
+        .AddTitleColorGetter(colKey => colKey == "id" ? Color.Primary : Color.Secondary)
+        .AddColorGetter(item =>
         {
             if (item.Tags.Contains("TRUE_VALUE"))
             {
@@ -32,12 +32,12 @@
 
             return Color.Default;
         })
-        .AddIconGetter(colKey => colKey == "open" ? Icons.Material.Filled.OpenWith : Icons.Material.Filled.Info)
-        .AddIconColorGetter(colKey => colKey == "open" ? Color.Error : Color.Default);
+        .AddIconGetter(item => item.Value == "open" ? Icons.Material.Filled.OpenWith : Icons.Material.Filled.Info)
+        .AddIconColorGetter(item => item.Value == "open" ? Color.Error : Color.Default);
 
-    private readonly Dictionary<string, object> ExtraParams = new()
+    private Dictionary<string, object> ExtraParams { get; set; } = new()
     {
-        {"key", 1}
+        { "key", 1 }
     };
 
     private void RowClickHandler(ResultRowItem<string> item)
@@ -50,4 +50,5 @@
     {
         Console.WriteLine(pair.Key);
     }
+
 }
