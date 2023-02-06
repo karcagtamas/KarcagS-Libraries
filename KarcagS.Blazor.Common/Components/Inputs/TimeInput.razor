@@ -1,0 +1,37 @@
+﻿@using System.Linq.Expressions
+
+<MudTimePicker Style="@Style" Class="@Class" Time="Time" TimeChanged="TimeChanged" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="Clearable" Placeholder="@Placeholder" Label="@Label" For="For" Required="Required" TimeFormat="HH:mm" TimeEditMode="EditMode"/>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public string Label { get; set; } = default!;
+
+    [Parameter]
+    public string Placeholder { get; set; } = default!;
+
+    [Parameter]
+    public string Style { get; set; } = default!;
+
+    [Parameter]
+    public string Class { get; set; } = default!;
+
+    [Parameter]
+    public bool Clearable { get; set; }
+
+    [Parameter]
+    public bool Required { get; set; }
+
+    [Parameter]
+    public TimeSpan? Time { get; set; }
+
+    [Parameter]
+    public EventCallback<TimeSpan?> TimeChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<TimeSpan?>>? For { get; set; }
+
+    [Parameter]
+    public TimeEditMode EditMode { get; set; } = TimeEditMode.Normal;
+
+}

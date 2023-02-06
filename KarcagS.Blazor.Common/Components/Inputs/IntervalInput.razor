@@ -14,11 +14,11 @@
     public string Class { get; set; } = default!;
 
     [Parameter]
-    public bool Clearable { get; set; } = false;
+    public bool Clearable { get; set; }
 
     [Parameter]
-    public DateRange? DateRange { get; set; } = default!;
+    public DateRange DateRange { get; set; } = default!;
 
     [Parameter]
-    public EventCallback<DateRange?> DateRangeChanged { get; set; }
+    public EventCallback<DateRange> DateRangeChanged { get; set; }
 }

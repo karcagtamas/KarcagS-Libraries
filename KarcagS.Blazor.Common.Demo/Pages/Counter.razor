@@ -13,7 +13,12 @@
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 <button class="btn btn-primary" @onclick="IncrementCount2">Click me</button>
 
+<TimeInput Label="Time"/>
+<DateInput Label="Date"/>
+
+
 @code {
+
     [Inject]
     private IHttpService HttpService { get; set; } = default!;
 
@@ -28,13 +33,15 @@
 
     private int currentCount = 0;
 
+    private TModel Model { get; set; } = new() { DateTime = DateTime.Now };
+
     private async Task IncrementCount()
     {
-        // await HttpService.Post<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast"), new TestModel { }).Execute();
-        //sawait HttpService.Get<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast")).Execute();
+    // await HttpService.Post<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast"), new TestModel { }).Execute();
+    //sawait HttpService.Get<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast")).Execute();
 
-        //await Client.GetFromJsonAsync<TestModel>("https://localhost:7205/weatherforecast");
-        // await Client.PostAsJsonAsync<TestModel>("https://localhost:7205/weatherforecast", new TestModel { });
+    //await Client.GetFromJsonAsync<TestModel>("https://localhost:7205/weatherforecast");
+    // await Client.PostAsJsonAsync<TestModel>("https://localhost:7205/weatherforecast", new TestModel { });
 
         await Confirm.Open(new Components.Confirm.ConfirmDialogInput { ActionFunction = async () => await Task.FromResult(true), Message = "HELLO" }, "Confirm Action Log Delete");
     }
@@ -59,4 +66,10 @@
         [MaxLength(20)]
         public string Name { get; set; } = string.Empty;
     }
+
+    public class TModel
+    {
+        public DateTime DateTime { get; set; } = DateTime.Now;
+    }
+
 }
