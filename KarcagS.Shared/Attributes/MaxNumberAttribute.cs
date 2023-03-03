@@ -8,7 +8,7 @@ namespace KarcagS.Shared.Attributes;
 [AttributeUsage(AttributeTargets.Property)]
 public class MaxNumberAttribute : ValidationAttribute
 {
-    private long Max { get; }
+    protected long Max { get; }
 
     /// <summary>
     /// Add annotation
@@ -37,43 +37,49 @@ public class MaxNumberAttribute : ValidationAttribute
 
             long? number = null;
 
-            if (value is long)
+            if (value is long longValue)
             {
-                number = (long)value;
+                number = longValue;
             }
-            else if (value is int)
+            else if (value is int intValue)
             {
-                number = (int)value;
+                number = intValue;
             }
-            else if (value is byte)
+            else if (value is byte byteValue)
             {
-                number = (byte)value;
+                number = byteValue;
             }
-            else if (value is uint)
+            else if (value is uint uintValue)
             {
-                number = (uint)value;
+                number = uintValue;
             }
-            else if (value is sbyte)
+            else if (value is sbyte sbyteValue)
             {
-                number = (sbyte)value;
+                number = sbyteValue;
             }
 
             if (number is null)
             {
-                throw new InvalidCastException("Number is not supported");
+                throw new InvalidCastException(GetNotSupportedNumberMessage());
             }
 
             // Check maximum (explicit)
             if (number > Max)
             {
-                return new ValidationResult($"Value is bigger than {Max}");
+                return new ValidationResult(GetMessage());
             }
         }
         catch (Exception)
         {
-            return new ValidationResult("Field is not a number");
+            return new ValidationResult(GetNotANumberMessage());
         }
 
         return ValidationResult.Success;
     }
+
+    protected virtual string GetNotANumberMessage() => "Field is not a number";
+
+    protected virtual string GetNotSupportedNumberMessage() => "Number is not supported";
+
+    protected virtual string GetMessage() => $"Value is bigger than {Max}";
 }
