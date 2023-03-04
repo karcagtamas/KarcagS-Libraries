@@ -1,0 +1,17 @@
+﻿<DataRow Title="@Title" Value="@Number.ToString($"N{DecimalPlaces}")" OneRow="OneRow"/>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public double Number { get; set; }
+
+    [Parameter]
+    public bool OneRow { get; set; }
+
+    [Parameter]
+    public int DecimalPlaces { get; set; } = 2;
+
+}

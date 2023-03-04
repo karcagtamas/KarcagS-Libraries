@@ -1,5 +1,4 @@
-﻿@using KarcagS.Blazor.Common.Services
-@using KarcagS.Blazor.Common.Services.Interfaces
+﻿@using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Shared.Common
 @using KarcagS.Shared.Helpers
 @using KarcagS.Shared.Localization
@@ -8,7 +7,7 @@
 
 <MudDialog>
     <TitleContent>
-        <MudText Typo="Typo.h5" Color="Color.Primary">@TitleText</MudText>
+        <DialogTitle Title="@TitleText"/>
     </TitleContent>
     <DialogContent>
         @if (ObjectHelper.IsNotNull(BodyText))
@@ -18,7 +17,7 @@
         <MudTable Style="margin-top: 2rem;" T="SelectableRowItem<Data, Key>" Items="DataList" Dense="true" Striped="true" OnRowClick="(e) => ToggleSelect(e.Item)" RowClassFunc="RowClassFunc">
             <HeaderContent>
                 <MudTh>
-                    <MudText Color="Color.Primary">Values</MudText>
+                    <MudText Color="Color.Primary">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Values")</MudText>
                 </MudTh>
             </HeaderContent>
             <RowTemplate>
@@ -27,13 +26,14 @@
         </MudTable>
     </DialogContent>
     <DialogActions>
-        <MudSpacer />
+        <MudSpacer/>
         <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Cancel")</MudButton>
         <MudButton Color="Color.Primary" OnClick="Submit">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
+
     [CascadingParameter]
     private MudDialogInstance Dialog { get; set; } = null!;
 
@@ -50,13 +50,13 @@
     public Func<Task<List<Data>>> Fetcher { get; set; } = async () => await Task.FromResult<List<Data>>(new());
 
     [Parameter, EditorRequired]
-    public Func<Data, string> TitleGetter { get; set; } = (d) => "";
+    public Func<Data, string> TitleGetter { get; set; } = _ => "";
 
     [Parameter]
-    public bool MultiSelect { get; set; } = false;
+    public bool MultiSelect { get; set; }
 
     [Parameter]
-    public bool Required { get; set; } = false;
+    public bool Required { get; set; }
 
     [Parameter]
     public Key? PreSelectedId { get; set; }
@@ -71,20 +71,13 @@
     public List<SelectableRowItem<Data, Key>> DataList { get; set; } = new();
     private List<Data> Selection { get; set; } = new();
 
-    protected override async void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        if (ObjectHelper.IsNotNull(Title))
-        {
-            TitleText = Title;
-        }
-        else
-        {
-            TitleText = LocalizationService.GetValue(LibraryLocalizer.SelectorSelectEntityKey, "Select {0}", EntityName);
-        }
+        TitleText = ObjectHelper.IsNotNull(Title) ? Title : LocalizationService.GetValue(LibraryLocalizer.SelectorSelectEntityKey, "Select {0}", EntityName);
 
         await Fetch();
 
-        base.OnInitialized();
+        await base.OnInitializedAsync();
     }
 
     private async Task Fetch()
@@ -105,7 +98,7 @@
         {
             ObjectHelper.WhenNotNull(PreSelectedId, pId =>
             {
-                var item = DataList.FirstOrDefault(x => x.Data.Id.Equals(pId));
+                var item = DataList.FirstOrDefault(x => pId != null && pId.Equals(x.Data.Id));
 
                 ObjectHelper.WhenNotNull(item, i =>
                 {

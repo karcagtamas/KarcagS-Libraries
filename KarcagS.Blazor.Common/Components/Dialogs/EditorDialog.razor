@@ -1,12 +1,11 @@
-﻿@using KarcagS.Blazor.Common.Services
-@using KarcagS.Blazor.Common.Services.Interfaces
+﻿@using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Shared.Helpers
 @using KarcagS.Shared.Localization
 @typeparam Model
 
 <MudDialog>
     <TitleContent>
-        <MudText Typo="Typo.h5" Color="Color.Primary">@TitleText</MudText>
+        <DialogTitle Title="@TitleText"/>
     </TitleContent>
     <DialogContent>
         <div style="min-width: @(MinWidth)px;">
@@ -26,6 +25,7 @@
 </MudDialog>
 
 @code {
+
     [CascadingParameter]
     private MudDialogInstance Dialog { get; set; } = null!;
 
@@ -36,7 +36,7 @@
     public Func<Task<bool>> Submit { get; set; } = default!;
 
     [Parameter]
-    public Func<Task<bool>>? Remove { get; set; } = default!;
+    public Func<Task<bool>>? Remove { get; set; }
 
     [Parameter]
     public string RemoveConfirmMessage { get; set; } = default!;
@@ -57,19 +57,16 @@
     public int MinWidth { get; set; } = 300;
 
     [Parameter]
-    public Func<Model, ISnackbar, Task<bool>>? FormValidator { get; set; } = default!;
+    public Func<Model, ISnackbar, Task<bool>>? FormValidator { get; set; }
 
     [Parameter, EditorRequired]
     public Model ModelObj { get; set; } = default!;
 
     [Parameter]
-    public bool RemoveDisabled { get; set; } = false;
+    public bool RemoveDisabled { get; set; }
 
     [Inject]
     private ISnackbar Snackbar { get; set; } = null!;
-
-    [Inject]
-    private IDialogService DialogService { get; set; } = default!;
 
     [Inject]
     private IConfirmService ConfirmService { get; set; } = default!;
@@ -77,7 +74,7 @@
     [Inject]
     private ILocalizationService LocalizationService { get; set; } = default!;
 
-    private MudForm? Form { get; set; } = null!;
+    private MudForm? Form { get; set; }
     private string TitleText { get; set; } = "";
 
     protected override void OnInitialized()
@@ -129,16 +126,16 @@
         }
 
         await ConfirmService.Open(new ConfirmDialogInput
-            {
-                Message = !string.IsNullOrEmpty(RemoveConfirmMessage) 
-                    ? RemoveConfirmMessage 
-                    : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteMessageKey, $"Are you sure you want to delete {EntityName}?", EntityName),
-                ActionFunction = async () => await Remove()
-            },
-        !string.IsNullOrEmpty(RemoveConfirmTitle) 
-            ? RemoveConfirmTitle 
-            : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteTitleKey, "Confirm Delete"),
-        () => Dialog.Close(DialogResult.Ok(EditorDialogResult.PerformedResult(EditorCloseEvent.Remove))));
+        {
+            Message = !string.IsNullOrEmpty(RemoveConfirmMessage)
+                ? RemoveConfirmMessage
+                : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteMessageKey, $"Are you sure you want to delete {EntityName}?", EntityName),
+            ActionFunction = async () => await Remove()
+        },
+            !string.IsNullOrEmpty(RemoveConfirmTitle)
+                ? RemoveConfirmTitle
+                : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteTitleKey, "Confirm Delete"),
+            () => Dialog.Close(DialogResult.Ok(EditorDialogResult.PerformedResult(EditorCloseEvent.Remove))));
     }
 
     private void Cancel() => Dialog.Cancel();

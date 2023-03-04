@@ -5,7 +5,7 @@ namespace KarcagS.Shared.Localization;
 
 public class LibraryLocalizer
 {
-    private static LibraryLocalizer? Instance;
+    private static LibraryLocalizer? _instance;
     private IStringLocalizer Localizer { get; set; } = default!;
 
     private LibraryLocalizer()
@@ -14,9 +14,9 @@ public class LibraryLocalizer
 
     public static LibraryLocalizer GetInstance()
     {
-        Instance ??= new LibraryLocalizer();
+        _instance ??= new LibraryLocalizer();
 
-        return Instance;
+        return _instance;
     }
 
     public void AddLocalizer(IStringLocalizer localizer) => Localizer = localizer;
@@ -47,6 +47,7 @@ public class LibraryLocalizer
     public const string SelectorSelectEntityKey = "Selector.SelectEntity";
     public const string SelectorSelectActionKey = "Selector.Action.Select";
     public const string SelectorCancelActionKey = "Selector.Action.Cancel";
+    public const string SelectorValuesColumnHeaderKey = "Selector.ValuesColumnHeader";
 
     public const string TableSearchLabelKey = "Table.Search";
 }

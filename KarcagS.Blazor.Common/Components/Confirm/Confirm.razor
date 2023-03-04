@@ -1,11 +1,10 @@
-﻿@using KarcagS.Blazor.Common.Services
-@using KarcagS.Blazor.Common.Services.Interfaces
+﻿@using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Shared.Localization
 @inject ILocalizationService LocalizationService
 
 <MudDialog>
     <TitleContent>
-        <MudText Typo="Typo.h5" Color="Color.Primary">@Dialog.Title</MudText>
+        <DialogTitle Title="@Dialog.Title"/>
     </TitleContent>
     <DialogContent>
         <MudText Style="@($"min-width: {Input.MinContentWidth}px;")">
@@ -19,7 +18,9 @@
 </MudDialog>
 
 @code {
-    [CascadingParameter] private MudDialogInstance Dialog { get; set; } = default!;
+
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = default!;
 
     /// <summary>
     /// Dialog Input

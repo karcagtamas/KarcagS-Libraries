@@ -1,5 +1,4 @@
-﻿@using KarcagS.Blazor.Common.Services
-@using KarcagS.Blazor.Common.Services.Interfaces
+﻿@using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Shared.Helpers
 @using KarcagS.Shared.Localization
 @using Microsoft.AspNetCore.Components.Forms
@@ -8,13 +7,15 @@
 
 <MudDialog>
     <TitleContent>
-        <MudText Typo="Typo.h5" Color="Color.Primary">@Dialog.Title</MudText>
+        <DialogTitle Title="@Dialog.Title"/>
     </TitleContent>
     <DialogContent>
         <div class="text-center">
-            <InputFile id="fileInput" OnChange="@FilesReady" hidden multipe="@Input.Multiple" accept="@ConstructAccept()" />
+            <InputFile id="fileInput" OnChange="@FilesReady" hidden multipe="@Input.Multiple" accept="@ConstructAccept()"/>
             <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary"
-                       StartIcon="@Icons.Material.Filled.CloudUpload" for="fileInput">@LocalizationService.GetValue(LibraryLocalizer.UploaderUploadKey, "Upload")</MudButton>
+                       StartIcon="@Icons.Material.Filled.CloudUpload" for="fileInput">
+                @LocalizationService.GetValue(LibraryLocalizer.UploaderUploadKey, "Upload")
+            </MudButton>
             @if (ObjectHelper.IsNotEmpty(Files))
             {
                 <div style="margin-top: 1rem;">
@@ -48,7 +49,7 @@
 
     private List<IBrowserFile> Files { get; set; } = new();
 
-    private long MAX_SIZE = 512000;
+        private const long MaxSize = 512000;
 
     private async void Save()
     {
@@ -65,7 +66,7 @@
             {
                 Snackbar.Add(LocalizationService.GetValue(LibraryLocalizer.UploaderInvalidExtensionsKey, "Invalid file extension [{0}]. Please try again with a correct type. [{1}]", file.ContentType, file.Name), Severity.Error);
             }
-            else if (file.Size > Input.MaxFileSize || file.Size > MAX_SIZE)
+            else if (file.Size > Input.MaxFileSize || file.Size > MaxSize)
             {
                 Snackbar.Add(LocalizationService.GetValue(LibraryLocalizer.UploaderInvalidSizeKey, "The file size [{0}] exceeds the maximum size [{1}]. Please use smaller files.", file.Size.ToString(), Input.MaxFileSize.ToString()), Severity.Error);
             }
@@ -77,12 +78,12 @@
                     await file.OpenReadStream().CopyToAsync(memoryStream);
 
                     var f = new FileUploaderFile
-                        {
-                            Name = file.Name,
-                            Size = file.Size,
-                            Extension = file.ContentType,
-                            Content = memoryStream.ToArray()
-                        };
+                    {
+                        Name = file.Name,
+                        Size = file.Size,
+                        Extension = file.ContentType,
+                        Content = memoryStream.ToArray()
+                    };
 
                     files.Add(f);
                 }
@@ -110,7 +111,7 @@
         {
             Files = e.GetMultipleFiles()
                 .ToList()
-                .Where(x => x.Size <= Input.MaxFileSize && x.Size <= MAX_SIZE)
+                .Where(x => x.Size <= Input.MaxFileSize && x.Size <= MaxSize)
                 .Where(x => Input.EnabledExtensions.Contains(x.ContentType))
                 .ToList();
         }
@@ -124,7 +125,7 @@
                 {
                     Snackbar.Add(LocalizationService.GetValue(LibraryLocalizer.UploaderInvalidExtensionsKey, "Invalid file extension [{0}]. Please try again with a correct type. [{1}]", f.ContentType, f.Name), Severity.Error);
                 }
-                else if (f.Size > Input.MaxFileSize || f.Size > MAX_SIZE)
+                else if (f.Size > Input.MaxFileSize || f.Size > MaxSize)
                 {
                     Snackbar.Add(LocalizationService.GetValue(LibraryLocalizer.UploaderInvalidSizeKey, "The file size [{0} bytes] exceeds the maximum size [{1} bytes] for the file [{2}]. Please use smaller files.", f.Size.ToString(), Input.MaxFileSize.ToString(), f.Name), Severity.Error);
                 }

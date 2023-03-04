@@ -43,7 +43,7 @@
     //await Client.GetFromJsonAsync<TestModel>("https://localhost:7205/weatherforecast");
     // await Client.PostAsJsonAsync<TestModel>("https://localhost:7205/weatherforecast", new TestModel { });
 
-        await Confirm.Open(new Components.Confirm.ConfirmDialogInput { ActionFunction = async () => await Task.FromResult(true), Message = "HELLO" }, "Confirm Action Log Delete");
+        await Confirm.Open(new Components.Confirm.ConfirmDialogInput { ActionFunction = async () => await Task.FromResult(true), Message = "HELLO" }, "Confirm Action Log Delete because it's needed");
     }
 
     private async Task IncrementCount2()

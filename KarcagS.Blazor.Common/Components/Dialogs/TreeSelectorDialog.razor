@@ -1,6 +1,4 @@
-﻿@using KarcagS.Blazor.Common.Components.Tree
-@using KarcagS.Blazor.Common.Services
-@using KarcagS.Blazor.Common.Services.Interfaces
+﻿@using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Shared.Common
 @using KarcagS.Shared.Helpers
 @using KarcagS.Shared.Localization
@@ -11,7 +9,7 @@
 
 <MudDialog>
     <TitleContent>
-        <MudText Typo="Typo.h5" Color="Color.Primary">@TitleText</MudText>
+        <DialogTitle Title="@TitleText"/>
     </TitleContent>
     <DialogContent>
         <div style="min-width: @(MinWidth)px;">
@@ -23,8 +21,8 @@
                 <ItemTemplate>
                     <MudTreeViewItem @bind-Expanded="context.IsExpanded" Items="context.Items">
                         <Content>
-                            <MudTreeViewItemToggleButton @bind-Expanded="context.IsExpanded" Visible="context.HasChild" />
-                            <MudCheckBox Checked="context.IsSelected" CheckedChanged="(bool val) => ToggleSelect(context, val)" Disabled="IsSelectDisabled(context)" />
+                            <MudTreeViewItemToggleButton @bind-Expanded="context.IsExpanded" Visible="context.HasChild"/>
+                            <MudCheckBox Checked="context.IsSelected" CheckedChanged="(bool val) => ToggleSelect(context, val)" Disabled="IsSelectDisabled(context)"/>
                             <MudText Class="mr-1">@TitleGetter(context.Data)</MudText>
                         </Content>
                     </MudTreeViewItem>
@@ -33,15 +31,16 @@
         </div>
     </DialogContent>
     <DialogActions>
-        <MudIconButton Icon="@Icons.Material.Filled.ExpandMore" Size="Size.Small" OnClick="ExpandAll" />
-        <MudIconButton Icon="@Icons.Material.Filled.ExpandLess" Size="Size.Small" OnClick="CollapseAll" />
-        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.ExpandMore" Size="Size.Small" OnClick="ExpandAll"/>
+        <MudIconButton Icon="@Icons.Material.Filled.ExpandLess" Size="Size.Small" OnClick="CollapseAll"/>
+        <MudSpacer/>
         <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Cancel")</MudButton>
         <MudButton Color="Color.Primary" OnClick="Submit">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
+
     [CascadingParameter]
     private MudDialogInstance Dialog { get; set; } = null!;
 
@@ -58,19 +57,19 @@
     public Func<Task<List<T>>> Fetcher { get; set; } = async () => await Task.FromResult<List<T>>(new());
 
     [Parameter, EditorRequired]
-    public Func<T, List<T>> ItemExtractor { get; set; } = (d) => new();
+    public Func<T, List<T>> ItemExtractor { get; set; } = _ => new();
 
     [Parameter, EditorRequired]
-    public Func<T, string> TitleGetter { get; set; } = (d) => "";
+    public Func<T, string> TitleGetter { get; set; } = _ => "";
 
     [Parameter]
-    public bool MultiSelect { get; set; } = false;
+    public bool MultiSelect { get; set; }
 
     [Parameter]
     public bool SingleItemSelect { get; set; } = true;
 
     [Parameter]
-    public bool Required { get; set; } = false;
+    public bool Required { get; set; }
 
     [Parameter]
     public int MinWidth { get; set; } = 300;
@@ -83,23 +82,16 @@
 
     public HashSet<TreeItem<T>> DataList { get; set; } = new();
 
-    private List<T> Selection { get; set; } = new();
+    private List<T> Selection { get; } = new();
     private string TitleText { get; set; } = "";
 
-    protected override async void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        if (ObjectHelper.IsNotNull(Title))
-        {
-            TitleText = Title;
-        }
-        else
-        {
-            TitleText = LocalizationService.GetValue(LibraryLocalizer.SelectorSelectEntityKey, "Select {0}", EntityName);
-        }
+        TitleText = ObjectHelper.IsNotNull(Title) ? Title : LocalizationService.GetValue(LibraryLocalizer.SelectorSelectEntityKey, "Select {0}", EntityName);
 
         await Fetch();
 
-        base.OnInitialized();
+        await base.OnInitializedAsync();
     }
 
     private async Task Fetch()
@@ -155,8 +147,6 @@
         Dialog.Close(DialogResult.Ok(Selection));
     }
 
-    private void Cancel()
-    {
-        Dialog.Cancel();
-    }
+    private void Cancel() => Dialog.Cancel();
+
 }
