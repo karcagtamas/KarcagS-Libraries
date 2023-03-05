@@ -17,7 +17,7 @@
         <MudTable Style="margin-top: 2rem;" T="SelectableRowItem<Data, Key>" Items="DataList" Dense="true" Striped="true" OnRowClick="(e) => ToggleSelect(e.Item)" RowClassFunc="RowClassFunc">
             <HeaderContent>
                 <MudTh>
-                    <MudText Color="Color.Primary">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Values")</MudText>
+                    <MudText Color="Color.Primary">@LocalizationService.GetValue(LibraryLocalizer.SelectorValuesColumnHeaderKey, "Values")</MudText>
                 </MudTh>
             </HeaderContent>
             <RowTemplate>
