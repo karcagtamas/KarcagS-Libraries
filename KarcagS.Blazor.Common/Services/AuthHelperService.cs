@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 
 namespace KarcagS.Blazor.Common.Services;
 
-public class AuthHelper : IAuthHelper
+public class AuthHelperService : IAuthHelperService
 {
     public async Task<bool> IsInRole(Task<AuthenticationState> stateTask, params string[] roles) => IsInRole(await stateTask, roles);
 

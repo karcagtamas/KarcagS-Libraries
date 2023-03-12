@@ -7,9 +7,9 @@ namespace KarcagS.Blazor.Common.Services;
 
 public class DialogHelperService : IDialogHelperService
 {
-    private readonly DialogService dialogService;
+    private readonly IDialogService dialogService;
 
-    public DialogHelperService(DialogService dialogService)
+    public DialogHelperService(IDialogService dialogService)
     {
         this.dialogService = dialogService;
     }

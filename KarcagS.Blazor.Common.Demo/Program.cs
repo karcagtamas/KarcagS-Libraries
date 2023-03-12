@@ -45,7 +45,7 @@ builder.Services.AddStoreService(async (storeService, localStorage) =>
     }
 });
 builder.Services.AddScoped<IHelperService, HelperService>();
-builder.Services.AddScoped<IAuthHelper, AuthHelper>();
+builder.Services.AddScoped<IAuthHelperService, AuthHelperService>();
 builder.Services.AddScoped<IDialogHelperService, DialogHelperService>();
 builder.Services.AddScoped<IHelperService, HelperService>();
 builder.Services.AddScoped<IToasterService, BlazorToasterService>();

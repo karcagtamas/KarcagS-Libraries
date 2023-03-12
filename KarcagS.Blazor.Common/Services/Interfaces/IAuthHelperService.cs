@@ -2,7 +2,7 @@
 
 namespace KarcagS.Blazor.Common.Services.Interfaces;
 
-public interface IAuthHelper
+public interface IAuthHelperService
 {
     Task<bool> IsInRole(Task<AuthenticationState> stateTask, params string[] roles);
     bool IsInRole(AuthenticationState state, params string[] roles);
