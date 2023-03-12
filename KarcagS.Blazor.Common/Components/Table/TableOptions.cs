@@ -1,5 +1,4 @@
-﻿using KarcagS.Blazor.Common.Http;
-using KarcagS.Shared.Enums;
+﻿using KarcagS.Client.Common.Http;
 
 namespace KarcagS.Blazor.Common.Components.Table;
 

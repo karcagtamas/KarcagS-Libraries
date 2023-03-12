@@ -11,7 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{39A9A03A-B5A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Common.Demo", "KarcagS.Common.Demo\KarcagS.Common.Demo.csproj", "{2AF8E18D-714B-4346-B22B-F449F2B0693B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Blazor", "Blazor", "{5FD9A2E4-5860-4186-A4A5-EB9771E9D34C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{5FD9A2E4-5860-4186-A4A5-EB9771E9D34C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Blazor.Common", "KarcagS.Blazor.Common\KarcagS.Blazor.Common.csproj", "{ED8BD237-C1BB-4D1C-8AC1-3B73BCF33CF4}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Shared", "KarcagS.Shared\KarcagS.Shared.csproj", "{D44B0DA4-B723-423F-914A-5F9149A1FD6F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KarcagS.Shared.Tests", "KarcagS.Shared.Tests\KarcagS.Shared.Tests.csproj", "{FA704870-EA84-4686-A220-83042506B98D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KarcagS.Client.Common", "KarcagS.Client.Common\KarcagS.Client.Common.csproj", "{DB772543-7320-407E-BBF0-35FA88A1C750}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,10 @@ Global
 		{FA704870-EA84-4686-A220-83042506B98D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA704870-EA84-4686-A220-83042506B98D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA704870-EA84-4686-A220-83042506B98D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB772543-7320-407E-BBF0-35FA88A1C750}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB772543-7320-407E-BBF0-35FA88A1C750}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB772543-7320-407E-BBF0-35FA88A1C750}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB772543-7320-407E-BBF0-35FA88A1C750}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,6 +71,7 @@ Global
 		{2AF8E18D-714B-4346-B22B-F449F2B0693B} = {39A9A03A-B5A6-44F3-BCEC-DF0051FDC514}
 		{ED8BD237-C1BB-4D1C-8AC1-3B73BCF33CF4} = {5FD9A2E4-5860-4186-A4A5-EB9771E9D34C}
 		{ADDFEB5D-F1EF-4DDF-B9D5-8050CB010696} = {5FD9A2E4-5860-4186-A4A5-EB9771E9D34C}
+		{DB772543-7320-407E-BBF0-35FA88A1C750} = {5FD9A2E4-5860-4186-A4A5-EB9771E9D34C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0A570FF8-7CCA-407E-95F3-B62C7F5E0A0B}

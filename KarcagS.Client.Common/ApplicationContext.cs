@@ -1,4 +1,4 @@
-﻿namespace KarcagS.Blazor.Common;
+﻿namespace KarcagS.Client.Common;
 
 public class ApplicationContext
 {

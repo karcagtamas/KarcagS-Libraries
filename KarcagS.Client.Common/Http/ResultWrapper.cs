@@ -1,6 +1,6 @@
 ﻿using KarcagS.Shared.Http;
 
-namespace KarcagS.Blazor.Common.Http;
+namespace KarcagS.Client.Common.Http;
 
 public class ResultWrapper<T>
 {

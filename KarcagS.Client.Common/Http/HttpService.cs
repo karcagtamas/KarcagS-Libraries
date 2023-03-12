@@ -1,15 +1,11 @@
-using Blazored.LocalStorage;
-using KarcagS.Blazor.Common.Models;
-using KarcagS.Blazor.Common.Services.Interfaces;
-using KarcagS.Shared.Http;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.JSInterop;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using KarcagS.Client.Common.Models;
+using KarcagS.Client.Common.Services.Interfaces;
+using KarcagS.Shared.Http;
 
-namespace KarcagS.Blazor.Common.Http;
+namespace KarcagS.Client.Common.Http;
 
 public class HttpService : IHttpService
 {
@@ -17,33 +13,22 @@ public class HttpService : IHttpService
 
     protected readonly IHelperService HelperService;
 
-    protected readonly IJSRuntime JsRuntime;
-
     protected readonly HttpConfiguration Configuration;
-
-    protected readonly ILocalStorageService LocalStorageService;
-
-    protected readonly NavigationManager NavigationManager;
+    protected readonly ITokenHandler TokenHandler;
 
     /// <summary>
     /// HTTP Service Injector
     /// </summary>
     /// <param name="httpClient">HTTP Client</param>
     /// <param name="helperService">Helper Service</param>
-    /// <param name="jsRuntime">JS Runtime</param>
     /// <param name="configuration">HTTP Configuration</param>
-    /// <param name="localStorageService">Local Storage Service</param>
-    /// <param name="navigationManager">Navigation Manager</param>
-    public HttpService(HttpClient httpClient, IHelperService helperService, IJSRuntime jsRuntime,
-        HttpConfiguration configuration, ILocalStorageService localStorageService,
-        NavigationManager navigationManager)
+    /// <param name="tokenHandler">Token Handler</param>
+    public HttpService(HttpClient httpClient, IHelperService helperService, HttpConfiguration configuration, ITokenHandler tokenHandler)
     {
         HttpClient = httpClient;
         HelperService = helperService;
-        JsRuntime = jsRuntime;
         Configuration = configuration;
-        LocalStorageService = localStorageService;
-        NavigationManager = navigationManager;
+        TokenHandler = tokenHandler;
     }
 
     /// <summary>
@@ -192,8 +177,6 @@ public class HttpService : IHttpService
         return string.Join("/", parts);
     }
 
-    private async Task<HttpResult<T>?> SendRequest<T>(HttpSettings settings, HttpMethod method, HttpContent? content) => await SendRequest<T>(settings, method, content, false);
-
     private async Task<HttpResult<T>?> SendRequest<T>(HttpSettings settings, HttpMethod method, HttpContent? content, bool afterRefresh = false)
     {
         CheckSettings(settings);
@@ -247,6 +230,7 @@ public class HttpService : IHttpService
             {
                 HelperService.AddHttpErrorToaster(toasterSettings.Caption, null);
             }
+
             return null;
         }
         else
@@ -286,7 +270,7 @@ public class HttpService : IHttpService
 
         if (Configuration.IsTokenBearer)
         {
-            var token = await LocalStorageService.GetItemAsync<string>(Configuration.AccessTokenName);
+            var token = await TokenHandler.GetAccessToken(Configuration);
             var isApiUrl = request.RequestUri?.IsAbsoluteUri ?? false;
 
             if (!string.IsNullOrEmpty(token) && isApiUrl)
@@ -298,17 +282,7 @@ public class HttpService : IHttpService
         return request;
     }
 
-    private bool Download(ExportResult result)
-    {
-        if (JsRuntime is IJSUnmarshalledRuntime unmarshalledRuntime)
-        {
-#pragma warning disable CS0618 // Type or member is obsolete
-            unmarshalledRuntime.InvokeUnmarshalled<string, string, byte[], bool>("manageDownload", result.FileName, result.ContentType, result.Content);
-#pragma warning restore CS0618 // Type or member is obsolete
-        }
-
-        return true;
-    }
+    protected virtual bool Download(ExportResult result) => throw new NotImplementedException();
 
     private static async Task<HttpResult<T>?> Parse<T>(HttpResponseMessage response) => await response.Content.ReadFromJsonAsync<HttpResult<T>>();
 
@@ -321,7 +295,7 @@ public class HttpService : IHttpService
     /// <returns>Created URL</returns>
     private static string CreateUrl(HttpSettings settings)
     {
-        string url = settings.Url;
+        var url = settings.Url;
 
         if (settings.PathParameters.Count() > 0)
         {
@@ -338,50 +312,17 @@ public class HttpService : IHttpService
 
     private static void CheckSettings(HttpSettings settings)
     {
-        if (settings == null)
+        if (ObjectHelper.IsNull(settings))
         {
             throw new ArgumentException("Settings cannot be null");
         }
     }
 
-    private void ConsoleSerializationError(Exception e)
-    {
-        try
-        {
-            ((IJSInProcessRuntime)JsRuntime).Invoke<object>("console.log",
-                new ConsoleError { Error = "Serialization Error", Exception = e.ToString() });
-        }
-        catch (Exception)
-        {
-            Console.WriteLine("SERIALIZATION ERROR");
-        }
-    }
+    protected virtual void ConsoleSerializationError(Exception e) => Console.WriteLine($"SERIALIZATION ERROR: {e.Message}");
 
-    private void ConsoleCallError(Exception e, string url)
-    {
-        try
-        {
-            ((IJSInProcessRuntime)JsRuntime).Invoke<object>("console.log",
-                new ConsoleError { Error = $"HTTP Call Error from {url}", Exception = e.ToString() });
-        }
-        catch (Exception)
-        {
-            Console.WriteLine("CALL ERROR");
-        }
-    }
+    protected virtual void ConsoleCallError(Exception e, string url) => Console.WriteLine($"CALL ERROR: {e.Message}");
 
-    private void ConsoleTokenRefreshError(Exception e)
-    {
-        try
-        {
-            ((IJSInProcessRuntime)JsRuntime).Invoke<object>("console.log",
-                new ConsoleError { Error = $"HTTP Token refresh Error", Exception = e.ToString() });
-        }
-        catch (Exception)
-        {
-            Console.WriteLine("TOKEN REFRESH ERROR");
-        }
-    }
+    protected virtual void ConsoleTokenRefreshError(Exception e) => Console.WriteLine($"TOKEN REFRESH ERROR: {e.Message}");
 
     private async Task<bool> Refresh()
     {
@@ -390,8 +331,8 @@ public class HttpService : IHttpService
             return false;
         }
 
-        var refreshToken = await LocalStorageService.GetItemAsync<string>(Configuration.RefreshTokenName);
-        var clientId = await LocalStorageService.GetItemAsync<string>(Configuration.ClientIdName);
+        var refreshToken = await TokenHandler.GetRefreshToken(Configuration);
+        var clientId = await TokenHandler.GetRefreshToken(Configuration);
 
         if (string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(clientId))
         {
@@ -417,9 +358,9 @@ public class HttpService : IHttpService
                 return false;
             }
 
-            await LocalStorageService.SetItemAsync(Configuration.AccessTokenName, res.AccessToken);
-            await LocalStorageService.SetItemAsync(Configuration.RefreshTokenName, res.RefreshToken);
-            await LocalStorageService.SetItemAsync(Configuration.ClientIdName, res.ClientId);
+            await TokenHandler.SetAccessToken(res.AccessToken, Configuration);
+            await TokenHandler.SetRefreshToken(res.RefreshToken, Configuration);
+            await TokenHandler.SetClientId(res.ClientId, Configuration);
 
             return true;
         }
@@ -430,30 +371,8 @@ public class HttpService : IHttpService
         }
     }
 
-    private void HandlingUnauthorizedPathRedirection()
+    protected virtual void HandlingUnauthorizedPathRedirection()
     {
-        var query = new Dictionary<string, string>();
-
-        if (ObjectHelper.IsNotNull(Configuration.UnauthorizedPathRedirectQueryParamName))
-        {
-            query.Add(Configuration.UnauthorizedPathRedirectQueryParamName, NavigationManager.ToBaseRelativePath(NavigationManager.Uri));
-        }
-
-        if (query.Count > 0)
-        {
-            NavigationManager.NavigateTo(QueryHelpers.AddQueryString(Configuration.UnauthorizedPath, query));
-        }
-        else
-        {
-            NavigationManager.NavigateTo(Configuration.UnauthorizedPath);
-        }
-    }
-
-    private class ConsoleError
-    {
-        public string Error { get; set; } = string.Empty;
-
-        public string Exception { get; set; } = string.Empty;
     }
 
     private class HttpRefreshResult

@@ -1,9 +1,9 @@
-namespace KarcagS.Blazor.Common.Http;
+namespace KarcagS.Client.Common.Http;
 
 public class HttpConfiguration
 {
-    public bool IsTokenBearer { get; set; } = false;
-    public bool IsTokenRefresher { get; set; } = false;
+    public bool IsTokenBearer { get; set; }
+    public bool IsTokenRefresher { get; set; }
 
     public string AccessTokenName { get; set; } = "access-token";
     public string RefreshTokenName { get; set; } = "refresh-token";

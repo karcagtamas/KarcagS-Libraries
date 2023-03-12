@@ -1,4 +1,4 @@
-﻿namespace KarcagS.Blazor.Common.Services.Interfaces;
+﻿namespace KarcagS.Client.Common.Services.Interfaces;
 
 public interface ILocalizationService
 {

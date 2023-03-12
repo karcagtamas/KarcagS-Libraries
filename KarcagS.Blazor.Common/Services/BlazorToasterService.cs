@@ -1,11 +1,11 @@
-﻿using KarcagS.Blazor.Common.Enums;
-using KarcagS.Blazor.Common.Models;
-using KarcagS.Blazor.Common.Services.Interfaces;
+﻿using KarcagS.Client.Common.Enums;
+using KarcagS.Client.Common.Models;
+using KarcagS.Client.Common.Services.Interfaces;
 using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Services;
 
-public class ToasterService : IToasterService
+public class BlazorToasterService : IToasterService
 {
     private readonly ISnackbar _snackbar;
 
@@ -13,7 +13,7 @@ public class ToasterService : IToasterService
     /// Init Toaster Service
     /// </summary>
     /// <param name="snackbar">Snackbar service</param>
-    public ToasterService(ISnackbar snackbar)
+    public BlazorToasterService(ISnackbar snackbar)
     {
         _snackbar = snackbar;
     }

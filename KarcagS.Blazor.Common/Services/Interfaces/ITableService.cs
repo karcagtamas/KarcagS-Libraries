@@ -1,5 +1,5 @@
 ﻿using KarcagS.Blazor.Common.Components.Table;
-using KarcagS.Blazor.Common.Http;
+using KarcagS.Client.Common.Http;
 using KarcagS.Shared.Table;
 
 namespace KarcagS.Blazor.Common.Services.Interfaces;

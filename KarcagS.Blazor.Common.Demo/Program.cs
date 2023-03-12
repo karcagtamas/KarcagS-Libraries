@@ -1,10 +1,7 @@
 using Blazored.LocalStorage;
-using KarcagS.Blazor.Common;
 using KarcagS.Blazor.Common.Demo;
 using KarcagS.Blazor.Common.Demo.Services;
 using KarcagS.Blazor.Common.Http;
-using KarcagS.Blazor.Common.Localization;
-using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Services;
 using KarcagS.Blazor.Common.Services.Interfaces;
 using KarcagS.Blazor.Common.Store;
@@ -14,6 +11,11 @@ using MudBlazor;
 using MudBlazor.Services;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using KarcagS.Client.Common;
+using KarcagS.Client.Common.Localization;
+using KarcagS.Client.Common.Models;
+using KarcagS.Client.Common.Services;
+using KarcagS.Client.Common.Services.Interfaces;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -21,7 +23,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddOptions();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddHttpService(config =>
+builder.Services.AddBlazorHttpService(config =>
 {
     config.IsTokenBearer = true;
     config.UnauthorizedPath = "/logout";
@@ -43,7 +45,10 @@ builder.Services.AddStoreService(async (storeService, localStorage) =>
     }
 });
 builder.Services.AddScoped<IHelperService, HelperService>();
-builder.Services.AddScoped<IToasterService, ToasterService>();
+builder.Services.AddScoped<IAuthHelper, AuthHelper>();
+builder.Services.AddScoped<IDialogHelperService, DialogHelperService>();
+builder.Services.AddScoped<IHelperService, HelperService>();
+builder.Services.AddScoped<IToasterService, BlazorToasterService>();
 builder.Services.AddScoped<IConfirmService, ConfirmService>();
 builder.Services.AddScoped<IFileUploaderService, FileUploaderService>();
 

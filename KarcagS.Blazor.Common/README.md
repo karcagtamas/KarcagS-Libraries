@@ -7,7 +7,9 @@
 ### Install
 
 1. Register `HelperService`
-2. Register `HttpService`
+2. Register `AuthHelperService`
+3. Register `DialogHelperService`
+4. Register `HttpService`
    - Add Service as Scoped service into `Startup.cs` or `Program.cs`
    ```c#
    services.AddScoped<IHttpService, HttpService>();
@@ -16,7 +18,7 @@
    ```c#
    builder.Services.AddScoped<IHttpService, HttpService>();
    ```
-3. Use it.
+5. Use it.
 
 ## Helper
 
@@ -47,24 +49,7 @@
 ## Toaster
 
 > You can add own Toaster service what is have to inherited from `IToasterService`
-
-## Modal
-
-1. Register `ModalService`
-   - Add Service as Scoped service into `Startup.cs` or `Program.cs`
-   ```c#
-   services.AddScoped<IModalService, ModalService>();
-   ```
-   or
-   ```c#
-   builder.Services.AddScoped<IModalService, ModalService>();
-   ```
-2. Add BlazoredModal to `App.razor` file.
-
-```
-<BlazoredModal></BlazoredModal>
-```
-
+   
 ## Components
 
 - Add using into `_Imports.razor`

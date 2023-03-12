@@ -1,6 +1,6 @@
-﻿using KarcagS.Blazor.Common.Http;
-using KarcagS.Blazor.Common.Models;
-using KarcagS.Blazor.Common.Services;
+﻿using KarcagS.Blazor.Common.Services;
+using KarcagS.Client.Common.Http;
+using KarcagS.Client.Common.Models;
 
 namespace KarcagS.Blazor.Common.Demo.Services;
 

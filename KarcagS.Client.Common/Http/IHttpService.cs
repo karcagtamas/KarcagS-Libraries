@@ -1,4 +1,4 @@
-namespace KarcagS.Blazor.Common.Http;
+namespace KarcagS.Client.Common.Http;
 
 public interface IHttpService
 {

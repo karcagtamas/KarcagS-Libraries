@@ -1,6 +1,6 @@
 using KarcagS.Shared.Common;
 
-namespace KarcagS.Blazor.Common.Http;
+namespace KarcagS.Client.Common.Http;
 
 /// <summary>
 /// HTTP path parameters

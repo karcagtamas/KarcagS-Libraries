@@ -1,8 +1,8 @@
-namespace KarcagS.Blazor.Common.Http;
+namespace KarcagS.Client.Common.Http;
 
 public class ExportResult
 {
-    public byte[] Content { get; set; } = new byte[0];
+    public byte[] Content { get; set; } = Array.Empty<byte>();
     public string FileName { get; set; } = "";
     public string ContentType { get; set; } = "";
 }

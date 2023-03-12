@@ -1,14 +1,14 @@
-﻿using KarcagS.Blazor.Common.Services;
-using KarcagS.Blazor.Common.Services.Interfaces;
+﻿using KarcagS.Client.Common.Services;
+using KarcagS.Client.Common.Services.Interfaces;
 using KarcagS.Shared.Localization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 
-namespace KarcagS.Blazor.Common.Localization;
+namespace KarcagS.Client.Common.Localization;
 
 public static class LocalizationExtensions
 {
-    public static void RegisterLibraryLocalizator(IStringLocalizer localizer)
+    public static void RegisterLibraryLocalizer(IStringLocalizer localizer)
     {
         var libLocalizer = LibraryLocalizer.GetInstance();
 

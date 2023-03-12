@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Localization;
 
-namespace KarcagS.Blazor.Common.Http;
+namespace KarcagS.Client.Common.Http;
 
 public class HttpCall<TKey> : IHttpCall<TKey>
 {
@@ -73,9 +73,9 @@ public class HttpCall<TKey> : IHttpCall<TKey>
 
         return type switch
         {
-            HttpCall<TKey>.MessageType.Delete => $"{_caption} deleting",
-            HttpCall<TKey>.MessageType.Update => $"{_caption} updating",
-            HttpCall<TKey>.MessageType.Add => $"{_caption} adding",
+            MessageType.Delete => $"{_caption} deleting",
+            MessageType.Update => $"{_caption} updating",
+            MessageType.Add => $"{_caption} adding",
             _ => "",
         };
     }

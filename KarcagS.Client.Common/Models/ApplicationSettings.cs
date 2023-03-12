@@ -1,4 +1,4 @@
-namespace KarcagS.Blazor.Common.Models;
+namespace KarcagS.Client.Common.Models;
 
 public static class ApplicationSettings
 {

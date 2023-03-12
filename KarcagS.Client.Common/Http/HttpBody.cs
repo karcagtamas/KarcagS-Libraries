@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.Json;
 
-namespace KarcagS.Blazor.Common.Http;
+namespace KarcagS.Client.Common.Http;
 
 /// <summary>
 /// HTTP body

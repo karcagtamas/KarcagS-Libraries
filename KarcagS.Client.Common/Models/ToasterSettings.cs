@@ -1,6 +1,6 @@
-using KarcagS.Blazor.Common.Enums;
+using KarcagS.Client.Common.Enums;
 
-namespace KarcagS.Blazor.Common.Models;
+namespace KarcagS.Client.Common.Models;
 
 /// <summary>
 /// Toaster settings
@@ -10,18 +10,16 @@ public class ToasterSettings
     public string Message { get; set; } = string.Empty;
     public string Caption { get; set; }
     public ToasterType Type { get; set; }
-    public bool IsNeeded { get; set; }
+    public bool IsNeeded => !string.IsNullOrEmpty(Caption);
 
 
     public ToasterSettings()
     {
-        IsNeeded = false;
         Caption = string.Empty;
     }
 
     public ToasterSettings(string caption)
     {
         Caption = caption;
-        IsNeeded = true;
     }
 }

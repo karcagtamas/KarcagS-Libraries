@@ -1,6 +1,6 @@
 ﻿using KarcagS.Blazor.Common.Components.Table;
-using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Services.Interfaces;
+using KarcagS.Client.Common.Http;
 using KarcagS.Shared.Table;
 
 namespace KarcagS.Blazor.Common.Services;
@@ -30,7 +30,7 @@ public abstract class TableService<TKey> : ITableService<TKey>
             .AddQueryParams(queryParams);
 
         return Http.Get<TableResult<TKey>>(settings)
-            .ExcuteWithWrapper();
+            .ExecuteWithWrapper();
     }
 
     public Task<ResultWrapper<TableMetaData>> GetMetaData()
@@ -38,6 +38,6 @@ public abstract class TableService<TKey> : ITableService<TKey>
         var settings = new HttpSettings(Http.BuildUrl(GetBaseUrl(), "Meta"));
 
         return Http.Get<TableMetaData>(settings)
-            .ExcuteWithWrapper();
+            .ExecuteWithWrapper();
     }
 }

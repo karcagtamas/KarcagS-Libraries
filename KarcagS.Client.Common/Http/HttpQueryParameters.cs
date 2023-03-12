@@ -1,6 +1,6 @@
 using KarcagS.Shared.Common;
 
-namespace KarcagS.Blazor.Common.Http;
+namespace KarcagS.Client.Common.Http;
 
 /// <summary>
 /// HTTP query parameters
@@ -48,6 +48,7 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     /// </summary>
     /// <param name="key">Key value</param>
     /// <param name="value">Value</param>
+    /// <param name="predicate">Add optional value by given predicate</param>
     /// <typeparam name="T">Type of the value</typeparam>
     public HttpQueryParameters AddOptional<T>(string key, T value, Predicate<T> predicate)
     {
@@ -83,6 +84,7 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
         {
             throw new ArgumentException("Key does not exist");
         }
+
         return (T)_queryParams[key];
     }
 
@@ -104,6 +106,7 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
         {
             return this;
         }
+
         _queryParams[key] = value;
         return this;
     }
@@ -132,6 +135,7 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
         {
             return default;
         }
+
         return (T)_queryParams[key];
     }
 
@@ -155,7 +159,7 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
         {
             var value = _queryParams[key];
 
-            if (value is null)
+            if (ObjectHelper.IsNull(value))
             {
                 continue;
             }
@@ -165,7 +169,6 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
                 foreach (var i in arr)
                 {
                     values.Add($"{key}={i}");
-
                 }
             }
             else if (value is Enum e)

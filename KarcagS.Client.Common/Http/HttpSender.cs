@@ -1,6 +1,6 @@
 ﻿using KarcagS.Shared.Http;
 
-namespace KarcagS.Blazor.Common.Http;
+namespace KarcagS.Client.Common.Http;
 
 public class HttpSender<T>
 {
@@ -52,7 +52,7 @@ public class HttpSender<T>
         return res.Result ?? orElse;
     }
 
-    public async Task<ResultWrapper<T>> ExcuteWithWrapper()
+    public async Task<ResultWrapper<T>> ExecuteWithWrapper()
     {
         var wrapper = new ResultWrapper<T>();
 

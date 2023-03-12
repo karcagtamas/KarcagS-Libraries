@@ -2,7 +2,7 @@
 
 dotnet build -c Release
 
-set libs=KarcagS.Shared KarcagS.Common KarcagS.Blazor.Common
+set libs=KarcagS.Shared KarcagS.Common KarcagS.Client.Common KarcagS.Blazor.Common
 
 if "%1" == "" (
     echo "ERROR: Missing version number"

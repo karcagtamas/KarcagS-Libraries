@@ -1,4 +1,4 @@
-namespace KarcagS.Blazor.Common.Enums;
+namespace KarcagS.Client.Common.Enums;
 
 public enum ToasterType
 {

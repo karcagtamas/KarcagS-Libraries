@@ -1,4 +1,5 @@
 ﻿using KarcagS.Blazor.Common.Services.Interfaces;
+using KarcagS.Client.Common.Services.Interfaces;
 using KarcagS.Shared.Enums;
 using KarcagS.Shared.Http;
 using KarcagS.Shared.Table;
@@ -97,7 +98,7 @@ public partial class Table<TKey> : ComponentBase
 
     public void SetAdditionalFilter(string key, object? value)
     {
-        bool needRefresh = false;
+        var needRefresh = false;
         if (Params.ContainsKey(key))
         {
             if (ObjectHelper.IsNotNull(value))

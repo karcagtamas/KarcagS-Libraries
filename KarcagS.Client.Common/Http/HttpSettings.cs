@@ -1,6 +1,6 @@
-using KarcagS.Blazor.Common.Models;
+using KarcagS.Client.Common.Models;
 
-namespace KarcagS.Blazor.Common.Http;
+namespace KarcagS.Client.Common.Http;
 
 /// <summary>
 /// HTTP Settings
@@ -31,10 +31,7 @@ public class HttpSettings
     /// <returns>Settings</returns>
     public HttpSettings AddQueryParams(HttpQueryParameters queryParams)
     {
-        if (queryParams is not null)
-        {
-            QueryParameters = queryParams;
-        }
+        QueryParameters = queryParams;
 
         return this;
     }
@@ -46,10 +43,7 @@ public class HttpSettings
     /// <returns>Settings</returns>
     public HttpSettings AddPathParams(HttpPathParameters pathParams)
     {
-        if (pathParams is not null)
-        {
-            PathParameters = pathParams;
-        }
+        PathParameters = pathParams;
 
         return this;
     }
@@ -61,10 +55,7 @@ public class HttpSettings
     /// <returns>Settings</returns>
     public HttpSettings AddToaster(ToasterSettings settings)
     {
-        if (settings is not null)
-        {
-            ToasterSettings = settings;
-        }
+        ToasterSettings = settings;
 
         return this;
     }
