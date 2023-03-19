@@ -164,7 +164,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
             {
                 if (int.TryParse(dir, out var d))
                 {
-                    return  KeyValuePair.Create(key, (OrderDirection)d);
+                    return KeyValuePair.Create(key, (OrderDirection)d);
                 }
             }
 
@@ -178,7 +178,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
             {
                 throw new ArgumentException("Invalid column key");
             }
-            
+
             var propertyInfo = entityType.GetProperty(col.OrderBy);
 
             if (ObjectHelper.IsNull(propertyInfo))
@@ -187,8 +187,8 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
             }
 
             var param = Expression.Parameter(entityType);
-            Expression body = Expression.Property(param, e.Key);
-            var lambda = Expression.Lambda<Func<T, object?>>(body, param);
+            Expression body = Expression.Property(param, col.OrderBy);
+            var lambda = Expression.Lambda<Func<T, object?>>(Expression.Convert(body, typeof(object)), param);
 
             return new OrderingSetting<T, TKey> { Exp = lambda, Direction = e.Value };
         }).ToList();

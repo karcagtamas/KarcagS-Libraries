@@ -28,7 +28,7 @@
     <DialogActions>
         <MudSpacer/>
         <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Cancel")</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit" Disabled="@(!CanSubmit())">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -146,7 +146,7 @@
 
     private void Submit()
     {
-        if (Required && !HasSelection())
+        if (!CanSubmit())
         {
             return;
         }
@@ -158,6 +158,8 @@
     {
         Dialog.Cancel();
     }
+
+    private bool CanSubmit() => !Required || HasSelection();
 
     private string RowClassFunc(SelectableRowItem<Data, Key> item, int index) => item.Selected ? "mud-info" : "";
 }
