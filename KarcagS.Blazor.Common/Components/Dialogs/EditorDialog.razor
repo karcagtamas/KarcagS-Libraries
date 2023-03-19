@@ -2,6 +2,7 @@
 @using KarcagS.Client.Common.Services.Interfaces
 @using KarcagS.Shared.Helpers
 @using KarcagS.Shared.Localization
+@using System.Diagnostics.CodeAnalysis
 @typeparam Model
 
 <MudDialog>
@@ -11,17 +12,19 @@
     <DialogContent>
         <div style="min-width: @(MinWidth)px;">
             <MudForm @ref="Form">
-                @ChildContent
+                <LoadingBox IsLoading="Loading">
+                    @ChildContent
+                </LoadingBox>
             </MudForm>
         </div>
     </DialogContent>
     <DialogActions>
         @if (ObjectHelper.IsNotNull(Remove) && IsEdit && !RemoveDisabled)
         {
-            <MudButton Color="Color.Error" OnClick="Delete">@LocalizationService.GetValue(LibraryLocalizer.EditorRemoveKey, "Remove")</MudButton>
+            <MudButton Color="Color.Error" OnClick="Delete" Disabled="@(!CanDelete())">@LocalizationService.GetValue(LibraryLocalizer.EditorRemoveKey, "Remove")</MudButton>
         }
         <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.EditorCancelKey, "Cancel")</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Save">@LocalizationService.GetValue(LibraryLocalizer.EditorSaveKey, "Save")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Save" Disabled="@(!CanSave())">@LocalizationService.GetValue(LibraryLocalizer.EditorSaveKey, "Save")</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -66,6 +69,9 @@
     [Parameter]
     public bool RemoveDisabled { get; set; }
 
+    [Parameter]
+    public bool Loading { get; set; }
+
     [Inject]
     private ISnackbar Snackbar { get; set; } = null!;
 
@@ -101,7 +107,7 @@
         }
 
         await Form.Validate();
-        if (!Form.IsValid) return;
+        if (!CanSave()) return;
 
         if (ObjectHelper.IsNotNull(FormValidator))
         {
@@ -119,9 +125,11 @@
         }
     }
 
+    private bool CanSave() => !Loading && (Form?.IsTouched ?? false) && Form.IsValid;
+
     private async Task Delete()
     {
-        if (ObjectHelper.IsNull(Remove) || !IsEdit)
+        if (!CanDelete())
         {
             return;
         }
@@ -138,6 +146,10 @@
                 : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteTitleKey, "Confirm Delete"),
             () => Dialog.Close(DialogResult.Ok(EditorDialogResult.PerformedResult(EditorCloseEvent.Remove))));
     }
+
+    [MemberNotNullWhen(true, "Remove")]
+    private bool CanDelete() => ObjectHelper.IsNotNull(Remove) && IsEdit;
+
 
     private void Cancel() => Dialog.Cancel();
 }

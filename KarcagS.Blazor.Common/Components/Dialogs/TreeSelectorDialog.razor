@@ -17,25 +17,27 @@
             {
                 <MudText Class="mb-2" Typo="Typo.body1">@BodyText</MudText>
             }
-            <MudTreeView Items="DataList">
-                <ItemTemplate>
-                    <MudTreeViewItem @bind-Expanded="context.IsExpanded" Items="context.Items">
-                        <Content>
-                            <MudTreeViewItemToggleButton @bind-Expanded="context.IsExpanded" Visible="context.HasChild"/>
-                            <MudCheckBox Checked="context.IsSelected" CheckedChanged="(bool val) => ToggleSelect(context, val)" Disabled="IsSelectDisabled(context)"/>
-                            <MudText Class="mr-1">@TitleGetter(context.Data)</MudText>
-                        </Content>
-                    </MudTreeViewItem>
-                </ItemTemplate>
-            </MudTreeView>
+            <LoadingBox IsLoading="IsLoading">
+                <MudTreeView Items="DataList">
+                    <ItemTemplate>
+                        <MudTreeViewItem @bind-Expanded="context.IsExpanded" Items="context.Items">
+                            <Content>
+                                <MudTreeViewItemToggleButton @bind-Expanded="context.IsExpanded" Visible="context.HasChild"/>
+                                <MudCheckBox Checked="context.IsSelected" CheckedChanged="(bool val) => ToggleSelect(context, val)" Disabled="IsSelectDisabled(context)"/>
+                                <MudText Class="mr-1">@TitleGetter(context.Data)</MudText>
+                            </Content>
+                        </MudTreeViewItem>
+                    </ItemTemplate>
+                </MudTreeView>
+            </LoadingBox>
         </div>
     </DialogContent>
     <DialogActions>
-        <MudIconButton Icon="@Icons.Material.Filled.ExpandMore" Size="Size.Small" OnClick="ExpandAll"/>
-        <MudIconButton Icon="@Icons.Material.Filled.ExpandLess" Size="Size.Small" OnClick="CollapseAll"/>
+        <MudIconButton Icon="@Icons.Material.Filled.ExpandMore" Size="Size.Small" OnClick="ExpandAll" Disabled="@ObjectHelper.IsEmpty(DataList)"/>
+        <MudIconButton Icon="@Icons.Material.Filled.ExpandLess" Size="Size.Small" OnClick="CollapseAll" Disabled="@ObjectHelper.IsEmpty(DataList)"/>
         <MudSpacer/>
         <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Cancel")</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit" Disabled="@(!CanSubmit())">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -85,6 +87,8 @@
     private List<T> Selection { get; } = new();
     private string TitleText { get; set; } = "";
 
+    private bool IsLoading { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         TitleText = ObjectHelper.IsNotNull(Title) ? Title : LocalizationService.GetValue(LibraryLocalizer.SelectorSelectEntityKey, "Select {0}", EntityName);
@@ -96,7 +100,12 @@
 
     private async Task Fetch()
     {
+        IsLoading = true;
+        await InvokeAsync(StateHasChanged);
+
         DataList = TreeItem<T>.ConvertList(await Fetcher(), ItemExtractor, false);
+
+        IsLoading = false;
         await InvokeAsync(StateHasChanged);
     }
 
@@ -139,13 +148,15 @@
 
     private void Submit()
     {
-        if (Required && !HasSelection())
+        if (!CanSubmit())
         {
             return;
         }
 
         Dialog.Close(DialogResult.Ok(Selection));
     }
+
+    private bool CanSubmit() => !Required || HasSelection();
 
     private void Cancel() => Dialog.Cancel();
 
