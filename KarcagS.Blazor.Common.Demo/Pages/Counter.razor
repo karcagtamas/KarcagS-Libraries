@@ -1,8 +1,10 @@
 ﻿@page "/counter"
 @using KarcagS.Blazor.Common.Components.FileUploader
 @using System.ComponentModel.DataAnnotations
+@using KarcagS.Blazor.Common.Demo.Shared.Dialogs
 @using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Client.Common.Http
+@inject IDialogHelperService DialogHelper
 
 <PageTitle>Counter</PageTitle>
 
@@ -12,6 +14,7 @@
 
 <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 <button class="btn btn-primary" @onclick="IncrementCount2">Click me</button>
+<button class="btn btn-primary" @onclick="OpenEditor">Editor</button>
 
 <TimeInput Label="Time"/>
 <DateInput Label="Date"/>
@@ -49,6 +52,11 @@
     private async Task IncrementCount2()
     {
         await Uploader.Open(new FileUploaderDialogInput { EnabledExtensions = FileUploaderDialogInput.ImageExtensions }, "FILE");
+    }
+
+    private async Task OpenEditor()
+    {
+        await DialogHelper.OpenEditorDialog<TestDialog>("", res => { }, new DialogParameters());
     }
 
     public class TestModel

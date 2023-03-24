@@ -11,7 +11,7 @@
     </TitleContent>
     <DialogContent>
         <div style="min-width: @(MinWidth)px;">
-            <MudForm @ref="Form">
+            <MudForm @ref="Form" IsTouchedChanged="HandleTouchedChanged" IsValidChanged="HandleValidChanged">
                 <LoadingBox IsLoading="Loading">
                     @ChildContent
                 </LoadingBox>
@@ -125,7 +125,10 @@
         }
     }
 
-    private bool CanSave() => !Loading && (Form?.IsTouched ?? false) && Form.IsValid;
+    private bool CanSave()
+    {
+        return !Loading && (Form?.IsTouched ?? false) && (Form?.IsValid ?? false);
+    }
 
     private async Task Delete()
     {
@@ -152,4 +155,8 @@
 
 
     private void Cancel() => Dialog.Cancel();
+
+    private void HandleTouchedChanged() => StateHasChanged();
+
+    private void HandleValidChanged() => StateHasChanged();
 }

@@ -1,0 +1,26 @@
+﻿@using System.ComponentModel.DataAnnotations
+<EditorDialog Model="Model" ModelObj="ModelObj" EntityName="Entity" IsEdit="false" Submit="Submit">
+    <TextInput Class="mb-5" Label="Name" Required For="@(() => ModelObj.Name)" @bind-Value="ModelObj.Name" FullWidth/>
+    <TextInput Class="mb-5" Label="Name 2" Required For="@(() => ModelObj.Name2)" @bind-Value="ModelObj.Name2" FullWidth/>
+</EditorDialog>
+
+@code {
+
+    private Model ModelObj { get; set; } = new Model();
+    
+
+    class Model
+    {
+        [Required]
+        public string Name { get; set; } = default!;
+
+        [Required]
+        [MaxLength(100)]
+        public string Name2 { get; set; } = default!;
+    }
+    
+    private Task<bool> Submit()
+    {
+        return Task.FromResult(true);
+    }
+}
