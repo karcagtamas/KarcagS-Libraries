@@ -1,6 +1,8 @@
 ﻿using KarcagS.Common.Tools.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using KarcagS.Common.Tools.Table.Attributes;
+using KarcagS.Shared.Common;
 
 namespace KarcagS.Common.Demo;
 
@@ -11,7 +13,6 @@ public class DemoContext : DbContext
 
     public DemoContext(DbContextOptions<DemoContext> options) : base(options)
     {
-
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

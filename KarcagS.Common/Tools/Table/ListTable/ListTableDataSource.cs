@@ -5,6 +5,7 @@ using KarcagS.Shared.Enums;
 using KarcagS.Shared.Table;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using KarcagS.Common.Tools.Table.Attributes;
 
 namespace KarcagS.Common.Tools.Table.ListTable;
 
@@ -66,7 +67,8 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
                     ApplyAdditionalOrdering(orderedQuery, ordering[i].Exp, ordering[i].Direction);
             }
 
-            if (!typeof(T).IsSubclassOf(typeof(ICompositeIdentified<TKey>)))
+            var orderByAttr = Attribute.GetCustomAttribute(typeof(T), typeof(OrderByIdAttribute));
+            if (ObjectHelper.IsNull(orderByAttr) || ((OrderByIdAttribute)orderByAttr).Enabled)
             {
                 orderedQuery = orderedQuery.ThenBy(x => x.Id);
             }
@@ -190,6 +192,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
             {
                 body = Expression.PropertyOrField(body, propName);
             }
+
             var lambda = Expression.Lambda<Func<T, object?>>(Expression.Convert(body, typeof(object)), param);
 
             return new OrderingSetting<T, TKey> { Exp = lambda, Direction = e.Value };
