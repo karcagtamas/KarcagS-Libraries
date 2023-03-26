@@ -26,7 +26,7 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
             .AddColumn(Column<DemoEntry, string>.Build("name-s").SetTitle("Name").AddValueGetter(x => x.Name).MarkAsSortable("Name"))
             .AddColumn(Column<DemoEntry, string>.Build("age").SetTitle("Age").AddValueGetter(x => x.Age).SetFormatter(ColumnFormatter.Number).SetWidth(50).SetAlignment(Alignment.Right))
             .AddColumn(Column<DemoEntry, string>.Build("date").SetTitle("Date").AddValueGetter(x => x.Date).SetFormatter(ColumnFormatter.Date).SetWidth(200).MarkAsSortable("Date"))
-            .AddColumn(Column<DemoEntry, string>.Build("gender").SetTitle("Gender").AddValueGetter(x => x.Gender.Name).SetWidth(120))
+            .AddColumn(Column<DemoEntry, string>.Build("gender").SetTitle("Gender").AddValueGetter(x => x.Gender.Name).SetWidth(120).MarkAsSortable("Gender.Name"))
             .AddColumn(Column<DemoEntry, string>.Build("other-gender").SetTitle("Other Gender").AddValueGetter(x => x.OtherGender?.Name ?? "N/A").SetWidth(120))
             .AddColumn(Column<DemoEntry, string>.Build("open").SetTitle("Open").MarkAsAction())
             .AddFilter(FilterConfiguration.Build().IsTextFilterEnabled(true))

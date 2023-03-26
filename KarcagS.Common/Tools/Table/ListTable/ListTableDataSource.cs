@@ -66,7 +66,10 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
                     ApplyAdditionalOrdering(orderedQuery, ordering[i].Exp, ordering[i].Direction);
             }
 
-            orderedQuery = orderedQuery.ThenBy(x => x.Id);
+            if (!typeof(T).IsSubclassOf(typeof(ICompositeIdentified<T>)))
+            {
+                orderedQuery = orderedQuery.ThenBy(x => x.Id);
+            }
 
             fetcherQuery = orderedQuery;
         }
@@ -179,15 +182,14 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
                 throw new ArgumentException("Invalid column key");
             }
 
-            var propertyInfo = entityType.GetProperty(col.OrderBy);
-
-            if (ObjectHelper.IsNull(propertyInfo))
-            {
-                throw new ArgumentException("Invalid property name");
-            }
-
             var param = Expression.Parameter(entityType);
-            Expression body = Expression.Property(param, col.OrderBy);
+
+            var segments = col.OrderBy.Split('.');
+            var body = (Expression)param;
+            foreach (var propName in segments)
+            {
+                body = Expression.PropertyOrField(body, propName);
+            }
             var lambda = Expression.Lambda<Func<T, object?>>(Expression.Convert(body, typeof(object)), param);
 
             return new OrderingSetting<T, TKey> { Exp = lambda, Direction = e.Value };
