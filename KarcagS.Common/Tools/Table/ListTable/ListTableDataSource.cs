@@ -66,7 +66,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
                     ApplyAdditionalOrdering(orderedQuery, ordering[i].Exp, ordering[i].Direction);
             }
 
-            if (!typeof(T).IsSubclassOf(typeof(ICompositeIdentified<T>)))
+            if (!typeof(T).IsSubclassOf(typeof(ICompositeIdentified<TKey>)))
             {
                 orderedQuery = orderedQuery.ThenBy(x => x.Id);
             }
