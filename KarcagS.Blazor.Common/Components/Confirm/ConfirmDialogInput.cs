@@ -9,4 +9,5 @@ public class ConfirmDialogInput
 
     public string Message { get; set; } = default!;
     public int MinContentWidth { get; set; } = 360;
+    public bool IsYesNo { get; set; }
 }

@@ -12,8 +12,8 @@
         </MudText>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.ConfirmCancelKey, "Cancel")</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">@LocalizationService.GetValue(LibraryLocalizer.ConfirmConfirmKey, "Confirm")</MudButton>
+        <MudButton OnClick="Cancel">@GetCancelText()</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">@GetConfirmText()</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -35,6 +35,14 @@
             Dialog.Close(DialogResult.Ok(true));
         }
     }
+
+    private string GetCancelText() => Input.IsYesNo
+        ? LocalizationService.GetValue(LibraryLocalizer.ConfirmNoKey, "No")
+        : LocalizationService.GetValue(LibraryLocalizer.ConfirmCancelKey, "Cancel");
+
+    private string GetConfirmText() => Input.IsYesNo
+        ? LocalizationService.GetValue(LibraryLocalizer.ConfirmYesKey, "Yes")
+        : LocalizationService.GetValue(LibraryLocalizer.ConfirmConfirmKey, "Confirm");
 
     private void Cancel() => Dialog.Cancel();
 }

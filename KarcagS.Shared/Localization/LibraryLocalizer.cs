@@ -35,6 +35,8 @@ public class LibraryLocalizer
 
     public const string ConfirmConfirmKey = "Confirm.Confirm";
     public const string ConfirmCancelKey = "Confirm.Cancel";
+    public const string ConfirmYesKey = "Confirm.Yes";
+    public const string ConfirmNoKey = "Confirm.No";
 
     public const string EditorCancelKey = "Editor.Cancel";
     public const string EditorSaveKey = "Editor.Save";
