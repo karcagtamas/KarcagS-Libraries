@@ -19,6 +19,7 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
     /// </summary>
     /// <param name="contextAccessor">Context Accessor</param>
     /// <param name="context">Context</param>
+    /// <param name="utilsOptions">Utils Options</param>
     public UtilsService(IHttpContextAccessor contextAccessor, TContext context, IOptions<UtilsSettings> utilsOptions)
     {
         this.contextAccessor = contextAccessor;
@@ -87,6 +88,14 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
             : string.Empty;
     }
 
+    public void WithCurrentUserId(Action<TUserKey?> action) => action(GetCurrentUserId());
+
+    public void WithRequiredCurrentUserId(Action<TUserKey> action) => action(GetRequiredCurrentUserId());
+
+    public T WithCurrentUserId<T>(Func<TUserKey?, T> func) => func(GetCurrentUserId());
+
+    public T WithRequiredCurrentUserId<T>(Func<TUserKey, T> func) => func(GetRequiredCurrentUserId());
+
     /// <summary>
     /// Inject params into string.
     /// </summary>
@@ -99,14 +108,16 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
 
         for (int i = 0; i < args.Length; i++)
         {
+            var number = i;
             // Get placeholder from the current interaction
-            string placeholder = "{i}".Replace('i', i.ToString()[0]);
+            string placeholder = "{i}".Replace('i', number.ToString()[0]);
 
             // Placeholder does not exist in the base text
-            ExceptionHelper.Check(res.Contains(placeholder), () => new ArgumentException($"Placer holder is missing with number: {i}"));
+
+            ExceptionHelper.Check(res.Contains(placeholder), () => new ArgumentException($"Placer holder is missing with number: {number}"));
 
             // Inject params instead of placeholder
-            res = res.Replace(placeholder, $"{args[i]}");
+            res = res.Replace(placeholder, $"{args[number]}");
         }
 
         return res;
@@ -119,7 +130,7 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
             return string.Empty;
         }
 
-        return contextAccessor.HttpContext?.User?.Claims?.FirstOrDefault(c => c.Type == name)?.Value ?? string.Empty;
+        return contextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == name)?.Value ?? string.Empty;
     }
 
     public ClaimsPrincipal? GetUserPrincipal() => contextAccessor.HttpContext?.User;
