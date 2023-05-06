@@ -1,4 +1,4 @@
-﻿namespace KarcagS.API.Auth.JWT;
+﻿namespace KarcagS.API.Auth.JWT.Configurations;
 
 public class JWTConfiguration
 {

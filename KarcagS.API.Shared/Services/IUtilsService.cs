@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using KarcagS.API.Data;
+using KarcagS.API.Data.Entities;
 
 namespace KarcagS.API.Shared.Services;
 

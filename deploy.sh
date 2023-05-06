@@ -2,7 +2,7 @@
 
 dotnet build -c Release
 
-LIBS=('KarcagS.Shared' 'KarcagS.Common' 'KarcagS.Client.Common' 'KarcagS.Blazor.Common')
+LIBS=('KarcagS.Shared' 'KarcagS.API' 'KarcagS.API.Auth' 'KarcagS.API.Data' 'KarcagS.API.Export' 'KarcagS.API.Http' 'KarcagS.API.Mail' 'KarcagS.API.Mongo' 'KarcagS.API.Repository' 'KarcagS.API.Shared' 'KarcagS.API.Table' 'KarcagS.Client.Common' 'KarcagS.Blazor.Common')
 
 if [ -z "$1" ]; then
     echo >&2 'ERROR: Missing version number'

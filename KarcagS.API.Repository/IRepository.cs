@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using KarcagS.API.Data;
+using KarcagS.API.Data.Entities;
 
 namespace KarcagS.API.Repository;
 

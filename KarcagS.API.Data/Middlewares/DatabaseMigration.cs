@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace KarcagS.API.Data;
+namespace KarcagS.API.Data.Middlewares;
 
 public static class DatabaseMigration
 {

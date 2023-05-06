@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using KarcagS.API.Data;
+using KarcagS.API.Data.Entities;
 using KarcagS.API.Shared.Configurations;
 using KarcagS.API.Shared.Exceptions;
 using KarcagS.API.Shared.Helpers;

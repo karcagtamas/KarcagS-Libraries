@@ -1,6 +1,6 @@
 using KarcagS.Shared.Common;
 
-namespace KarcagS.API.Data;
+namespace KarcagS.API.Data.Entities;
 
 public interface IEntity<T> : IIdentified<T>
 {

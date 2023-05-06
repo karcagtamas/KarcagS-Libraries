@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using KarcagS.API.Auth.JWT.Models;
 
 namespace KarcagS.API.Auth.JWT;
 

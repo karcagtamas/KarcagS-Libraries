@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Linq.Expressions;
 using KarcagS.API.Data;
+using KarcagS.API.Data.Entities;
 using KarcagS.API.Shared.Helpers;
 using KarcagS.API.Shared.Services;
 using Microsoft.EntityFrameworkCore;

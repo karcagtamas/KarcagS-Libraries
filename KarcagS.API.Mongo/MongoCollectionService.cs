@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
 using KarcagS.API.Data;
+using KarcagS.API.Data.Entities.Mongo;
 using KarcagS.API.Mongo.Configurations;
 using KarcagS.Shared.Helpers;
 using MongoDB.Driver;

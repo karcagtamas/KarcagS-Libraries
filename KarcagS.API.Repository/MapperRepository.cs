@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using AutoMapper;
 using KarcagS.API.Data;
+using KarcagS.API.Data.Entities;
 using KarcagS.API.Shared.Helpers;
 using KarcagS.API.Shared.Services;
 using KarcagS.Shared.Helpers;

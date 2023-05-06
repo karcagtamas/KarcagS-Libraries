@@ -1,4 +1,4 @@
-﻿namespace KarcagS.API.Export;
+﻿namespace KarcagS.API.Export.Models;
 
 /// <summary>
 /// Table header object

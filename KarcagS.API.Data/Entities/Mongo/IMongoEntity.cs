@@ -1,4 +1,4 @@
-﻿namespace KarcagS.API.Data;
+﻿namespace KarcagS.API.Data.Entities.Mongo;
 
 public interface IMongoEntity
 {

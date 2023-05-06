@@ -1,4 +1,6 @@
-﻿namespace KarcagS.API.Export.Excel;
+﻿using KarcagS.API.Export.Models;
+
+namespace KarcagS.API.Export.Excel;
 
 public interface IExcelService
 {

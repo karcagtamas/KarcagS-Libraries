@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using KarcagS.API.Data;
+using KarcagS.API.Data.Entities;
 
 namespace KarcagS.Common.Demo;
 

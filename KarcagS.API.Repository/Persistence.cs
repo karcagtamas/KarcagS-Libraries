@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using KarcagS.API.Data;
+using KarcagS.API.Data.Entities;
 using KarcagS.API.Repository.Attributes;
 using KarcagS.API.Shared.Helpers;
 using KarcagS.Shared.Helpers;

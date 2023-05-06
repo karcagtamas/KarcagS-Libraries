@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using KarcagS.API.Export.Models;
 
 namespace KarcagS.API.Export.CSV;
 
