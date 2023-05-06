@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Title>KarcagS API Data Library</Title>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>3.0.9</PackageVersion>
+        <AssemblyVersion>3.0.9</AssemblyVersion>
+        <FileVersion>3.0.9</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\KarcagS.Shared\KarcagS.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
+    </ItemGroup>
+
+</Project>

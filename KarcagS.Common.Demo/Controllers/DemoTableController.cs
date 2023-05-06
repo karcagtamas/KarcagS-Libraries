@@ -1,4 +1,4 @@
-﻿using KarcagS.Common.Tools.Table;
+﻿using KarcagS.API.Table;
 using KarcagS.Shared.Common;
 using Microsoft.AspNetCore.Mvc;
 

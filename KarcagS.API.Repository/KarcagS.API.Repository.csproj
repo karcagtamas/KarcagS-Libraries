@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Title>KarcagS API Repository Library</Title>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>3.0.9</PackageVersion>
+        <AssemblyVersion>3.0.9</AssemblyVersion>
+        <FileVersion>3.0.9</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\KarcagS.API.Data\KarcagS.API.Data.csproj" />
+      <ProjectReference Include="..\KarcagS.API.Shared\KarcagS.API.Shared.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="12.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.4" />
+    </ItemGroup>
+
+</Project>

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Title>KarcagS API Library</Title>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>3.0.9</PackageVersion>
+        <AssemblyVersion>3.0.9</AssemblyVersion>
+        <FileVersion>3.0.9</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\KarcagS.API.Auth\KarcagS.API.Auth.csproj" />
+      <ProjectReference Include="..\KarcagS.API.Data\KarcagS.API.Data.csproj" />
+      <ProjectReference Include="..\KarcagS.API.Export\KarcagS.API.Export.csproj" />
+      <ProjectReference Include="..\KarcagS.API.Http\KarcagS.API.Http.csproj" />
+      <ProjectReference Include="..\KarcagS.API.Mail\KarcagS.API.Mail.csproj" />
+      <ProjectReference Include="..\KarcagS.API.Mongo\KarcagS.API.Mongo.csproj" />
+      <ProjectReference Include="..\KarcagS.API.Repository\KarcagS.API.Repository.csproj" />
+      <ProjectReference Include="..\KarcagS.API.Shared\KarcagS.API.Shared.csproj" />
+      <ProjectReference Include="..\KarcagS.API.Table\KarcagS.API.Table.csproj" />
+    </ItemGroup>
+
+</Project>

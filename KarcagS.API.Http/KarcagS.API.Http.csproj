@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Title>KarcagS API HTTP Library</Title>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>3.0.9</PackageVersion>
+        <AssemblyVersion>3.0.9</AssemblyVersion>
+        <FileVersion>3.0.9</FileVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\KarcagS.API.Shared\KarcagS.API.Shared.csproj"/>
+        <ProjectReference Include="..\KarcagS.Shared\KarcagS.Shared.csproj"/>
+    </ItemGroup>
+</Project>

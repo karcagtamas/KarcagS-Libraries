@@ -1,6 +1,7 @@
-﻿using KarcagS.Common.Tools.Table;
-using KarcagS.Common.Tools.Table.Configuration;
-using KarcagS.Common.Tools.Table.ListTable;
+﻿using KarcagS.API.Table;
+using KarcagS.API.Table.Configuration;
+using KarcagS.API.Table.Configurations;
+using KarcagS.API.Table.ListTable;
 using KarcagS.Shared.Enums;
 using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
