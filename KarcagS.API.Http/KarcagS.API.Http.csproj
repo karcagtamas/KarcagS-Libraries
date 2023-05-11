@@ -6,22 +6,23 @@
         <Nullable>enable</Nullable>
         <Title>KarcagS API HTTP Library</Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>4.0.0</PackageVersion>
-        <AssemblyVersion>4.0.0</AssemblyVersion>
-        <FileVersion>4.0.0</FileVersion>
+        <PackageVersion>4.0.1</PackageVersion>
+        <AssemblyVersion>4.0.1</AssemblyVersion>
+        <FileVersion>4.0.1</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0"/>
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\KarcagS.API.Shared\KarcagS.API.Shared.csproj"/>
-        <ProjectReference Include="..\KarcagS.Shared\KarcagS.Shared.csproj"/>
+        <ProjectReference Include="..\KarcagS.API.Shared\KarcagS.API.Shared.csproj" />
+        <ProjectReference Include="..\KarcagS.Shared\KarcagS.Shared.csproj" />
     </ItemGroup>
 </Project>
