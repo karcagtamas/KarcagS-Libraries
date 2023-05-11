@@ -332,7 +332,7 @@ public class HttpService : IHttpService
         }
 
         var refreshToken = await TokenHandler.GetRefreshToken(Configuration);
-        var clientId = await TokenHandler.GetRefreshToken(Configuration);
+        var clientId = await TokenHandler.GetClientId(Configuration);
 
         if (string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(clientId))
         {
