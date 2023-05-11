@@ -13,7 +13,7 @@ public class LocalStorageTokenHandler : ITokenHandler
     }
 
     public Task<string> GetAccessToken(HttpConfiguration configuration) => GetFromLocalStorage(configuration.AccessTokenName);
-    public Task<string> GetRefreshToken(HttpConfiguration configuration) => GetFromLocalStorage(configuration.AccessTokenName);
+    public Task<string> GetRefreshToken(HttpConfiguration configuration) => GetFromLocalStorage(configuration.RefreshTokenName);
 
     public Task<string> GetClientId(HttpConfiguration configuration) => GetFromLocalStorage(configuration.ClientIdName);
 
