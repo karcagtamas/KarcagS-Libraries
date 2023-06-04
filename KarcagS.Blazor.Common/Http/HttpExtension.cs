@@ -14,6 +14,7 @@ public static class HttpExtension
     {
         var conf = new HttpConfiguration();
         configuration(conf);
+        serviceCollection.AddTransient<HttpConfiguration>(_ => conf);
 
         serviceCollection.TryAddScoped<ITokenHandler, LocalStorageTokenHandler>();
         serviceCollection.TryAddScoped((Func<IServiceProvider, IHttpService>)(builder =>

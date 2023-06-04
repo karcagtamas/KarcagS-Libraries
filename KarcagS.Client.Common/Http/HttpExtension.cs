@@ -11,6 +11,7 @@ public static class HttpExtension
     {
         var conf = new HttpConfiguration();
         configuration(conf);
+        serviceCollection.AddTransient<HttpConfiguration>(_ => conf);
         serviceCollection.TryAddScoped((Func<IServiceProvider, IHttpService>)(builder =>
                 new HttpService(
                     builder.GetRequiredService<HttpClient>(),

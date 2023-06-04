@@ -8,4 +8,7 @@ public interface ITokenHandler
     Task SetAccessToken(string value, HttpConfiguration configuration);
     Task SetRefreshToken(string value, HttpConfiguration configuration);
     Task SetClientId(string value, HttpConfiguration configuration);
+    Task RemoveAccessToken(HttpConfiguration configuration);
+    Task RemoveRefreshToken(HttpConfiguration configuration);
+    Task RemoveClientId(HttpConfiguration configuration);
 }
