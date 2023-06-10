@@ -27,6 +27,7 @@ public class HttpSender<T>
 
     public async Task<bool> Execute() => (await Perform())?.IsSuccess ?? false;
 
+    public async Task<HttpResult<T>?> ExecuteWithAll() => await Perform();
 
     public async Task<T?> ExecuteWithResult()
     {
