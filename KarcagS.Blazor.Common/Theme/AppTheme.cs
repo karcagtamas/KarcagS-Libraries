@@ -15,7 +15,7 @@ public class AppTheme
         DarkColorPalette = darkPalette;
         Theme = new()
         {
-            Palette = new Palette
+            Palette = new PaletteLight
             {
                 Primary = palette.MainColor,
                 Secondary = palette.SecondaryColor,
@@ -31,7 +31,7 @@ public class AppTheme
                 ActionDefault = palette.MainColor,
                 AppbarText = palette.White
             },
-            PaletteDark = ConvertToDarkTheme(new Palette
+            PaletteDark = ConvertToDarkTheme(new PaletteDark
             {
                 Primary = darkPalette.MainColor,
                 Secondary = darkPalette.SecondaryColor,
@@ -72,7 +72,8 @@ public class AppTheme
 
     public class AppColorPalette
     {
-        public string MainColorValue { get => MainColor.Value; }
+        public string MainColorValue => MainColor.Value;
+
         public MudColor MainColor { get; set; } = "#0D2971";
         public MudColor SecondaryColor { get; set; } = "#581043";
         public MudColor TertiaryColor { get; set; } = "#361B3A";
@@ -86,10 +87,11 @@ public class AppTheme
 
         public AppColorPalette()
         {
-
         }
 
+#pragma warning disable CS0618
         public AppColorPalette(Palette palette)
+#pragma warning restore CS0618
         {
             MainColor = palette.Primary;
             SecondaryColor = palette.Secondary;
@@ -102,7 +104,7 @@ public class AppTheme
         }
     }
 
-    public static Palette ConvertToDarkTheme(Palette palette)
+    public static PaletteDark ConvertToDarkTheme(PaletteDark palette)
     {
         // palette.Primary = "#776be7";
         palette.Black = "#27272f";

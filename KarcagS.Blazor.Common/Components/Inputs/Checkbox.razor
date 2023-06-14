@@ -1,6 +1,6 @@
 @using System.Linq.Expressions
 
-<MudCheckBox T="bool" Checked="Checked" CheckedChanged="CheckedChanged" Dense="true" Label="@Label" Style="@Style" Class="@Class" For="For" />
+<MudCheckBox T="bool?" Checked="Checked" CheckedChanged="CheckedChanged" Dense="true" Label="@Label" Style="@Style" Class="@Class" For="For" />
 
 @code {
     [Parameter, EditorRequired]
@@ -13,11 +13,11 @@
     public string Class { get; set; } = default!;
 
     [Parameter]
-    public bool Checked { get; set; }
+    public bool? Checked { get; set; }
 
     [Parameter]
-    public EventCallback<bool> CheckedChanged { get; set; }
+    public EventCallback<bool?> CheckedChanged { get; set; }
 
     [Parameter]
-    public Expression<Func<bool>>? For { get; set; }
+    public Expression<Func<bool?>>? For { get; set; }
 }

@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using KarcagS.Client.Common.Http.Exceptions;
 using KarcagS.Client.Common.Models;
 using KarcagS.Client.Common.Services.Interfaces;
 using KarcagS.Shared.Http;
@@ -140,9 +141,9 @@ public class HttpService : IHttpService
     public async Task<bool> Download(HttpSettings settings)
     {
         return await Get<ExportResult>(settings)
-            .Success((res) =>
+            .Success(res =>
             {
-                if (res is not null)
+                if (ObjectHelper.IsNotNull(res))
                 {
                     Download(res);
                 }
@@ -153,9 +154,9 @@ public class HttpService : IHttpService
     public async Task<bool> Download<T>(HttpSettings settings, T model)
     {
         return await PutWithResult<ExportResult, T>(settings, model)
-            .Success((res) =>
+            .Success(res =>
             {
-                if (res is not null)
+                if (ObjectHelper.IsNotNull(res))
                 {
                     Download(res);
                 }
@@ -192,13 +193,16 @@ public class HttpService : IHttpService
             {
                 if (Configuration.IsTokenRefresher && !afterRefresh)
                 {
-                    if (await Refresh())
+                    try
                     {
+                        await Refresh();
                         return await SendRequest<T>(settings, method, content, true);
                     }
-
-                    HandlingUnauthorizedPathRedirection();
-                    return await MakeResult<T>(response, settings.ToasterSettings);
+                    catch (HttpTokenRefreshException)
+                    {
+                        HandlingUnauthorizedPathRedirection();
+                        return await MakeResult<T>(response, settings.ToasterSettings);
+                    }
                 }
 
                 HandlingUnauthorizedPathRedirection();
@@ -209,22 +213,35 @@ public class HttpService : IHttpService
             {
                 return await MakeResult<T>(response, settings.ToasterSettings);
             }
-            catch (Exception e)
+            catch (HttpResponseParseException e)
             {
                 ConsoleSerializationError(e);
-                return null;
+                throw;
             }
+            catch (Exception e)
+            {
+                throw new HttpException("The HTTP response read was unsuccessful", e);
+            }
+        }
+        catch (HttpResponseParseException e)
+        {
+            ConsoleSerializationError(e);
+            throw;
+        }
+        catch (HttpException)
+        {
+            throw;
         }
         catch (Exception e)
         {
             ConsoleCallError(e, url);
-            return null;
+            throw;
         }
     }
 
     private async Task<HttpResult<T>?> MakeResult<T>(HttpResponseMessage? response, ToasterSettings toasterSettings)
     {
-        if (response is null)
+        if (ObjectHelper.IsNull(response))
         {
             if (toasterSettings.IsNeeded)
             {
@@ -233,31 +250,38 @@ public class HttpService : IHttpService
 
             return null;
         }
-        else
-        {
-            var result = await Parse<T>(response);
 
-            if (toasterSettings.IsNeeded)
+        HttpResult<T>? result;
+
+        try
+        {
+            result = await Parse<T>(response);
+        }
+        catch (Exception e)
+        {
+            throw new HttpResponseParseException("The response is not parseable", e);
+        }
+
+        if (toasterSettings.IsNeeded)
+        {
+            if (ObjectHelper.IsNull(result))
             {
-                if (result is null)
+                HelperService.AddHttpErrorToaster(toasterSettings.Caption, null);
+            }
+            else
+            {
+                if (result.IsSuccess)
                 {
-                    HelperService.AddHttpErrorToaster(toasterSettings.Caption, null);
+                    HelperService.AddHttpSuccessToaster(toasterSettings.Caption);
                 }
                 else
                 {
-                    if (result.IsSuccess)
-                    {
-                        HelperService.AddHttpSuccessToaster(toasterSettings.Caption);
-                    }
-                    else
-                    {
-                        HelperService.AddHttpErrorToaster(toasterSettings.Caption, result.Error);
-                    }
+                    HelperService.AddHttpErrorToaster(toasterSettings.Caption, result.Error);
                 }
             }
-
-            return result;
         }
+
+        return result;
     }
 
     private async Task<HttpRequestMessage> BuildRequest(HttpMethod method, HttpContent? content, string url)
@@ -324,19 +348,24 @@ public class HttpService : IHttpService
 
     protected virtual void ConsoleTokenRefreshError(Exception e) => Console.WriteLine($"TOKEN REFRESH ERROR: {e.Message}");
 
-    private async Task<bool> Refresh()
+    private async Task Refresh()
     {
         if (string.IsNullOrEmpty(Configuration.RefreshUri))
         {
-            return false;
+            throw new HttpTokenRefreshException("Missing Refresh Uri configuration");
         }
 
         var refreshToken = await TokenHandler.GetRefreshToken(Configuration);
         var clientId = await TokenHandler.GetClientId(Configuration);
 
-        if (string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(clientId))
+        if (string.IsNullOrEmpty(refreshToken))
         {
-            return false;
+            throw new HttpTokenRefreshException("Refresh token is not set");
+        }
+
+        if (string.IsNullOrEmpty(clientId))
+        {
+            throw new HttpTokenRefreshException("Client Id is not set");
         }
 
         var request = await BuildRequest(HttpMethod.Get, null, Configuration.RefreshUri.Replace(Configuration.RefreshTokenPlaceholder, refreshToken).Replace(Configuration.ClientIdPlaceholder, clientId));
@@ -346,28 +375,33 @@ public class HttpService : IHttpService
             using var response = await HttpClient.SendAsync(request);
             var parsedResponse = await Parse<HttpRefreshResult>(response);
 
-            if (ObjectHelper.IsNull(parsedResponse))
+            if (ObjectHelper.IsNull(parsedResponse) || ObjectHelper.IsNull(parsedResponse.Result))
             {
-                return false;
+                throw new HttpTokenRefreshException("Parsed response is empty");
             }
 
-            var res = parsedResponse.Result;
-
-            if (ObjectHelper.IsNull(res) || string.IsNullOrEmpty(res.AccessToken) || string.IsNullOrEmpty(res.RefreshToken))
+            if (string.IsNullOrEmpty(parsedResponse.Result.AccessToken))
             {
-                return false;
+                throw new HttpTokenRefreshException("Parsed Access Token is empty");
             }
 
-            await TokenHandler.SetAccessToken(res.AccessToken, Configuration);
-            await TokenHandler.SetRefreshToken(res.RefreshToken, Configuration);
-            await TokenHandler.SetClientId(res.ClientId, Configuration);
+            if (string.IsNullOrEmpty(parsedResponse.Result.RefreshToken))
+            {
+                throw new HttpTokenRefreshException("Parsed Refresh Token is empty");
+            }
 
-            return true;
+            await TokenHandler.SetAccessToken(parsedResponse.Result.AccessToken, Configuration);
+            await TokenHandler.SetRefreshToken(parsedResponse.Result.RefreshToken, Configuration);
+            await TokenHandler.SetClientId(parsedResponse.Result.ClientId, Configuration);
+        }
+        catch (HttpTokenRefreshException)
+        {
+            throw;
         }
         catch (Exception e)
         {
             ConsoleTokenRefreshError(e);
-            return false;
+            throw new HttpTokenRefreshException("Error during the token refresh", e);
         }
     }
 
