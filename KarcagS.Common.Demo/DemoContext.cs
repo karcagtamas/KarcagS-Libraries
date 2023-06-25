@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using KarcagS.API.Data;
 using KarcagS.API.Data.Entities;
 
 namespace KarcagS.Common.Demo;
@@ -31,12 +30,8 @@ public class DemoContext : DbContext
     }
 }
 
-public class DemoEntry : IEntity<string>
+public class DemoEntry : Entity<string>
 {
-    [Key]
-    [Required]
-    public string Id { get; set; } = default!;
-
     [Required]
     public string Name { get; set; } = default!;
 
@@ -55,12 +50,8 @@ public class DemoEntry : IEntity<string>
     public virtual GenderEntry? OtherGender { get; set; }
 }
 
-public class GenderEntry : IEntity<int>
+public class GenderEntry : Entity<int>
 {
-    [Key]
-    [Required]
-    public int Id { get; set; } = default!;
-
     [Required]
     public string Name { get; set; } = default!;
 

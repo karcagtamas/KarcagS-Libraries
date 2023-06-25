@@ -1,4 +1,4 @@
-﻿using KarcagS.Client.Common.Http;
+﻿using KarcagS.Http;
 
 namespace KarcagS.Blazor.Common.Components.ListTable;
 

@@ -1,24 +1,21 @@
-using KarcagS.Client.Common.Services.Interfaces;
-using KarcagS.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace KarcagS.Client.Common.Http;
+namespace KarcagS.Http;
 
 public static class HttpExtension
 {
-    public static IServiceCollection AddClientHttpService(this IServiceCollection serviceCollection,
+    public static IServiceCollection AddHttpService(this IServiceCollection serviceCollection,
         Action<HttpConfiguration> configuration)
     {
         var conf = new HttpConfiguration();
         configuration(conf);
         serviceCollection.AddTransient<HttpConfiguration>(_ => conf);
         serviceCollection.TryAddScoped((Func<IServiceProvider, IHttpService>)(builder =>
-                new ClientHttpService(
+                new HttpService(
                     builder.GetRequiredService<HttpClient>(),
                     conf,
-                    builder.GetRequiredService<ITokenHandler>(),
-                    builder.GetRequiredService<IHelperService>())
+                    builder.GetRequiredService<ITokenHandler>())
             ));
         return serviceCollection;
     }

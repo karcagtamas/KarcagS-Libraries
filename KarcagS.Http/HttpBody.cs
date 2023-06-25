@@ -1,7 +1,7 @@
 using System.Text;
 using System.Text.Json;
 
-namespace KarcagS.Client.Common.Http;
+namespace KarcagS.Http;
 
 /// <summary>
 /// HTTP body

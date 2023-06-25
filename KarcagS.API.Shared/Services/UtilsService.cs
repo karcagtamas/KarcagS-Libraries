@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using KarcagS.API.Data;
 using KarcagS.API.Data.Entities;
 using KarcagS.API.Shared.Configurations;
 using KarcagS.API.Shared.Exceptions;
@@ -34,7 +33,7 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
     /// Get current user from the HTTP Context
     /// </summary>
     /// <returns>Current user</returns>
-    public T GetCurrentUser<T>() where T : class, IEntity<TUserKey>
+    public T GetCurrentUser<T>() where T : Entity<TUserKey>
     {
         TUserKey? userId = GetCurrentUserId();
 

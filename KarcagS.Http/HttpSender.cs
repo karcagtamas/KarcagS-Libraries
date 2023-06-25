@@ -1,6 +1,7 @@
-﻿using KarcagS.Shared.Http;
+﻿using KarcagS.Shared.Helpers;
+using KarcagS.Shared.Http;
 
-namespace KarcagS.Client.Common.Http;
+namespace KarcagS.Http;
 
 public class HttpSender<T>
 {

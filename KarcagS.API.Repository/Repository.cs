@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Linq.Expressions;
-using KarcagS.API.Data;
 using KarcagS.API.Data.Entities;
 using KarcagS.API.Shared.Helpers;
 using KarcagS.API.Shared.Services;
@@ -14,7 +13,7 @@ namespace KarcagS.API.Repository;
 /// <typeparam name="T">Type of Entity</typeparam>
 /// <typeparam name="TKey">Type of key</typeparam>
 /// <typeparam name="TUserKey">Type of user entity key</typeparam>
-public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where T : class, IEntity<TKey>
+public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where T : Entity<TKey>
 {
     protected readonly DbContext Context;
     protected readonly ILoggerService Logger;
@@ -125,11 +124,26 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     public virtual TKey Create(T entity, bool doPersist = true) => Persistence.Create<TKey, T>(entity, doPersist);
 
     /// <summary>
+    /// Add entity Async
+    /// </summary>
+    /// <param name="entity">Entity object</param>
+    /// <param name="doPersist">Do object persist</param>
+    /// <returns>Newly created key</returns>
+    public virtual Task<TKey> CreateAsync(T entity, bool doPersist = true) => Persistence.CreateAsync<TKey, T>(entity, doPersist);
+
+    /// <summary>
     /// Add multiple entity.
     /// </summary>
     /// <param name="entities">Entity objects</param>
     /// <param name="doPersist">Do object persist</param>
     public virtual void CreateRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.CreateRange<TKey, T>(entities, doPersist);
+
+    /// <summary>
+    /// Add multiple entity Async
+    /// </summary>
+    /// <param name="entities">Entity objects</param>
+    /// <param name="doPersist">Do object persist</param>
+    public virtual Task CreateRangeAsync(IEnumerable<T> entities, bool doPersist = true) => Persistence.CreateRangeAsync<TKey, T>(entities, doPersist);
 
     /// <summary>
     /// Update entity
@@ -139,6 +153,13 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     public virtual void Update(T entity, bool doPersist = true) => Persistence.Update<TKey, T>(entity, doPersist);
 
     /// <summary>
+    /// Update entity Async
+    /// </summary>
+    /// <param name="entity">Entity</param>
+    /// <param name="doPersist">Do Persist</param>
+    public virtual Task UpdateAsync(T entity, bool doPersist = true) => Persistence.UpdateAsync<TKey, T>(entity, doPersist);
+
+    /// <summary>
     /// Update multiple entity
     /// </summary>
     /// <param name="entities">Entities</param>
@@ -146,11 +167,25 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     public virtual void UpdateRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.UpdateRange<TKey, T>(entities, doPersist);
 
     /// <summary>
+    /// Update multiple entity Async
+    /// </summary>
+    /// <param name="entities">Entities</param>
+    /// <param name="doPersist">Do Persist</param>
+    public virtual Task UpdateRangeAsync(IEnumerable<T> entities, bool doPersist = true) => Persistence.UpdateRangeAsync<TKey, T>(entities, doPersist);
+
+    /// <summary>
     /// Remove entity.
     /// </summary>
     /// <param name="entity">Entity</param>
     /// <param name="doPersist">Do Persist</param>
     public virtual void Delete(T entity, bool doPersist = true) => Persistence.Delete<TKey, T>(entity, doPersist);
+
+    /// <summary>
+    /// Remove entity Async
+    /// </summary>
+    /// <param name="entity">Entity</param>
+    /// <param name="doPersist">Do Persist</param>
+    public virtual Task DeleteAsync(T entity, bool doPersist = true) => Persistence.DeleteAsync<TKey, T>(entity, doPersist);
 
     /// <summary>
     /// Remove by Id
@@ -169,6 +204,22 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     }
 
     /// <summary>
+    /// Remove by Id Async
+    /// </summary>
+    /// <param name="id">Id of entity</param>
+    /// <param name="doPersist">Do Persist</param>
+    public virtual Task DeleteByIdAsync(TKey id, bool doPersist = true)
+    {
+        // Get entity
+        var entity = Get(id);
+
+        ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, $"Element not found with id: {id}");
+
+        // Remove
+        return DeleteAsync(entity, doPersist);
+    }
+
+    /// <summary>
     /// Remove range
     /// </summary>
     /// <param name="entities">Entities</param>
@@ -176,9 +227,21 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     public virtual void DeleteRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.DeleteRange<TKey, T>(entities, doPersist);
 
     /// <summary>
+    /// Remove range Async
+    /// </summary>
+    /// <param name="entities">Entities</param>
+    /// <param name="doPersist">Do Persist</param>
+    public virtual Task DeleteRangeAsync(IEnumerable<T> entities, bool doPersist = true) => Persistence.DeleteRangeAsync<TKey, T>(entities, doPersist);
+
+    /// <summary>
     /// Save changes
     /// </summary>
     public virtual void Persist() => Persistence.Persist();
+
+    /// <summary>
+    /// Save changes Async
+    /// </summary>
+    public virtual Task PersistAsync() => Persistence.PersistAsync();
 
     /// <summary>
     /// Generate entity service
@@ -198,13 +261,6 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     /// </summary>
     /// <returns>Error message</returns>
     protected string GetEntityErrorMessage() => $"{Entity} does not exist";
-
-    /// <summary>
-    /// Generate notification action from action
-    /// </summary>
-    /// <param name="action">Action</param>
-    /// <returns>Notification action</returns>
-    private string GetNotificationAction(string action) => string.Join("", GetEvent(action).Split(" ").Select(x => char.ToUpper(x[0]) + x.Substring(1).ToLower()));
 
     /// <summary>
     /// Determine arguments from entity by name

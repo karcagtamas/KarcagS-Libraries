@@ -1,4 +1,4 @@
-﻿namespace KarcagS.Client.Common.Http;
+﻿namespace KarcagS.Http;
 
 public interface ITokenHandler
 {

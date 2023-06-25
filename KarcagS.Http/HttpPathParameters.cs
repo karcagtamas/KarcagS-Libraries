@@ -1,6 +1,6 @@
 using KarcagS.Shared.Common;
 
-namespace KarcagS.Client.Common.Http;
+namespace KarcagS.Http;
 
 /// <summary>
 /// HTTP path parameters

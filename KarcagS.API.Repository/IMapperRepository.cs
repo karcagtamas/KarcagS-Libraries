@@ -4,7 +4,7 @@ using KarcagS.API.Data.Entities;
 
 namespace KarcagS.API.Repository;
 
-public interface IMapperRepository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
+public interface IMapperRepository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : Entity<TKey>
 {
     IEnumerable<T> GetAllMapped<T>();
     IEnumerable<T> GetMappedList<T>(Expression<Func<TEntity, bool>> expression, int? count = null, int? skip = null);

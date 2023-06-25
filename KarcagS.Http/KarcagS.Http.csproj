@@ -1,10 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageVersion>4.0.7</PackageVersion>
-        <Title>KarcagS Shared C# Library</Title>
+        <Title>KarcagS HTTP Library</Title>
         <AssemblyVersion>4.0.7</AssemblyVersion>
         <FileVersion>4.0.7</FileVersion>
         <Nullable>enable</Nullable>
@@ -12,7 +12,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.7" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="7.0.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\KarcagS.Shared\KarcagS.Shared.csproj" />
     </ItemGroup>
 
 </Project>

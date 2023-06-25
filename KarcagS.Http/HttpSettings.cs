@@ -1,6 +1,6 @@
-using KarcagS.Client.Common.Models;
+using KarcagS.Http.Models;
 
-namespace KarcagS.Client.Common.Http;
+namespace KarcagS.Http;
 
 /// <summary>
 /// HTTP Settings

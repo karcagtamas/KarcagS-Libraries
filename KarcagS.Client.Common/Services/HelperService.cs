@@ -1,7 +1,7 @@
 using System.Text.Json;
-using KarcagS.Client.Common.Enums;
-using KarcagS.Client.Common.Models;
 using KarcagS.Client.Common.Services.Interfaces;
+using KarcagS.Http.Enums;
+using KarcagS.Http.Models;
 using KarcagS.Shared.Http;
 
 namespace KarcagS.Client.Common.Services;

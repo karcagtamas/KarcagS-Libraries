@@ -1,18 +1,19 @@
 ﻿using KarcagS.Client.Common.Http;
 using KarcagS.Client.Common.Services.Interfaces;
+using KarcagS.Http;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.JSInterop;
 
 namespace KarcagS.Blazor.Common.Http;
 
-public class BlazorHttpService : HttpService
+public class BlazorHttpService : ClientHttpService
 {
     private readonly IJSRuntime jsRuntime;
     private readonly NavigationManager navigationManager;
 
     public BlazorHttpService(HttpClient httpClient, IHelperService helperService, HttpConfiguration configuration, ITokenHandler tokenHandler, IJSRuntime jsRuntime, NavigationManager navigationManager) :
-        base(httpClient, helperService, configuration, tokenHandler)
+        base(httpClient, configuration, tokenHandler, helperService)
     {
         this.jsRuntime = jsRuntime;
         this.navigationManager = navigationManager;
@@ -73,7 +74,7 @@ public class BlazorHttpService : HttpService
         try
         {
             ((IJSInProcessRuntime)jsRuntime).Invoke<object>("console.log",
-                new ConsoleError { Error = $"HTTP Token refresh Error", Exception = e.ToString() });
+                new ConsoleError { Error = "HTTP Token refresh Error", Exception = e.ToString() });
         }
         catch (Exception)
         {

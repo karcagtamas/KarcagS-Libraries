@@ -1,5 +1,4 @@
 ﻿using System.Linq.Expressions;
-using KarcagS.API.Data;
 using KarcagS.API.Data.Entities.Mongo;
 using MongoDB.Driver;
 

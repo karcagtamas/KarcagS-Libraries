@@ -1,6 +1,6 @@
 ﻿using KarcagS.Shared.Http;
 
-namespace KarcagS.Client.Common.Http;
+namespace KarcagS.Http;
 
 public class ResultWrapper<T>
 {

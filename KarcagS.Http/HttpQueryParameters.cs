@@ -1,6 +1,7 @@
 using KarcagS.Shared.Common;
+using KarcagS.Shared.Helpers;
 
-namespace KarcagS.Client.Common.Http;
+namespace KarcagS.Http;
 
 /// <summary>
 /// HTTP query parameters

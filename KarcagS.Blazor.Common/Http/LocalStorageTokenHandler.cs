@@ -1,5 +1,5 @@
 ﻿using Blazored.LocalStorage;
-using KarcagS.Client.Common.Http;
+using KarcagS.Http;
 
 namespace KarcagS.Blazor.Common.Http;
 

@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Localization;
+﻿using KarcagS.Shared.Helpers;
+using Microsoft.Extensions.Localization;
 
-namespace KarcagS.Client.Common.Http;
+namespace KarcagS.Http;
 
 public class HttpCall<TKey> : IHttpCall<TKey>
 {

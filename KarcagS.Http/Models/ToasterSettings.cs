@@ -1,6 +1,6 @@
-using KarcagS.Client.Common.Enums;
+using KarcagS.Http.Enums;
 
-namespace KarcagS.Client.Common.Models;
+namespace KarcagS.Http.Models;
 
 /// <summary>
 /// Toaster settings

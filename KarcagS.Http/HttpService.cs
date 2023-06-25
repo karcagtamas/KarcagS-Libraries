@@ -1,18 +1,16 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using KarcagS.Client.Common.Http.Exceptions;
-using KarcagS.Client.Common.Models;
-using KarcagS.Client.Common.Services.Interfaces;
+using KarcagS.Http.Exceptions;
+using KarcagS.Http.Models;
+using KarcagS.Shared.Helpers;
 using KarcagS.Shared.Http;
 
-namespace KarcagS.Client.Common.Http;
+namespace KarcagS.Http;
 
 public class HttpService : IHttpService
 {
     protected readonly HttpClient HttpClient;
-
-    protected readonly IHelperService HelperService;
 
     protected readonly HttpConfiguration Configuration;
     protected readonly ITokenHandler TokenHandler;
@@ -24,10 +22,9 @@ public class HttpService : IHttpService
     /// <param name="helperService">Helper Service</param>
     /// <param name="configuration">HTTP Configuration</param>
     /// <param name="tokenHandler">Token Handler</param>
-    public HttpService(HttpClient httpClient, IHelperService helperService, HttpConfiguration configuration, ITokenHandler tokenHandler)
+    public HttpService(HttpClient httpClient, HttpConfiguration configuration, ITokenHandler tokenHandler)
     {
         HttpClient = httpClient;
-        HelperService = helperService;
         Configuration = configuration;
         TokenHandler = tokenHandler;
     }
@@ -245,7 +242,8 @@ public class HttpService : IHttpService
         {
             if (toasterSettings.IsNeeded)
             {
-                HelperService.AddHttpErrorToaster(toasterSettings.Caption, null);
+                // HelperService.AddHttpErrorToaster(toasterSettings.Caption, null);
+                AddErrorToaster(toasterSettings.Caption, null);
             }
 
             return null;
@@ -266,17 +264,20 @@ public class HttpService : IHttpService
         {
             if (ObjectHelper.IsNull(result))
             {
-                HelperService.AddHttpErrorToaster(toasterSettings.Caption, null);
+                // HelperService.AddHttpErrorToaster(toasterSettings.Caption, null);
+                AddErrorToaster(toasterSettings.Caption, null);
             }
             else
             {
                 if (result.IsSuccess)
                 {
-                    HelperService.AddHttpSuccessToaster(toasterSettings.Caption);
+                    // HelperService.AddHttpSuccessToaster(toasterSettings.Caption);
+                    AddSuccessToaster(toasterSettings.Caption);
                 }
                 else
                 {
-                    HelperService.AddHttpErrorToaster(toasterSettings.Caption, result.Error);
+                    // HelperService.AddHttpErrorToaster(toasterSettings.Caption, result.Error);
+                    AddErrorToaster(toasterSettings.Caption, result.Error);
                 }
             }
         }
@@ -347,6 +348,9 @@ public class HttpService : IHttpService
     protected virtual void ConsoleCallError(Exception e, string url) => Console.WriteLine($"CALL ERROR: {e.Message}");
 
     protected virtual void ConsoleTokenRefreshError(Exception e) => Console.WriteLine($"TOKEN REFRESH ERROR: {e.Message}");
+    
+    protected virtual void AddErrorToaster(string caption, HttpErrorResult? errorResult) {}
+    protected virtual void AddSuccessToaster(string caption) {}
 
     private async Task Refresh()
     {

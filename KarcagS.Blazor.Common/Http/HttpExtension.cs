@@ -1,5 +1,5 @@
-using KarcagS.Client.Common.Http;
 using KarcagS.Client.Common.Services.Interfaces;
+using KarcagS.Http;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

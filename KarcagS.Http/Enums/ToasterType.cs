@@ -1,4 +1,4 @@
-namespace KarcagS.Client.Common.Enums;
+namespace KarcagS.Http.Enums;
 
 public enum ToasterType
 {

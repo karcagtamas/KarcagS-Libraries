@@ -1,6 +1,7 @@
-﻿using KarcagS.Client.Common.Enums;
-using KarcagS.Client.Common.Models;
+﻿using KarcagS.Client.Common.Models;
 using KarcagS.Client.Common.Services.Interfaces;
+using KarcagS.Http.Enums;
+using KarcagS.Http.Models;
 using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Services;

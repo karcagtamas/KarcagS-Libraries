@@ -1,6 +1,7 @@
-﻿namespace KarcagS.API.Data.Entities.Mongo;
+﻿using KarcagS.Shared.Common;
 
-public interface IMongoEntity
+namespace KarcagS.API.Data.Entities.Mongo;
+
+public interface IMongoEntity : IIdentified<string>
 {
-    public string Id { get; set; }
 }

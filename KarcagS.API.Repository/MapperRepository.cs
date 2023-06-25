@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KarcagS.API.Repository;
 
-public abstract class MapperRepository<TEntity, TKey, TUserKey> : Repository<TEntity, TKey, TUserKey>, IMapperRepository<TEntity, TKey> where TEntity : class, IEntity<TKey>
+public abstract class MapperRepository<TEntity, TKey, TUserKey> : Repository<TEntity, TKey, TUserKey>, IMapperRepository<TEntity, TKey> where TEntity : Entity<TKey>
 {
     protected readonly IMapper Mapper;
 

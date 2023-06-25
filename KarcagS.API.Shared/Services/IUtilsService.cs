@@ -8,7 +8,7 @@ public interface IUtilsService<TUserKey>
 {
     ClaimsPrincipal? GetUserPrincipal();
     ClaimsPrincipal GetRequiredUserPrincipal();
-    T GetCurrentUser<T>() where T : class, IEntity<TUserKey>;
+    T GetCurrentUser<T>() where T : Entity<TUserKey>;
     TUserKey? GetCurrentUserId();
     TUserKey GetRequiredCurrentUserId();
     string GetCurrentUserEmail();

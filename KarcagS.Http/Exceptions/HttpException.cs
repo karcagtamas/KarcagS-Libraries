@@ -1,4 +1,4 @@
-﻿namespace KarcagS.Client.Common.Http.Exceptions;
+﻿namespace KarcagS.Http.Exceptions;
 
 public class HttpException : Exception
 {
