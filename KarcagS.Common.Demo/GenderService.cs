@@ -4,9 +4,9 @@ using KarcagS.API.Shared.Services;
 
 namespace KarcagS.Common.Demo;
 
-public class GenderService : MapperRepository<GenderEntry, int, string>, IGenderService
+public class GenderService : MapperRepository<GenderEntry, int>, IGenderService
 {
-    public GenderService(DemoContext context, ILoggerService loggerService, IUserProvider<string> userProvider, IMapper mapper) : base(context, loggerService, userProvider, mapper, "Gender")
+    public GenderService(ILoggerService loggerService, IMapper mapper, EFPersistence<DemoContext, string> persistence) : base(loggerService, mapper, persistence, "Gender")
     {
     }
 }

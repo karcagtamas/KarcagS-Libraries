@@ -7,12 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KarcagS.API.Repository;
 
-public class Persistence<TUserKey> : IPersistence
+public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDatabaseContext : DbContext
 {
-    private readonly DbContext context;
+    private readonly TDatabaseContext context;
     private readonly IUserProvider<TUserKey> userProvider;
 
-    public Persistence(DbContext context, IUserProvider<TUserKey> userProvider)
+    public EFPersistence(TDatabaseContext context, IUserProvider<TUserKey> userProvider)
     {
         this.context = context;
         this.userProvider = userProvider;
@@ -25,7 +25,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="T">Type of entity</typeparam>
     /// <param name="id">Identity id of entity</param>
     /// <returns>Entity with the given key</returns>
-    public T Get<TKey, T>(TKey id) where T : Entity<TKey> => ObjectHelper.OrElseThrow(context.Set<T>().Find(id), () => new ArgumentException($"Element not found with id: {id}"));
+    public Task<T> GetAsync<TKey, T>(TKey id) where T : Entity<TKey> => Task.FromResult(ObjectHelper.OrElseThrow(context.Set<T>().Find(id), () => new ArgumentException($"Element not found with id: {id}")));
 
     /// <summary>
     /// Get entity as optional value
@@ -34,7 +34,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="T">Type of entity</typeparam>
     /// <param name="id">Identity id of entity</param>
     /// <returns>Entity with the given key or default</returns>
-    public T? GetOptional<TKey, T>(TKey id) where T : Entity<TKey> => context.Set<T>().Find(id);
+    public Task<T?> GetOptionalAsync<TKey, T>(TKey id) where T : Entity<TKey> => Task.FromResult(context.Set<T>().Find(id));
 
     /// <summary>
     /// Get all entity
@@ -42,7 +42,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="TKey">Type of key</typeparam>
     /// <typeparam name="T">Type of entity</typeparam>
     /// <returns>All existing entity</returns>
-    public IEnumerable<T> GetAll<TKey, T>() where T : Entity<TKey> => context.Set<T>().ToList();
+    public Task<IEnumerable<T>> GetAllAsync<TKey, T>() where T : Entity<TKey> => Task.FromResult(context.Set<T>().ToList().AsEnumerable());
 
     /// <summary>
     /// Get list of entities.
@@ -53,7 +53,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <param name="count">Max result count.</param>
     /// <param name="skip">Skipped element number.</param>
     /// <returns>Filtered list of entities with max count and first skip.</returns>
-    public IEnumerable<T> GetList<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : Entity<TKey> => GetListAsQuery<TKey, T>(predicate, count, skip).ToList();
+    public async Task<IEnumerable<T>> GetListAsync<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : Entity<TKey> => (await GetListAsQueryAsync<TKey, T>(predicate, count, skip)).ToList();
 
     /// <summary>
     /// Get ordered list
@@ -63,7 +63,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <param name="orderBy">Ordering by</param>
     /// <param name="direction">Order direction</param>
     /// <returns>Ordered all list</returns>
-    public IEnumerable<T> GetAllAsOrdered<TKey, T>(string orderBy, string direction) where T : Entity<TKey> => GetOrderedListByQuery<TKey, T>(GetAllAsQuery<TKey, T>(), orderBy, direction);
+    public async Task<IEnumerable<T>> GetAllAsOrderedAsync<TKey, T>(string orderBy, string direction) where T : Entity<TKey> => await GetOrderedListByQueryAsync<TKey, T>(await GetAllAsQueryAsync<TKey, T>(), orderBy, direction);
 
     /// <summary>
     /// Get ordered list
@@ -76,16 +76,16 @@ public class Persistence<TUserKey> : IPersistence
     /// <param name="count">Max result count.</param>
     /// <param name="skip">Skipped element number.</param>
     /// <returns>Ordered list</returns>
-    public IEnumerable<T> GetOrderedList<TKey, T>(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) where T : Entity<TKey> =>
-        GetOrderedListByQuery<TKey, T>(GetListAsQuery<TKey, T>(predicate, count, skip), orderBy, direction);
+    public async Task<IEnumerable<T>> GetOrderedListAsync<TKey, T>(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) where T : Entity<TKey> =>
+        await GetOrderedListByQueryAsync<TKey, T>(await GetListAsQueryAsync<TKey, T>(predicate, count, skip), orderBy, direction);
 
-    public IEnumerable<T> GetOrderedListByQuery<TKey, T>(IQueryable<T> queryable, string orderBy, string direction) where T : Entity<TKey>
+    public Task<IEnumerable<T>> GetOrderedListByQueryAsync<TKey, T>(IQueryable<T> queryable, string orderBy, string direction) where T : Entity<TKey>
     {
         ExceptionHelper.Throw(string.IsNullOrEmpty(orderBy), () => new ArgumentException("Order by value is empty or null"));
 
         if (direction != "asc" && direction != "desc")
         {
-            return queryable.ToList();
+            return Task.FromResult(queryable.ToList().AsEnumerable());
         }
 
         var entityType = typeof(T);
@@ -102,7 +102,7 @@ public class Persistence<TUserKey> : IPersistence
 
         var queryExpr = Expression.Call(typeof(Queryable), direction == "asc" ? "OrderBy" : "OrderByDescending", new[] { typeof(T), lambda.ReturnType }, queryable.Expression, lambda);
 
-        return queryable.Provider.CreateQuery<T>(queryExpr).ToList();
+        return Task.FromResult(queryable.Provider.CreateQuery<T>(queryExpr).ToList().AsEnumerable());
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="TKey">Type of key</typeparam>
     /// <typeparam name="T">Type of entity</typeparam>
     /// <returns>Queryable object</returns>
-    public IQueryable<T> GetAllAsQuery<TKey, T>() where T : Entity<TKey> => context.Set<T>().AsQueryable();
+    public Task<IQueryable<T>> GetAllAsQueryAsync<TKey, T>() where T : Entity<TKey> => Task.FromResult(context.Set<T>().AsQueryable());
 
     /// <summary>
     /// Get list of entities as query
@@ -122,10 +122,10 @@ public class Persistence<TUserKey> : IPersistence
     /// <param name="count">Max result count.</param>
     /// <param name="skip">Skipped element number.</param>
     /// <returns>Queryable object</returns>
-    public IQueryable<T> GetListAsQuery<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : Entity<TKey>
+    public async Task<IQueryable<T>> GetListAsQueryAsync<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : Entity<TKey>
     {
         // Get
-        var query = GetAllAsQuery<TKey, T>().Where(predicate);
+        var query = (await GetAllAsQueryAsync<TKey, T>()).Where(predicate);
 
         // Skip
         if (skip is not null)
@@ -148,7 +148,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="TKey">Type of key</typeparam>
     /// <typeparam name="T">Type of entity</typeparam>
     /// <returns>Count of entries</returns>
-    public int Count<TKey, T>() where T : Entity<TKey> => context.Set<T>().Count();
+    public Task<int> CountAsync<TKey, T>() where T : Entity<TKey> => Task.FromResult(context.Set<T>().Count());
 
     /// <summary>
     /// Get count of entries
@@ -157,7 +157,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="T">Type of entity</typeparam>
     /// <param name="predicate">Filter predicate.</param>
     /// <returns>Count of entries</returns>
-    public int Count<TKey, T>(Expression<Func<T, bool>> predicate) where T : Entity<TKey> => context.Set<T>().Count(predicate);
+    public Task<int> CountAsync<TKey, T>(Expression<Func<T, bool>> predicate) where T : Entity<TKey> => Task.FromResult(context.Set<T>().Count(predicate));
 
     /// <summary>
     /// Add entity
@@ -167,7 +167,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <param name="entity">Entity object</param>
     /// <param name="doPersist">Do object persist</param>
     /// <returns>Newly created key</returns>
-    public TKey Create<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey>
+    public async Task<TKey> CreateAsync<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey>
     {
         ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, "Entity cannot be null");
 
@@ -177,21 +177,11 @@ public class Persistence<TUserKey> : IPersistence
 
         if (doPersist)
         {
-            Persist();
+            await PersistAsync();
         }
 
         return entity.Id;
     }
-
-    /// <summary>
-    /// Add entity Async
-    /// </summary>
-    /// <typeparam name="TKey">Type of key</typeparam>
-    /// <typeparam name="T">Type of entity</typeparam>
-    /// <param name="entity">Entity object</param>
-    /// <param name="doPersist">Do object persist</param>
-    /// <returns>Newly created key</returns>
-    public Task<TKey> CreateAsync<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey> => Task.FromResult(Create<TKey, T>(entity, doPersist));
 
     /// <summary>
     /// Add multiple entity.
@@ -200,7 +190,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="T">Type of entity</typeparam>
     /// <param name="entities">Entity objects</param>
     /// <param name="doPersist">Do object persist</param>
-    public void CreateRange<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey>
+    public async Task CreateRangeAsync<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey>
     {
         var list = entities.Where(ObjectHelper.IsNotNull).ToList();
 
@@ -212,22 +202,8 @@ public class Persistence<TUserKey> : IPersistence
         if (doPersist)
         {
             // Save
-            Persist();
+            await PersistAsync();
         }
-    }
-
-    /// <summary>
-    /// Add multiple entity Async
-    /// </summary>
-    /// <typeparam name="TKey">Type of key</typeparam>
-    /// <typeparam name="T">Type of entity</typeparam>
-    /// <param name="entities">Entity objects</param>
-    /// <param name="doPersist">Do object persist</param>
-    public Task CreateRangeAsync<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey>
-    {
-        CreateRange<TKey, T>(entities, doPersist);
-
-        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -237,7 +213,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="T">Type of entity</typeparam>
     /// <param name="entity">Entity object</param>
     /// <param name="doPersist">Do object persist</param>
-    public void Update<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey>
+    public async Task UpdateAsync<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey>
     {
         ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, "Entity cannot be null");
 
@@ -248,22 +224,8 @@ public class Persistence<TUserKey> : IPersistence
         if (doPersist)
         {
             // Save
-            Persist();
+            await PersistAsync();
         }
-    }
-
-    /// <summary>
-    /// Update entity Async
-    /// </summary>
-    /// <typeparam name="TKey">Type of key</typeparam>
-    /// <typeparam name="T">Type of entity</typeparam>
-    /// <param name="entity">Entity object</param>
-    /// <param name="doPersist">Do object persist</param>
-    public Task UpdateAsync<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey>
-    {
-        Update<TKey, T>(entity, doPersist);
-
-        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -273,7 +235,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="T">Type of entity</typeparam>
     /// <param name="entities">Entity objects</param>
     /// <param name="doPersist">Do object persist</param>
-    public void UpdateRange<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey>
+    public async Task UpdateRangeAsync<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey>
     {
         var list = entities.Where(ObjectHelper.IsNotNull).ToList();
 
@@ -285,22 +247,8 @@ public class Persistence<TUserKey> : IPersistence
         if (doPersist)
         {
             // Save
-            Persist();
+            await PersistAsync();
         }
-    }
-
-    /// <summary>
-    /// Update multiple entity Async
-    /// </summary>
-    /// <typeparam name="TKey">Type of key</typeparam>
-    /// <typeparam name="T">Type of entity</typeparam>
-    /// <param name="entities">Entity objects</param>
-    /// <param name="doPersist">Do object persist</param>
-    public Task UpdateRangeAsync<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey>
-    {
-        UpdateRange<TKey, T>(entities, doPersist);
-
-        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -310,7 +258,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="T">Type of entity</typeparam>
     /// <param name="entity">Entity object</param>
     /// <param name="doPersist">Do object persist</param>
-    public void Delete<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey>
+    public async Task DeleteAsync<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey>
     {
         ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, "Entity cannot be null");
 
@@ -318,22 +266,8 @@ public class Persistence<TUserKey> : IPersistence
 
         if (doPersist)
         {
-            Persist();
+            await PersistAsync();
         }
-    }
-
-    /// <summary>
-    /// Remove entity Async
-    /// </summary>
-    /// <typeparam name="TKey">Type of key</typeparam>
-    /// <typeparam name="T">Type of entity</typeparam>
-    /// <param name="entity">Entity object</param>
-    /// <param name="doPersist">Do object persist</param>
-    public Task DeleteAsync<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey>
-    {
-        Delete<TKey, T>(entity, doPersist);
-
-        return Task.CompletedTask;
     }
 
     /// <summary>
@@ -343,29 +277,15 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="T">Type of entity</typeparam>
     /// <param name="id">Id of entity</param>
     /// <param name="doPersist">Do object persist</param>
-    public void DeleteById<TKey, T>(TKey id, bool doPersist = true) where T : Entity<TKey>
+    public async Task DeleteByIdAsync<TKey, T>(TKey id, bool doPersist = true) where T : Entity<TKey>
     {
         // Get entity
-        var entity = Get<TKey, T>(id);
+        var entity = await GetAsync<TKey, T>(id);
 
         ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, $"Element not found with id: {id}");
 
         // Remove
-        Delete<TKey, T>(entity, doPersist);
-    }
-
-    /// <summary>
-    /// Remove by Id Async
-    /// </summary>
-    /// <typeparam name="TKey">Type of key</typeparam>
-    /// <typeparam name="T">Type of entity</typeparam>
-    /// <param name="id">Id of entity</param>
-    /// <param name="doPersist">Do object persist</param>
-    public Task DeleteByIdAsync<TKey, T>(TKey id, bool doPersist = true) where T : Entity<TKey>
-    {
-        DeleteById<TKey, T>(id, doPersist);
-
-        return Task.CompletedTask;
+        await DeleteAsync<TKey, T>(entity, doPersist);
     }
 
     /// <summary>
@@ -375,7 +295,7 @@ public class Persistence<TUserKey> : IPersistence
     /// <typeparam name="T">Type of entity</typeparam>
     /// <param name="entities">Entity objects</param>
     /// <param name="doPersist">Do object persist</param>
-    public void DeleteRange<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey>
+    public async Task DeleteRangeAsync<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey>
     {
         // Remove range
         context.Set<T>().RemoveRange(entities.Where(ObjectHelper.IsNotNull).ToList());
@@ -383,38 +303,14 @@ public class Persistence<TUserKey> : IPersistence
         if (doPersist)
         {
             // Save
-            Persist();
+            await PersistAsync();
         }
-    }
-
-    /// <summary>
-    /// Remove range Async
-    /// </summary>
-    /// <typeparam name="TKey">Type of key</typeparam>
-    /// <typeparam name="T">Type of entity</typeparam>
-    /// <param name="entities">Entity objects</param>
-    /// <param name="doPersist">Do object persist</param>
-    public Task DeleteRangeAsync<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey>
-    {
-        DeleteRange<TKey, T>(entities, doPersist);
-
-        return Task.CompletedTask;
     }
 
     /// <summary>
     /// Save changes
     /// </summary>
-    public void Persist() => context.SaveChanges();
-
-    /// <summary>
-    /// Save changes Async
-    /// </summary>
-    public Task PersistAsync()
-    {
-        Persist();
-
-        return Task.CompletedTask;
-    }
+    public async Task PersistAsync() => await context.SaveChangesAsync();
 
     private void ApplyCreateModification<TKey, T>(T entity) where T : Entity<TKey>
     {

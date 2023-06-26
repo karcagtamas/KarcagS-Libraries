@@ -1,9 +1,7 @@
 ﻿using System.Globalization;
 using System.Linq.Expressions;
 using KarcagS.API.Data.Entities;
-using KarcagS.API.Shared.Helpers;
 using KarcagS.API.Shared.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace KarcagS.API.Repository;
 
@@ -12,30 +10,17 @@ namespace KarcagS.API.Repository;
 /// </summary>
 /// <typeparam name="T">Type of Entity</typeparam>
 /// <typeparam name="TKey">Type of key</typeparam>
-/// <typeparam name="TUserKey">Type of user entity key</typeparam>
-public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where T : Entity<TKey>
+public abstract class Repository<T, TKey> : IRepository<T, TKey> where T : Entity<TKey>
 {
-    protected readonly DbContext Context;
     protected readonly ILoggerService Logger;
-    protected readonly IUserProvider<TUserKey> UserProvider;
     protected readonly string Entity;
     protected readonly IPersistence Persistence;
 
-    /// <summary>
-    /// Init
-    /// </summary>
-    /// <param name="context">Database Context</param>
-    /// <param name="logger">Logger Service</param>
-    /// <param name="userProvider">Utils Service</param>
-    /// <param name="mapper">Mapper</param>
-    /// <param name="entity">Entity name</param>
-    protected Repository(DbContext context, ILoggerService logger, IUserProvider<TUserKey> userProvider, string entity)
+    protected Repository(ILoggerService logger, IPersistence persistence, string entity)
     {
-        Context = context;
         Logger = logger;
-        UserProvider = userProvider;
         Entity = entity;
-        Persistence = new Persistence<TUserKey>(context, userProvider);
+        Persistence = persistence;
     }
 
     /// <summary>
@@ -43,20 +28,20 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     /// </summary>
     /// <param name="id">Identity id of entity</param>
     /// <returns>Entity with the given key</returns>
-    public virtual T Get(TKey id) => Persistence.Get<TKey, T>(id);
+    public virtual Task<T> GetAsync(TKey id) => Persistence.GetAsync<TKey, T>(id);
 
     /// <summary>
     /// Get entity as optional value
     /// </summary>
     /// <param name="id">Identity id of entity</param>
     /// <returns>Entity with the given key or default</returns>
-    public virtual T? GetOptional(TKey id) => Persistence.GetOptional<TKey, T>(id);
+    public virtual Task<T?> GetOptionalAsync(TKey id) => Persistence.GetOptionalAsync<TKey, T>(id);
 
     /// <summary>
     /// Get all entity
     /// </summary>
     /// <returns>All existing entity</returns>
-    public virtual IEnumerable<T> GetAll() => Persistence.GetAll<TKey, T>();
+    public virtual Task<IEnumerable<T>> GetAllAsync() => Persistence.GetAllAsync<TKey, T>();
 
     /// <summary>
     /// Get list of entities.
@@ -65,7 +50,7 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     /// <param name="count">Max result count.</param>
     /// <param name="skip">Skipped element number.</param>
     /// <returns>Filtered list of entities with max count and first skip.</returns>
-    public virtual IEnumerable<T> GetList(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) => Persistence.GetList<TKey, T>(predicate, count, skip);
+    public virtual Task<IEnumerable<T>> GetListAsync(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) => Persistence.GetListAsync<TKey, T>(predicate, count, skip);
 
     /// <summary>
     /// Get ordered list
@@ -73,7 +58,7 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     /// <param name="orderBy">Ordering by</param>
     /// <param name="direction">Order direction</param>
     /// <returns>Ordered all list</returns>
-    public virtual IEnumerable<T> GetAllAsOrdered(string orderBy, string direction) => Persistence.GetAllAsOrdered<TKey, T>(orderBy, direction);
+    public virtual Task<IEnumerable<T>> GetAllAsOrderedAsync(string orderBy, string direction) => Persistence.GetAllAsOrderedAsync<TKey, T>(orderBy, direction);
 
     /// <summary>
     /// Get ordered list
@@ -84,14 +69,14 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     /// <param name="count">Max result count.</param>
     /// <param name="skip">Skipped element number.</param>
     /// <returns>Ordered list</returns>
-    public virtual IEnumerable<T> GetOrderedList(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) =>
-        Persistence.GetOrderedList<TKey, T>(predicate, orderBy, direction);
+    public virtual Task<IEnumerable<T>> GetOrderedListAsync(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) =>
+        Persistence.GetOrderedListAsync<TKey, T>(predicate, orderBy, direction);
 
     /// <summary>
     /// Get all entities as query
     /// </summary>
     /// <returns>Queryable object</returns>
-    public virtual IQueryable<T> GetAllAsQuery() => Persistence.GetAllAsQuery<TKey, T>();
+    public virtual Task<IQueryable<T>> GetAllAsQueryAsync() => Persistence.GetAllAsQueryAsync<TKey, T>();
 
     /// <summary>
     /// Get list of entities as query
@@ -100,28 +85,20 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     /// <param name="count">Max result count.</param>
     /// <param name="skip">Skipped element number.</param>
     /// <returns>Queryable object</returns>
-    public virtual IQueryable<T> GetListAsQuery(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) => Persistence.GetListAsQuery<TKey, T>(predicate, count, skip);
+    public virtual Task<IQueryable<T>> GetListAsQueryAsync(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) => Persistence.GetListAsQueryAsync<TKey, T>(predicate, count, skip);
 
     /// <summary>
     /// Get count of entries
     /// </summary>
     /// <returns>Count of entries</returns>
-    public virtual int Count() => Persistence.Count<TKey, T>();
+    public virtual Task<int> CountAsync() => Persistence.CountAsync<TKey, T>();
 
     /// <summary>
     /// Get count of entries
     /// </summary>
     /// <param name="predicate">Filter predicated</param>
     /// <returns>Count of entries</returns>
-    public virtual int Count(Expression<Func<T, bool>> predicate) => Persistence.Count<TKey, T>(predicate);
-
-    /// <summary>
-    /// Add entity
-    /// </summary>
-    /// <param name="entity">Entity object</param>
-    /// <param name="doPersist">Do object persist</param>
-    /// <returns>Newly created key</returns>
-    public virtual TKey Create(T entity, bool doPersist = true) => Persistence.Create<TKey, T>(entity, doPersist);
+    public virtual Task<int> CountAsync(Expression<Func<T, bool>> predicate) => Persistence.CountAsync<TKey, T>(predicate);
 
     /// <summary>
     /// Add entity Async
@@ -136,7 +113,7 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     /// </summary>
     /// <param name="entities">Entity objects</param>
     /// <param name="doPersist">Do object persist</param>
-    public virtual void CreateRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.CreateRange<TKey, T>(entities, doPersist);
+    public virtual void CreateRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.CreateRangeAsync<TKey, T>(entities, doPersist);
 
     /// <summary>
     /// Add multiple entity Async
@@ -144,13 +121,6 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     /// <param name="entities">Entity objects</param>
     /// <param name="doPersist">Do object persist</param>
     public virtual Task CreateRangeAsync(IEnumerable<T> entities, bool doPersist = true) => Persistence.CreateRangeAsync<TKey, T>(entities, doPersist);
-
-    /// <summary>
-    /// Update entity
-    /// </summary>
-    /// <param name="entity">Entity</param>
-    /// <param name="doPersist">Do Persist</param>
-    public virtual void Update(T entity, bool doPersist = true) => Persistence.Update<TKey, T>(entity, doPersist);
 
     /// <summary>
     /// Update entity Async
@@ -164,7 +134,7 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     /// </summary>
     /// <param name="entities">Entities</param>
     /// <param name="doPersist">Do Persist</param>
-    public virtual void UpdateRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.UpdateRange<TKey, T>(entities, doPersist);
+    public virtual void UpdateRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.UpdateRangeAsync<TKey, T>(entities, doPersist);
 
     /// <summary>
     /// Update multiple entity Async
@@ -174,13 +144,6 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     public virtual Task UpdateRangeAsync(IEnumerable<T> entities, bool doPersist = true) => Persistence.UpdateRangeAsync<TKey, T>(entities, doPersist);
 
     /// <summary>
-    /// Remove entity.
-    /// </summary>
-    /// <param name="entity">Entity</param>
-    /// <param name="doPersist">Do Persist</param>
-    public virtual void Delete(T entity, bool doPersist = true) => Persistence.Delete<TKey, T>(entity, doPersist);
-
-    /// <summary>
     /// Remove entity Async
     /// </summary>
     /// <param name="entity">Entity</param>
@@ -188,43 +151,11 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     public virtual Task DeleteAsync(T entity, bool doPersist = true) => Persistence.DeleteAsync<TKey, T>(entity, doPersist);
 
     /// <summary>
-    /// Remove by Id
-    /// </summary>
-    /// <param name="id">Id of entity</param>
-    /// <param name="doPersist">Do Persist</param>
-    public virtual void DeleteById(TKey id, bool doPersist = true)
-    {
-        // Get entity
-        var entity = Get(id);
-
-        ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, $"Element not found with id: {id}");
-
-        // Remove
-        Delete(entity, doPersist);
-    }
-
-    /// <summary>
     /// Remove by Id Async
     /// </summary>
     /// <param name="id">Id of entity</param>
     /// <param name="doPersist">Do Persist</param>
-    public virtual Task DeleteByIdAsync(TKey id, bool doPersist = true)
-    {
-        // Get entity
-        var entity = Get(id);
-
-        ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, $"Element not found with id: {id}");
-
-        // Remove
-        return DeleteAsync(entity, doPersist);
-    }
-
-    /// <summary>
-    /// Remove range
-    /// </summary>
-    /// <param name="entities">Entities</param>
-    /// <param name="doPersist">Do Persist</param>
-    public virtual void DeleteRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.DeleteRange<TKey, T>(entities, doPersist);
+    public virtual Task DeleteByIdAsync(TKey id, bool doPersist = true) => Persistence.DeleteByIdAsync<TKey, T>(id, doPersist);
 
     /// <summary>
     /// Remove range Async
@@ -232,11 +163,6 @@ public abstract class Repository<T, TKey, TUserKey> : IRepository<T, TKey> where
     /// <param name="entities">Entities</param>
     /// <param name="doPersist">Do Persist</param>
     public virtual Task DeleteRangeAsync(IEnumerable<T> entities, bool doPersist = true) => Persistence.DeleteRangeAsync<TKey, T>(entities, doPersist);
-
-    /// <summary>
-    /// Save changes
-    /// </summary>
-    public virtual void Persist() => Persistence.Persist();
 
     /// <summary>
     /// Save changes Async

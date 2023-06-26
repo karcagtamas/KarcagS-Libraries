@@ -16,14 +16,14 @@ namespace KarcagS.Common.Demo.Controllers
         }
 
         [HttpGet]
-        public List<GenderDTO> GetAll([FromQuery] string? orderBy, [FromQuery] string? orderDirection)
+        public async Task<List<GenderDTO>> GetAll([FromQuery] string? orderBy, [FromQuery] string? orderDirection)
         {
             if (ObjectHelper.IsNotNull(orderBy) && ObjectHelper.IsNotNull(orderDirection))
             {
-                return genderService.GetMappedOrderedList<GenderDTO>((x) => x.Id > 1, orderBy, orderDirection).ToList();
+                return (await genderService.GetMappedOrderedListAsync<GenderDTO>((x) => x.Id > 1, orderBy, orderDirection)).ToList();
             }
 
-            return genderService.GetAllMapped<GenderDTO>().ToList();
+            return (await genderService.GetAllMappedAsync<GenderDTO>()).ToList();
         }
     }
 }

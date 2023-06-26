@@ -1,44 +1,42 @@
 using System.Linq.Expressions;
 using AutoMapper;
-using KarcagS.API.Data;
 using KarcagS.API.Data.Entities;
 using KarcagS.API.Shared.Helpers;
 using KarcagS.API.Shared.Services;
 using KarcagS.Shared.Helpers;
-using Microsoft.EntityFrameworkCore;
 
 namespace KarcagS.API.Repository;
 
-public abstract class MapperRepository<TEntity, TKey, TUserKey> : Repository<TEntity, TKey, TUserKey>, IMapperRepository<TEntity, TKey> where TEntity : Entity<TKey>
+public abstract class MapperRepository<TEntity, TKey> : Repository<TEntity, TKey>, IMapperRepository<TEntity, TKey> where TEntity : Entity<TKey>
 {
     protected readonly IMapper Mapper;
 
-    public MapperRepository(DbContext context, ILoggerService loggerService, IUserProvider<TUserKey> userProvider, IMapper mapper, string entity) : base(context, loggerService, userProvider, entity)
+    public MapperRepository(ILoggerService loggerService, IMapper mapper, IPersistence persistence, string entity) : base(loggerService, persistence, entity)
     {
         Mapper = mapper;
     }
 
-    public virtual TKey CreateFromModel<TModel>(TModel model, bool doPersist = true) => Create(Mapper.Map<TEntity>(model), doPersist);
+    public virtual Task<TKey> CreateFromModelAsync<TModel>(TModel model, bool doPersist = true) => CreateAsync(Mapper.Map<TEntity>(model), doPersist);
 
-    public virtual IEnumerable<T> GetAllMapped<T>() => Mapper.Map<List<T>>(GetAll());
+    public virtual async Task<IEnumerable<T>> GetAllMappedAsync<T>() => Mapper.Map<List<T>>(await GetAllAsync());
 
-    public virtual T GetMapped<T>(TKey id) => Mapper.Map<T>(Get(id));
+    public virtual async Task<T> GetMappedAsync<T>(TKey id) => Mapper.Map<T>(await GetAsync(id));
 
-    public virtual T? GetOptionalMapped<T>(TKey id) => ObjectHelper.MapOrDefault(GetOptional(id), (obj) => Mapper.Map<T>(obj));
+    public virtual async Task<T?> GetOptionalMappedAsync<T>(TKey id) => ObjectHelper.MapOrDefault(await GetOptionalAsync(id), (obj) => Mapper.Map<T>(obj));
 
-    public virtual IEnumerable<T> GetMappedList<T>(Expression<Func<TEntity, bool>> expression, int? count = null, int? skip = null) => Mapper.Map<List<T>>(GetList(expression, count, skip));
+    public virtual async Task<IEnumerable<T>> GetMappedListAsync<T>(Expression<Func<TEntity, bool>> expression, int? count = null, int? skip = null) => Mapper.Map<List<T>>(await GetListAsync(expression, count, skip));
 
-    public virtual IEnumerable<T> GetAllMappedAsOrdered<T>(string orderBy, string direction) => Mapper.Map<List<T>>(GetAllAsOrdered(orderBy, direction));
+    public virtual async Task<IEnumerable<T>> GetAllMappedAsOrderedAsync<T>(string orderBy, string direction) => Mapper.Map<List<T>>(await GetAllAsOrderedAsync(orderBy, direction));
 
-    public virtual void UpdateByModel<TModel>(TKey id, TModel model, bool doPersist = true)
+    public virtual async Task UpdateByModelAsync<TModel>(TKey id, TModel model, bool doPersist = true)
     {
         ExceptionHelper.ThrowIfIsNull<TModel, ArgumentException>(model, "Model cannot be null");
 
-        Update(Mapper.Map(model, Get(id)), doPersist);
+        await UpdateAsync(await Mapper.Map(model, GetAsync(id)), doPersist);
     }
 
-    public virtual IEnumerable<T> GetMappedOrderedList<T>(Expression<Func<TEntity, bool>> expression, string orderBy, string direction, int? count = null, int? skip = null) =>
-        Mapper.Map<List<T>>(GetOrderedList(expression, orderBy, direction, count, skip));
+    public virtual async Task<IEnumerable<T>> GetMappedOrderedListAsync<T>(Expression<Func<TEntity, bool>> expression, string orderBy, string direction, int? count = null, int? skip = null) =>
+        Mapper.Map<List<T>>(await GetOrderedListAsync(expression, orderBy, direction, count, skip));
 
-    public IEnumerable<T> MapFromQuery<T>(IQueryable<TEntity> queryable) => Mapper.Map<List<T>>(queryable.ToList());
+    public virtual Task<IEnumerable<T>> MapFromQueryAsync<T>(IQueryable<TEntity> queryable) => Task.FromResult(Mapper.Map<List<T>>(queryable.ToList()).AsEnumerable());
 }
