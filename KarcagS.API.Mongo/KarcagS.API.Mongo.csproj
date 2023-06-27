@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\KarcagS.API.Data\KarcagS.API.Data.csproj" />
+      <ProjectReference Include="..\KarcagS.API.Repository\KarcagS.API.Repository.csproj" />
     </ItemGroup>
 
     <ItemGroup>

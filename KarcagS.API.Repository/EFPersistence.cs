@@ -148,7 +148,7 @@ public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDat
     /// <typeparam name="TKey">Type of key</typeparam>
     /// <typeparam name="T">Type of entity</typeparam>
     /// <returns>Count of entries</returns>
-    public Task<int> CountAsync<TKey, T>() where T : Entity<TKey> => Task.FromResult(context.Set<T>().Count());
+    public Task<long> CountAsync<TKey, T>() where T : Entity<TKey> => Task.FromResult((long)context.Set<T>().Count());
 
     /// <summary>
     /// Get count of entries
@@ -157,7 +157,7 @@ public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDat
     /// <typeparam name="T">Type of entity</typeparam>
     /// <param name="predicate">Filter predicate.</param>
     /// <returns>Count of entries</returns>
-    public Task<int> CountAsync<TKey, T>(Expression<Func<T, bool>> predicate) where T : Entity<TKey> => Task.FromResult(context.Set<T>().Count(predicate));
+    public Task<long> CountAsync<TKey, T>(Expression<Func<T, bool>> predicate) where T : Entity<TKey> => Task.FromResult((long)context.Set<T>().Count(predicate));
 
     /// <summary>
     /// Add entity

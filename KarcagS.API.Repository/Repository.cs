@@ -91,14 +91,14 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey> where T : Entit
     /// Get count of entries
     /// </summary>
     /// <returns>Count of entries</returns>
-    public virtual Task<int> CountAsync() => Persistence.CountAsync<TKey, T>();
+    public virtual Task<long> CountAsync() => Persistence.CountAsync<TKey, T>();
 
     /// <summary>
     /// Get count of entries
     /// </summary>
     /// <param name="predicate">Filter predicated</param>
     /// <returns>Count of entries</returns>
-    public virtual Task<int> CountAsync(Expression<Func<T, bool>> predicate) => Persistence.CountAsync<TKey, T>(predicate);
+    public virtual Task<long> CountAsync(Expression<Func<T, bool>> predicate) => Persistence.CountAsync<TKey, T>(predicate);
 
     /// <summary>
     /// Add entity Async

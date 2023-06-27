@@ -11,8 +11,8 @@ public interface IRepository<T, TKey> where T : Entity<TKey>
     Task<IEnumerable<T>> GetOrderedListAsync(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null);
     Task<IQueryable<T>> GetAllAsQueryAsync();
     Task<IQueryable<T>> GetListAsQueryAsync(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null);
-    Task<int> CountAsync();
-    Task<int> CountAsync(Expression<Func<T, bool>> predicate);
+    Task<long> CountAsync();
+    Task<long> CountAsync(Expression<Func<T, bool>> predicate);
     Task<T> GetAsync(TKey id);
     Task<T?> GetOptionalAsync(TKey id);
     Task UpdateAsync(T entity, bool doPersist = true);

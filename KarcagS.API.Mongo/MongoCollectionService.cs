@@ -1,14 +1,12 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
-using KarcagS.API.Data;
-using KarcagS.API.Data.Entities.Mongo;
 using KarcagS.API.Mongo.Configurations;
 using KarcagS.Shared.Helpers;
 using MongoDB.Driver;
 
 namespace KarcagS.API.Mongo;
 
-public class MongoCollectionService<T, Configuration> : IMongoCollectionService<T> where T : IMongoEntity where Configuration : MongoCollectionConfiguration
+public class MongoCollectionService<T, Configuration> : IMongoCollectionService<T> where T : MongoEntity where Configuration : MongoCollectionConfiguration
 {
     protected readonly IMongoService<Configuration> MongoService;
     protected readonly IMapper Mapper;

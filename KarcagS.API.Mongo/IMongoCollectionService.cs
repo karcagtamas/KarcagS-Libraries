@@ -1,10 +1,9 @@
 ﻿using System.Linq.Expressions;
-using KarcagS.API.Data.Entities.Mongo;
 using MongoDB.Driver;
 
 namespace KarcagS.API.Mongo;
 
-public interface IMongoCollectionService<T> where T : IMongoEntity
+public interface IMongoCollectionService<T> where T : MongoEntity
 {
     List<T> Get();
     T? Get(string id);

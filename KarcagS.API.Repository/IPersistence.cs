@@ -14,8 +14,8 @@ public interface IPersistence
     Task<IEnumerable<T>> GetOrderedListByQueryAsync<TKey, T>(IQueryable<T> queryable, string orderBy, string direction) where T : Entity<TKey>;
     Task<IQueryable<T>> GetAllAsQueryAsync<TKey, T>() where T : Entity<TKey>;
     Task<IQueryable<T>> GetListAsQueryAsync<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : Entity<TKey>;
-    Task<int> CountAsync<TKey, T>() where T : Entity<TKey>;
-    Task<int> CountAsync<TKey, T>(Expression<Func<T, bool>> predicate) where T : Entity<TKey>;
+    Task<long> CountAsync<TKey, T>() where T : Entity<TKey>;
+    Task<long> CountAsync<TKey, T>(Expression<Func<T, bool>> predicate) where T : Entity<TKey>;
     Task<TKey> CreateAsync<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey>;
     Task CreateRangeAsync<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey>;
     Task UpdateAsync<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey>;
