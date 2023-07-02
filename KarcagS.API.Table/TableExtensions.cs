@@ -2,6 +2,7 @@
 using KarcagS.API.Table.Configurations;
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Table;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace KarcagS.API.Table;
 
@@ -28,7 +29,7 @@ public static class TableExtensions
             TextFilterEnabled = configuration.TextFilterEnabled
         };
     }
-    
+
     public static OrderingData Convert(this OrderingConfiguration configuration)
     {
         return new OrderingData

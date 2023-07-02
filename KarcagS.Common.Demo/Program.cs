@@ -35,6 +35,7 @@ builder.Services.AddScoped<IUserProvider<string>, UserProvider>();
 builder.Services.AddScoped<ILoggerService, LoggerService<string>>();
 builder.Services.AddScoped<IDemoService, DemoService>();
 builder.Services.AddScoped<IGenderService, GenderService>();
+builder.Services.UseEFPersistence<DemoContext, string>();
 
 // Add AutoMapper
 var mapperConfig = new MapperConfiguration(conf => { conf.AddProfile<GenderMapper>(); });

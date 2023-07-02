@@ -12,18 +12,18 @@ namespace KarcagS.API.Table.ListTable;
 
 public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class, IIdentified<TKey>
 {
-    protected readonly Func<QueryModel, IQueryable<T>> Fetcher;
+    protected readonly Func<QueryModel, Task<IQueryable<T>>> Fetcher;
 
     protected List<string> TextFilteredColumns = new();
     protected List<string> EFTextFilteredEntries = new();
     public List<OrderingSetting<T, TKey>> DefaultOrdering = new();
 
-    private ListTableDataSource(Func<QueryModel, IQueryable<T>> fetcher)
+    private ListTableDataSource(Func<QueryModel, Task<IQueryable<T>>> fetcher)
     {
         Fetcher = fetcher;
     }
 
-    public static ListTableDataSource<T, TKey> Build(Func<QueryModel, IQueryable<T>> fetcher) => new(fetcher);
+    public static ListTableDataSource<T, TKey> Build(Func<QueryModel, Task<IQueryable<T>>> fetcher) => new(fetcher);
 
     public ListTableDataSource<T, TKey> SetTextFilteredColumns(params string[] keys)
     {
@@ -42,14 +42,14 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
     public OrderingBuilder<T, TKey> OrderBy(Expression<Func<T, object?>> expression,
         OrderDirection direction = OrderDirection.Ascend) => new(this, expression, direction);
 
-    public override int LoadAllDataCount(QueryModel query) => Fetcher(query).Count();
+    public override async Task<int> LoadAllDataCountAsync(QueryModel query) => (await Fetcher(query)).Count();
 
-    public override int LoadFilteredAllDataCount(QueryModel query, Configuration<T, TKey> configuration) =>
-        GetFilteredQuery(query, configuration, Fetcher(query)).Count();
+    public override async Task<int> LoadFilteredAllDataCountAsync(QueryModel query, Configuration<T, TKey> configuration) =>
+        GetFilteredQuery(query, configuration, await Fetcher(query)).Count();
 
-    public override IEnumerable<T> LoadData(QueryModel query, Configuration<T, TKey> configuration)
+    public override async Task<IEnumerable<T>> LoadDataAsync(QueryModel query, Configuration<T, TKey> configuration)
     {
-        var fetcherQuery = Fetcher(query);
+        var fetcherQuery = await Fetcher(query);
 
         var ordering = query.IsOrderingNeeded()
             ? ConstructOrderingSettingsFromModel(query, configuration.Columns)
@@ -87,8 +87,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
         return fetcherQuery.ToList();
     }
 
-    private static IQueryable<T> ApplyTextFilter(Column<T, TKey> column, IQueryable<T> query, string filter) =>
-        query.Where(obj => ((string)column.ValueGetter(obj)).ToLower().Contains(filter.ToLower()));
+    private static IQueryable<T> ApplyTextFilter(Column<T, TKey> column, IQueryable<T> query, string filter) => query.Where(obj => ((string?)column.ValueGetter(obj).Result ?? "").ToLower().Contains(filter.ToLower()));
 
     private static IQueryable<T> ApplyEFTextFilter(List<string> entries, IQueryable<T> query, string filter)
     {

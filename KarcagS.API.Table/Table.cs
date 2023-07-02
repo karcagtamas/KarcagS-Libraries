@@ -17,48 +17,89 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
         Configuration = configuration;
     }
 
-    public abstract IEnumerable<T> GetData(QueryModel query);
+    public abstract Task<IEnumerable<T>> GetDataAsync(QueryModel query);
 
-    public abstract int GetAllDataCount(QueryModel query);
+    public abstract Task<int> GetAllDataCountAsync(QueryModel query);
 
-    public abstract int GetAllFilteredCount(QueryModel query);
+    public abstract Task<int> GetAllFilteredCountAsync(QueryModel query);
 
     public TableMetaData GetMetaData() => Configuration.Convert();
 
-    public IEnumerable<ResultItem<TKey>> GetDisplayData(QueryModel query)
+    public async Task<IEnumerable<ResultItem<TKey>>> GetDisplayDataAsync(QueryModel query) => await UnwrapItems(await GetDataAsync(query));
+
+    public async Task<TableResult<TKey>> ConstructResultAsync(QueryModel query)
     {
-        return GetData(query)
-            .Select(x =>
-            {
-                var item = new ResultItem<TKey>
-                {
-                    ItemKey = x.Id
-                };
+        var result = new TableResult<TKey>
+        {
+            Items = (await GetDisplayDataAsync(query)).ToList()
+        };
 
-                var dict = new Dictionary<string, ItemValue>();
+        if (query.IsPaginationNeeded())
+        {
+            result.AllItemCount = await GetAllDataCountAsync(query);
+        }
 
-                Configuration.Columns.ForEach(col =>
-                {
-                    dict.Add(col.Key, new ItemValue
-                    {
-                        Value = GetFormattedValue(col, x), 
-                        Tags = Configuration.TagProviders.Select(provider => provider(x, col)).Where(tag => !string.IsNullOrEmpty(tag)).ToList(),
-                        ActionDisabled = Configuration.IsActionsDisabled(x, col)
-                    });
-                });
+        if (query.IsTextFilterNeeded())
+        {
+            result.FilteredAllItemCount = await GetAllFilteredCountAsync(query);
+        }
 
-                item.Values = dict;
-
-                item.ClickDisabled = Configuration.ClickDisableOn(x);
-
-                return item;
-            })
-            .AsEnumerable();
+        return result;
     }
 
-    private string GetFormattedValue(Column<T, TKey> column, T obj)
+    protected async Task<List<string>> UnwrapTags(T item, Column<T, TKey> column)
     {
-        var value = column.ValueGetter(obj);
+        var list = new List<string>();
+
+        foreach (var provider in Configuration.TagProviders)
+        {
+            var tag = await provider(item, column);
+
+            if (!string.IsNullOrEmpty(tag))
+            {
+                list.Add(tag);
+            }
+        }
+
+        return list;
+    }
+
+    protected async Task<IEnumerable<ResultItem<TKey>>> UnwrapItems(IEnumerable<T> items)
+    {
+        var list = new List<ResultItem<TKey>>();
+
+        foreach (var i in items)
+        {
+            var item = new ResultItem<TKey>
+            {
+                ItemKey = i.Id
+            };
+
+            var dict = new Dictionary<string, ItemValue>();
+
+            Configuration.Columns.ForEach(async col =>
+            {
+                dict.Add(col.Key, new ItemValue
+                {
+                    Value = await GetFormattedValue(col, i),
+                    Tags = await UnwrapTags(i, col),
+                    ActionDisabled = await Configuration.IsActionsDisabled(i, col)
+                });
+            });
+
+            item.Values = dict;
+
+            item.ClickDisabled = await Configuration.ClickDisableOn(i);
+
+            list.Add(item);
+        }
+
+        return list;
+    }
+
+    private static async Task<string> GetFormattedValue(Column<T, TKey> column, T obj)
+    {
+        var value = await column.ValueGetter(obj);
 
         if (column.Formatter == ColumnFormatter.Text)
         {
@@ -106,25 +147,5 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
         }
 
         return value?.ToString() ?? "";
-    }
-
-    public TableResult<TKey> ConstructResult(QueryModel query)
-    {
-        var result = new TableResult<TKey>
-        {
-            Items = GetDisplayData(query).ToList()
-        };
-
-        if (query.IsPaginationNeeded())
-        {
-            result.AllItemCount = GetAllDataCount(query);
-        }
-
-        if (query.IsTextFilterNeeded())
-        {
-            result.FilteredAllItemCount = GetAllFilteredCount(query);
-        }
-
-        return result;
     }
 }

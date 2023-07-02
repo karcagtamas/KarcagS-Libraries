@@ -10,7 +10,7 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
     public string Title { get; set; } = string.Empty;
     public string? ResourceKey { get; set; }
     public Alignment Alignment { get; set; } = Alignment.Left;
-    public Func<T, object> ValueGetter { get; set; } = _ => default!;
+    public Func<T, Task<object?>> ValueGetter { get; set; } = _ => Task.FromResult(default(object?));
     public ColumnFormatter Formatter { get; set; } = ColumnFormatter.Text;
     public string[] FormatterArgs { get; set; } = Array.Empty<string>();
     public int? Width { get; set; }
@@ -40,12 +40,14 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
         return this;
     }
 
-    public Column<T, TKey> AddValueGetter(Func<T, object> getter)
+    public Column<T, TKey> AddValueGetter(Func<T, Task<object?>> getter)
     {
         ValueGetter = getter;
 
         return this;
     }
+
+    public Column<T, TKey> AddValueGetter(Func<T, object?> getter) => AddValueGetter((obj) => Task.FromResult(getter(obj)));
 
     public Column<T, TKey> SetFormatter(ColumnFormatter value, params string[] args)
     {

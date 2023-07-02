@@ -5,8 +5,9 @@ namespace KarcagS.API.Table;
 
 public interface ITableService<T, TKey> where T : class, IIdentified<TKey>
 {
-    abstract Table<T, TKey> BuildTable();
-    Task<TableResult<TKey>> GetData(QueryModel query);
-    TableMetaData GetTableMetaData();
-    Task<bool> Authorize(QueryModel query);
+    Task InitializeAsync();
+    abstract Task<Table<T, TKey>> BuildTableAsync();
+    Task<TableResult<TKey>> GetDataAsync(QueryModel query);
+    Task<TableMetaData> GetTableMetaDataAsync();
+    Task<bool> AuthorizeAsync(QueryModel query);
 }

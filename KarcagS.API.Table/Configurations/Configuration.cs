@@ -15,9 +15,9 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
     public OrderingConfiguration Ordering { get; set; } = OrderingConfiguration.Build();
     public PaginationConfiguration Pagination { get; set; } = PaginationConfiguration.Build();
 
-    public Func<T, bool> ClickDisableOn { get; set; } = _ => false;
-    public Func<T, Column<T, TKey>, bool> IsActionsDisabled = (_, _) => false;
-    public List<Func<T, Column<T, TKey>, string>> TagProviders { get; set; } = new();
+    public Func<T, Task<bool>> ClickDisableOn { get; set; } = _ => Task.FromResult(false);
+    public Func<T, Column<T, TKey>, Task<bool>> IsActionsDisabled = (_, _) => Task.FromResult(false);
+    public List<Func<T, Column<T, TKey>, Task<string>>> TagProviders { get; set; } = new();
 
     private Configuration()
     {
@@ -72,24 +72,30 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
         return this;
     }
 
-    public Configuration<T, TKey> DisableClickOn(Func<T, bool> func)
+    public Configuration<T, TKey> DisableClickOn(Func<T, Task<bool>> func)
     {
         ClickDisableOn = func;
 
         return this;
     }
 
-    public Configuration<T, TKey> ActionsDisabledOn(Func<T, Column<T, TKey>, bool> func)
+    public Configuration<T, TKey> DisableClickOn(Func<T, bool> func) => DisableClickOn(obj => Task.FromResult(func(obj)));
+
+    public Configuration<T, TKey> ActionsDisabledOn(Func<T, Column<T, TKey>, Task<bool>> func)
     {
         IsActionsDisabled = func;
 
         return this;
     }
 
-    public Configuration<T, TKey> AddTagProvider(Func<T, Column<T, TKey>, string> func)
+    public Configuration<T, TKey> ActionsDisabledOn(Func<T, Column<T, TKey>, bool> func) => ActionsDisabledOn((obj, col) => Task.FromResult(func(obj, col)));
+
+    public Configuration<T, TKey> AddTagProvider(Func<T, Column<T, TKey>, Task<string>> func)
     {
         TagProviders.Add(func);
 
         return this;
     }
+
+    public Configuration<T, TKey> AddTagProvider(Func<T, Column<T, TKey>, string> func) => AddTagProvider((obj, col) => Task.FromResult(func(obj, col)));
 }

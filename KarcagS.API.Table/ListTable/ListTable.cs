@@ -10,15 +10,15 @@ public class ListTable<T, TKey> : Table<T, TKey> where T : class, IIdentified<TK
     {
     }
 
-    public override int GetAllDataCount(QueryModel query) => DataSource.LoadAllDataCount(query);
+    public override Task<int> GetAllDataCountAsync(QueryModel query) => DataSource.LoadAllDataCountAsync(query);
 
-    public override int GetAllFilteredCount(QueryModel query) => DataSource.LoadFilteredAllDataCount(query, Configuration);
+    public override Task<int> GetAllFilteredCountAsync(QueryModel query) => DataSource.LoadFilteredAllDataCountAsync(query, Configuration);
 
-    public override IEnumerable<T> GetData(QueryModel query)
+    public override Task<IEnumerable<T>> GetDataAsync(QueryModel query)
     {
         try
         {
-            return DataSource.LoadData(query, Configuration);
+            return DataSource.LoadDataAsync(query, Configuration);
         }
         catch (Exception ex)
         {

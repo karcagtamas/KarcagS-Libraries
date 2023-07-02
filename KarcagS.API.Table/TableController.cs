@@ -9,7 +9,7 @@ namespace KarcagS.API.Table;
 public abstract class TableController<T, TKey> : ControllerBase where T : class, IIdentified<TKey>
 {
     [HttpGet("Meta")]
-    public TableMetaData GetMetaData() => GetService().GetTableMetaData();
+    public Task<TableMetaData> GetMetaData() => GetService().GetTableMetaDataAsync();
 
     [HttpGet("Data")]
     [QueryModelExtraParamsActionFilter]
@@ -17,7 +17,7 @@ public abstract class TableController<T, TKey> : ControllerBase where T : class,
     {
         try
         {
-            return await GetService().GetData(query);
+            return await GetService().GetDataAsync(query);
         }
         catch (TableNotAuthorizedException)
         {

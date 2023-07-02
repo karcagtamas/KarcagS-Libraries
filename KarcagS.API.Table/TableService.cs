@@ -1,5 +1,4 @@
 ﻿using KarcagS.API.Shared.Helpers;
-using KarcagS.API.Table.Configuration;
 using KarcagS.API.Table.Configurations;
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Table;
@@ -9,33 +8,48 @@ namespace KarcagS.API.Table;
 public abstract class TableService<T, TKey> : ITableService<T, TKey> where T : class, IIdentified<TKey>
 {
     protected Table<T, TKey>? Table { get; set; }
+    private bool Initialized { get; set; }
 
-    protected void Initialize()
+    public async Task InitializeAsync()
     {
-        Table = BuildTable();
+        ExceptionHelper.Throw(Initialized, "Service already has been initialized");
+
+        Table = await BuildTableAsync();
+
+        Initialized = true;
     }
 
-    public abstract Table<T, TKey> BuildTable();
-    public abstract DataSource<T, TKey> BuildDataSource();
-    public abstract Configuration<T, TKey> BuildConfiguration();
+    protected bool IsInitialized() => Initialized;
 
-    public async Task<TableResult<TKey>> GetData(QueryModel query)
+    public abstract Task<Table<T, TKey>> BuildTableAsync();
+    public abstract Task<DataSource<T, TKey>> BuildDataSourceAsync();
+    public abstract Task<Configuration<T, TKey>> BuildConfigurationAsync();
+
+    public async Task<TableResult<TKey>> GetDataAsync(QueryModel query)
     {
-        Check();
+        await CheckAsync();
 
-        ExceptionHelper.Check(await Authorize(query), () => new TableNotAuthorizedException());
+        ExceptionHelper.Check(await AuthorizeAsync(query), () => new TableNotAuthorizedException());
 
-        return Table!.ConstructResult(query);
+        return await Table!.ConstructResultAsync(query);
     }
 
-    public TableMetaData GetTableMetaData()
+    public async Task<TableMetaData> GetTableMetaDataAsync()
     {
-        Check();
+        await CheckAsync();
 
         return Table!.GetMetaData();
     }
 
-    protected void Check() => ExceptionHelper.ThrowIfIsNull<Table<T, TKey>, TableException>(Table, "Table is not initialized");
+    protected async Task CheckAsync()
+    {
+        if (!Initialized)
+        {
+            await InitializeAsync();
+        }
 
-    public virtual Task<bool> Authorize(QueryModel query) => Task.FromResult(true);
+        ExceptionHelper.ThrowIfIsNull<Table<T, TKey>, TableException>(Table, "Table is not initialized");
+    }
+
+    public virtual Task<bool> AuthorizeAsync(QueryModel query) => Task.FromResult(true);
 }

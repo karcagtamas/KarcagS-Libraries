@@ -15,11 +15,11 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
     public DemoService(DemoContext context)
     {
         this.context = context;
-        Initialize();
     }
 
-    public override Configuration<DemoEntry, string> BuildConfiguration() =>
-        Configuration<DemoEntry, string>
+    public override Task<Configuration<DemoEntry, string>> BuildConfigurationAsync()
+    {
+        var config = Configuration<DemoEntry, string>
             .Build("demo-table")
             .SetTitle("Demo Table")
             .AddColumn(Column<DemoEntry, string>.Build("id").SetTitle("Id").AddValueGetter(x => x.Id).SetWidth(80).SetAlignment(Alignment.Center))
@@ -35,9 +35,9 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
             .AddOrdering(OrderingConfiguration.Build().IsEnabled())
             .DisableClickOn(obj => obj.Age == 12)
             .ActionsDisabledOn((obj, col) => false)
-            .AddTagProvider((obj, col) =>
+            .AddTagProvider(async (obj, col) =>
             {
-                var entry = col.ValueGetter(obj);
+                var entry = await col.ValueGetter(obj);
 
                 if (entry is bool lo)
                 {
@@ -47,23 +47,27 @@ public class DemoService : TableService<DemoEntry, string>, IDemoService
                 return "";
             });
 
-    public override DataSource<DemoEntry, string> BuildDataSource() => ListTableDataSource<DemoEntry, string>.Build(_ =>
-            context.Set<DemoEntry>().AsQueryable())
-        .SetEFFilteredEntries("Name", "Gender.Name", "OtherGender.Name")
-        .OrderBy(x => x.Name, OrderDirection.Descend)
-        .ThenBy(x => x.Id)
-        .ApplyOrdering();
+        return Task.FromResult(config);
+    }
 
-    public override Table<DemoEntry, string> BuildTable() =>
+    public override Task<DataSource<DemoEntry, string>> BuildDataSourceAsync()
+    {
+        var dataSource = (DataSource<DemoEntry, string>)ListTableDataSource<DemoEntry, string>.Build(_ => Task.FromResult(context.Set<DemoEntry>().AsQueryable()))
+            .SetEFFilteredEntries("Name", "Gender.Name", "OtherGender.Name")
+            .OrderBy(x => x.Name, OrderDirection.Descend)
+            .ThenBy(x => x.Id)
+            .ApplyOrdering();
+
+        return Task.FromResult(dataSource);
+    }
+
+    public override async Task<Table<DemoEntry, string>> BuildTableAsync() =>
         ListTableBuilder<DemoEntry, string>.Construct()
-            .AddDataSource(BuildDataSource())
-            .AddConfiguration(BuildConfiguration())
+            .AddDataSource(await BuildDataSourceAsync())
+            .AddConfiguration(await BuildConfigurationAsync())
             .Build();
 
-    public override Task<bool> Authorize(QueryModel query)
-    {
-        return Task.FromResult(true);
-    }
+    public override Task<bool> AuthorizeAsync(QueryModel query) => Task.FromResult(true);
 }
 
 public interface IDemoService : ITableService<DemoEntry, string>
