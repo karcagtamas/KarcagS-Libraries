@@ -22,7 +22,7 @@ public abstract class MapperRepository<TEntity, TKey> : Repository<TEntity, TKey
 
     public virtual async Task<T> GetMappedAsync<T>(TKey id) => Mapper.Map<T>(await GetAsync(id));
 
-    public virtual async Task<T?> GetOptionalMappedAsync<T>(TKey id) => ObjectHelper.MapOrDefault(await GetOptionalAsync(id), (obj) => Mapper.Map<T>(obj));
+    public virtual async Task<T?> GetOptionalMappedAsync<T>(TKey id) => ObjectHelper.MapOrDefault(await GetOptionalAsync(id), Mapper.Map<T>);
 
     public virtual async Task<IEnumerable<T>> GetMappedListAsync<T>(Expression<Func<TEntity, bool>> expression, int? count = null, int? skip = null) => Mapper.Map<List<T>>(await GetListAsync(expression, count, skip));
 
@@ -32,7 +32,7 @@ public abstract class MapperRepository<TEntity, TKey> : Repository<TEntity, TKey
     {
         ExceptionHelper.ThrowIfIsNull<TModel, ArgumentException>(model, "Model cannot be null");
 
-        await UpdateAsync(await Mapper.Map(model, GetAsync(id)), doPersist);
+        await UpdateAsync(Mapper.Map(model, await GetAsync(id)), doPersist);
     }
 
     public virtual async Task<IEnumerable<T>> GetMappedOrderedListAsync<T>(Expression<Func<TEntity, bool>> expression, string orderBy, string direction, int? count = null, int? skip = null) =>
