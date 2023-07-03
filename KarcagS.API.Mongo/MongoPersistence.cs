@@ -110,7 +110,7 @@ public class MongoPersistence<Configuration> : IPersistence where Configuration 
 
     private IMongoCollection<T> ConstructCollection<TKey, T>() where T : Entity<TKey>
     {
-        if (typeof(T).IsAssignableFrom(typeof(MongoEntity)))
+        if (typeof(MongoEntity).IsAssignableFrom(typeof(T)))
         {
             return mongoService.GetDatabase().GetCollection<T>(collectionProvider.GetCollectionName<TKey, T>(mongoService.GetConfiguration().CollectionNames));
         }
