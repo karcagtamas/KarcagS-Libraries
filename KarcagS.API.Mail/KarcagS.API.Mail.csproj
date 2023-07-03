@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <Title>KarcagS API Mail Library</Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>4.1.3</PackageVersion>
-        <AssemblyVersion>4.1.3</AssemblyVersion>
-        <FileVersion>4.1.3</FileVersion>
+        <PackageVersion>4.1.4</PackageVersion>
+        <AssemblyVersion>4.1.4</AssemblyVersion>
+        <FileVersion>4.1.4</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
