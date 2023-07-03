@@ -1,68 +1,27 @@
 using System.Security.Claims;
-using KarcagS.API.Data.Entities;
 using KarcagS.API.Shared.Configurations;
-using KarcagS.API.Shared.Exceptions;
 using KarcagS.API.Shared.Helpers;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace KarcagS.API.Shared.Services;
 
-public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TContext : DbContext
+public class UtilsService : IUtilsService
 {
     private readonly IHttpContextAccessor contextAccessor;
-    private readonly TContext context;
     private readonly UtilsSettings settings;
 
     /// <summary>
     /// Utils Service constructor
     /// </summary>
     /// <param name="contextAccessor">Context Accessor</param>
-    /// <param name="context">Context</param>
     /// <param name="utilsOptions">Utils Options</param>
-    public UtilsService(IHttpContextAccessor contextAccessor, TContext context, IOptions<UtilsSettings> utilsOptions)
+    public UtilsService(IHttpContextAccessor contextAccessor, IOptions<UtilsSettings> utilsOptions)
     {
         this.contextAccessor = contextAccessor;
-        this.context = context;
         settings = utilsOptions.Value;
     }
-
-    /// <summary>
-    /// Get current user from the HTTP Context
-    /// </summary>
-    /// <returns>Current user</returns>
-    public T GetCurrentUser<T>() where T : Entity<TUserKey>
-    {
-        TUserKey? userId = GetCurrentUserId();
-
-        ExceptionHelper.ThrowIfIsNull(userId, "User key not found", "Server.Message.UserKeyNotFound");
-
-        return ObjectHelper.OrElseThrow(context.Set<T>().Find(userId), () => new ServerException($"User not found with this id: {userId}", "Server.Message.UserNotFound"));
-    }
-
-    /// <summary>
-    /// Get current user's Id from the HTTP Context
-    /// </summary>
-    /// <returns>Current user's Id</returns>
-    public TUserKey? GetCurrentUserId()
-    {
-        string claim = GetClaimByName(settings.UserIdClaimName);
-
-        if (!string.IsNullOrEmpty(claim))
-        {
-            return (TUserKey)(object)claim;
-        }
-
-        return default;
-    }
-
-    /// <summary>
-    /// Get current user's Id from the HTTP Context
-    /// </summary>
-    /// <returns>Current user's Id</returns>
-    public TUserKey GetRequiredCurrentUserId() => ObjectHelper.OrElseThrow(GetCurrentUserId(), () => new ArgumentException("Current user is required"));
 
     /// <summary>
     /// Get current user's Email from the HTTP Context
@@ -89,14 +48,6 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
             ? toString(list.First())
             : string.Empty;
     }
-
-    public void WithCurrentUserId(Action<TUserKey?> action) => action(GetCurrentUserId());
-
-    public void WithRequiredCurrentUserId(Action<TUserKey> action) => action(GetRequiredCurrentUserId());
-
-    public T WithCurrentUserId<T>(Func<TUserKey?, T> func) => func(GetCurrentUserId());
-
-    public T WithRequiredCurrentUserId<T>(Func<TUserKey, T> func) => func(GetRequiredCurrentUserId());
 
     /// <summary>
     /// Inject params into string.
@@ -125,6 +76,10 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
         return res;
     }
 
+    public ClaimsPrincipal? GetUserPrincipal() => contextAccessor.HttpContext?.User;
+
+    public ClaimsPrincipal GetRequiredUserPrincipal() => ObjectHelper.OrElseThrow(GetUserPrincipal(), () => new ArgumentException("User is required"));
+
     private string GetClaimByName(string name)
     {
         if (contextAccessor.HttpContext?.User is null)
@@ -134,8 +89,4 @@ public class UtilsService<TContext, TUserKey> : IUtilsService<TUserKey> where TC
 
         return contextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == name)?.Value ?? string.Empty;
     }
-
-    public ClaimsPrincipal? GetUserPrincipal() => contextAccessor.HttpContext?.User;
-
-    public ClaimsPrincipal GetRequiredUserPrincipal() => ObjectHelper.OrElseThrow(GetUserPrincipal(), () => new ArgumentException("User is required"));
 }

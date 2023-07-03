@@ -2,6 +2,7 @@
 using KarcagS.API.Data.Entities;
 using KarcagS.API.Repository.Attributes;
 using KarcagS.API.Shared.Helpers;
+using KarcagS.API.Shared.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.EntityFrameworkCore;
 
@@ -53,7 +54,8 @@ public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDat
     /// <param name="count">Max result count.</param>
     /// <param name="skip">Skipped element number.</param>
     /// <returns>Filtered list of entities with max count and first skip.</returns>
-    public async Task<IEnumerable<T>> GetListAsync<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : Entity<TKey> => (await GetListAsQueryAsync<TKey, T>(predicate, count, skip)).ToList();
+    public async Task<IEnumerable<T>> GetListAsync<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : Entity<TKey> =>
+        (await GetListAsQueryAsync<TKey, T>(predicate, count, skip)).ToList();
 
     /// <summary>
     /// Get ordered list
@@ -63,7 +65,8 @@ public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDat
     /// <param name="orderBy">Ordering by</param>
     /// <param name="direction">Order direction</param>
     /// <returns>Ordered all list</returns>
-    public async Task<IEnumerable<T>> GetAllAsOrderedAsync<TKey, T>(string orderBy, string direction) where T : Entity<TKey> => await GetOrderedListByQueryAsync<TKey, T>(await GetAllAsQueryAsync<TKey, T>(), orderBy, direction);
+    public async Task<IEnumerable<T>> GetAllAsOrderedAsync<TKey, T>(string orderBy, string direction) where T : Entity<TKey> =>
+        await GetOrderedListByQueryAsync<TKey, T>(await GetAllAsQueryAsync<TKey, T>(), orderBy, direction);
 
     /// <summary>
     /// Get ordered list
@@ -171,7 +174,7 @@ public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDat
     {
         ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, "Entity cannot be null");
 
-        ApplyCreateModification<TKey, T>(entity);
+        await ApplyCreateModification<TKey, T>(entity);
 
         context.Set<T>().Add(entity);
 
@@ -194,7 +197,10 @@ public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDat
     {
         var list = entities.Where(ObjectHelper.IsNotNull).ToList();
 
-        list.ForEach(ApplyCreateModification<TKey, T>);
+        foreach (var item in list)
+        {
+            await ApplyCreateModification<TKey, T>(item);
+        }
 
         // Add
         context.Set<T>().AddRange(list);
@@ -217,7 +223,7 @@ public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDat
     {
         ExceptionHelper.ThrowIfIsNull<T, ArgumentException>(entity, "Entity cannot be null");
 
-        ApplyUpdateModification<TKey, T>(entity);
+        await ApplyUpdateModification<TKey, T>(entity);
 
         context.Set<T>().Update(entity);
 
@@ -239,7 +245,10 @@ public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDat
     {
         var list = entities.Where(ObjectHelper.IsNotNull).ToList();
 
-        list.ForEach(ApplyUpdateModification<TKey, T>);
+        foreach (var item in list)
+        {
+            await ApplyUpdateModification<TKey, T>(item);
+        }
 
         // Update 
         context.Set<T>().UpdateRange(list);
@@ -312,7 +321,7 @@ public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDat
     /// </summary>
     public async Task PersistAsync() => await context.SaveChangesAsync();
 
-    private void ApplyCreateModification<TKey, T>(T entity) where T : Entity<TKey>
+    private async Task ApplyCreateModification<TKey, T>(T entity) where T : Entity<TKey>
     {
         if (entity is Entity<string> e)
         {
@@ -332,7 +341,7 @@ public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDat
 
         if (entity is ILastUpdaterEntity<TUserKey> lue)
         {
-            lue.LastUpdaterId = userProvider.GetRequiredCurrentUserId();
+            lue.LastUpdaterId = await userProvider.GetRequiredCurrentUserId();
         }
 
         var dateTime = DateTime.Now;
@@ -349,11 +358,11 @@ public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDat
         UpdateUserAttribute<T, TKey>(entity);
     }
 
-    private void ApplyUpdateModification<TKey, T>(T entity) where T : Entity<TKey>
+    private async Task ApplyUpdateModification<TKey, T>(T entity) where T : Entity<TKey>
     {
         if (entity is ILastUpdaterEntity<TUserKey> lue)
         {
-            lue.LastUpdaterId = userProvider.GetRequiredCurrentUserId();
+            lue.LastUpdaterId = await userProvider.GetRequiredCurrentUserId();
         }
 
         if (entity is ILastUpdateEntity lastUpdateEntity)

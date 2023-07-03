@@ -109,13 +109,6 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey> where T : Entit
     public virtual Task<TKey> CreateAsync(T entity, bool doPersist = true) => Persistence.CreateAsync<TKey, T>(entity, doPersist);
 
     /// <summary>
-    /// Add multiple entity.
-    /// </summary>
-    /// <param name="entities">Entity objects</param>
-    /// <param name="doPersist">Do object persist</param>
-    public virtual void CreateRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.CreateRangeAsync<TKey, T>(entities, doPersist);
-
-    /// <summary>
     /// Add multiple entity Async
     /// </summary>
     /// <param name="entities">Entity objects</param>
@@ -128,13 +121,6 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey> where T : Entit
     /// <param name="entity">Entity</param>
     /// <param name="doPersist">Do Persist</param>
     public virtual Task UpdateAsync(T entity, bool doPersist = true) => Persistence.UpdateAsync<TKey, T>(entity, doPersist);
-
-    /// <summary>
-    /// Update multiple entity
-    /// </summary>
-    /// <param name="entities">Entities</param>
-    /// <param name="doPersist">Do Persist</param>
-    public virtual void UpdateRange(IEnumerable<T> entities, bool doPersist = true) => Persistence.UpdateRangeAsync<TKey, T>(entities, doPersist);
 
     /// <summary>
     /// Update multiple entity Async

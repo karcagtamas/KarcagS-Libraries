@@ -1,18 +1,22 @@
-﻿using KarcagS.API.Repository;
+﻿using KarcagS.API.Shared.Configurations;
 using KarcagS.API.Shared.Services;
+using Microsoft.Extensions.Options;
 
 namespace KarcagS.Common.Demo;
 
-public class UserProvider : IUserProvider<string>
+public class UserProvider : HttpUserProvider<string>
 {
-    private readonly IUtilsService<string> utilsService;
+    private readonly DemoContext context;
 
-    public UserProvider(IUtilsService<string> utilsService)
+    public UserProvider(IHttpContextAccessor contextAccessor, IOptions<UtilsSettings> utilsOptions, DemoContext context) : base(contextAccessor, utilsOptions)
     {
-        this.utilsService = utilsService;
+        this.context = context;
     }
 
-    public string? GetCurrentUserId() => utilsService.GetCurrentUserId();
+    public override Task<T?> GetCurrentUser<T>() where T : class
+    {
+        // context.Set<User>()
 
-    public string GetRequiredCurrentUserId() => utilsService.GetRequiredCurrentUserId();
+        return base.GetCurrentUser<T>();
+    }
 }

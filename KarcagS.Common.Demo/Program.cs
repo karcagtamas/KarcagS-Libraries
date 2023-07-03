@@ -2,8 +2,7 @@ using AutoMapper;
 using KarcagS.API.Http.Interceptor;
 using KarcagS.API.Http.Interceptor.Converters;
 using KarcagS.API.Repository;
-using KarcagS.API.Shared.Configurations;
-using KarcagS.API.Shared.Services;
+using KarcagS.API.Shared;
 using KarcagS.API.Table;
 using KarcagS.Common.Demo;
 using KarcagS.Common.Demo.Mappers;
@@ -13,8 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddLogging();
 builder.Services.AddHttpLogging(opt => { });
-
-builder.Services.Configure<UtilsSettings>(builder.Configuration.GetSection("Utils"));
 
 builder.Services.AddCors(opt =>
 {
@@ -30,9 +27,7 @@ builder.Services.AddCors(opt =>
 // Add services to the container.
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<IUtilsService<string>, UtilsService<DemoContext, string>>();
-builder.Services.AddScoped<IUserProvider<string>, UserProvider>();
-builder.Services.AddScoped<ILoggerService, LoggerService<string>>();
+builder.AddLoggerAndUtils<string, UserProvider>(conf => conf.GetSection("Utils"));
 builder.Services.AddScoped<IDemoService, DemoService>();
 builder.Services.AddScoped<IGenderService, GenderService>();
 builder.Services.UseEFPersistence<DemoContext, string>();
