@@ -32,6 +32,10 @@ public class DemoContext : DbContext
 
 public class DemoEntry : Entity<string>
 {
+    [Key]
+    [Required]
+    public override string Id { get; set; } = default!;
+
     [Required]
     public string Name { get; set; } = default!;
 
@@ -52,6 +56,10 @@ public class DemoEntry : Entity<string>
 
 public class GenderEntry : Entity<int>
 {
+    [Key]
+    [Required]
+    public override int Id { get; set; }
+
     [Required]
     public string Name { get; set; } = default!;
 

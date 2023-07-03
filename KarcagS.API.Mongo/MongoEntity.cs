@@ -9,5 +9,5 @@ public class MongoEntity : Entity<string>
 
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public new string Id { get; set; } = default!;
+    public override string Id { get; set; } = default!;
 }

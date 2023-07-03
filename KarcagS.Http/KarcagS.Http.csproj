@@ -3,10 +3,10 @@
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>4.1.4</PackageVersion>
+        <PackageVersion>4.1.5</PackageVersion>
         <Title>KarcagS HTTP Library</Title>
-        <AssemblyVersion>4.1.4</AssemblyVersion>
-        <FileVersion>4.1.4</FileVersion>
+        <AssemblyVersion>4.1.5</AssemblyVersion>
+        <FileVersion>4.1.5</FileVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>

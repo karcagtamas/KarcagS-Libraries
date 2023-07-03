@@ -7,7 +7,7 @@ public abstract class Entity<T> : IIdentified<T>
 {
     [Key]
     [Required]
-    public T Id { get; set; } = default!;
+    public abstract T Id { get; set; }
 
     public override string? ToString() => $"[Id = {Id}]";
 
