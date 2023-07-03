@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <Title>KarcagS API Mongo Library</Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>4.1.5</PackageVersion>
-        <AssemblyVersion>4.1.5</AssemblyVersion>
-        <FileVersion>4.1.5</FileVersion>
+        <PackageVersion>4.1.6</PackageVersion>
+        <AssemblyVersion>4.1.6</AssemblyVersion>
+        <FileVersion>4.1.6</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>

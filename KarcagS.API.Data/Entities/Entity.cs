@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using KarcagS.Shared.Common;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace KarcagS.API.Data.Entities;
 
@@ -7,6 +8,7 @@ public abstract class Entity<T> : IIdentified<T>
 {
     [Key]
     [Required]
+    [BsonIgnore]
     public abstract T Id { get; set; }
 
     public override string? ToString() => $"[Id = {Id}]";
