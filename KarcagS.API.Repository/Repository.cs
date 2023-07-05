@@ -141,7 +141,7 @@ public abstract class Repository<T, TKey> : IRepository<T, TKey> where T : Entit
     /// </summary>
     /// <param name="id">Id of entity</param>
     /// <param name="doPersist">Do Persist</param>
-    public virtual Task DeleteByIdAsync(TKey id, bool doPersist = true) => Persistence.DeleteByIdAsync<TKey, T>(id, doPersist);
+    public virtual async Task DeleteByIdAsync(TKey id, bool doPersist = true) => await DeleteAsync(await GetAsync(id), doPersist);
 
     /// <summary>
     /// Remove range Async
