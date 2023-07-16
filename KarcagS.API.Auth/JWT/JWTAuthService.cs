@@ -40,11 +40,9 @@ public class JWTAuthService : IJWTAuthService
         claims.AddRange(claimGenerator());
 
         var expiration = DateTime.Now.AddMinutes(jwtConfigurations.ExpirationInMinutes);
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfigurations.Key));
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfigurations.Secret));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-        var tokenDescriptor = new JwtSecurityToken(jwtConfigurations.Issuer, jwtConfigurations.Issuer, claims,
-            expires: expiration,
-            signingCredentials: credentials);
+        var tokenDescriptor = new JwtSecurityToken(jwtConfigurations.Issuer, jwtConfigurations.Audience, claims, expires: expiration, signingCredentials: credentials);
 
         return new TokenResult { Token = new JwtSecurityTokenHandler().WriteToken(tokenDescriptor), Expiration = expiration };
     }
