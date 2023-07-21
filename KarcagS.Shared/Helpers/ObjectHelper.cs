@@ -34,16 +34,33 @@ public static class ObjectHelper
         throw func();
     }
 
-    public static V? MapOrDefault<T, V>(T? obj, Func<T, V> func)
+    public static async Task<T> OrElseThrow<T, Ex>(T? obj, Func<Task<Ex>> func) where Ex : Exception, new()
     {
-        return IsNotNull(obj) ? func(obj) : default;
+        if (IsNotNull(obj))
+        {
+            return obj;
+        }
+
+        throw await func();
     }
+
+    public static V? MapOrDefault<T, V>(T? obj, Func<T, V> func) => IsNotNull(obj) ? func(obj) : default;
+
+    public static async Task<V?> MapOrDefault<T, V>(T? obj, Func<T, Task<V>> func) => IsNotNull(obj) ? await func(obj) : default;
 
     public static void WhenNotNull<T>(T? obj, Action<T> action)
     {
         if (IsNotNull(obj))
         {
             action(obj);
+        }
+    }
+
+    public static async Task WhenNotNull<T>(T? obj, Func<T, Task> action)
+    {
+        if (IsNotNull(obj))
+        {
+            await action(obj);
         }
     }
 }
