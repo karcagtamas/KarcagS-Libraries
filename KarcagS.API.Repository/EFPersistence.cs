@@ -339,55 +339,61 @@ public class EFPersistence<TDatabaseContext, TUserKey> : IPersistence where TDat
             }
         }
 
+        // ReSharper disable once SuspiciousTypeConversion.Global
         if (entity is ILastUpdaterEntity<TUserKey> lue)
         {
             lue.LastUpdaterId = await userProvider.GetRequiredCurrentUserId();
         }
 
         var dateTime = DateTime.Now;
+        // ReSharper disable once SuspiciousTypeConversion.Global
         if (entity is ICreationEntity creationEntity)
         {
             creationEntity.Creation = dateTime;
         }
 
+        // ReSharper disable once SuspiciousTypeConversion.Global
         if (entity is ILastUpdateEntity lastUpdateEntity)
         {
             lastUpdateEntity.LastUpdate = dateTime;
         }
 
-        UpdateUserAttribute<T, TKey>(entity);
+        await UpdateUserAttribute<T, TKey>(entity);
     }
 
     private async Task ApplyUpdateModification<TKey, T>(T entity) where T : Entity<TKey>
     {
+        // ReSharper disable once SuspiciousTypeConversion.Global
         if (entity is ILastUpdaterEntity<TUserKey> lue)
         {
             lue.LastUpdaterId = await userProvider.GetRequiredCurrentUserId();
         }
 
+        // ReSharper disable once SuspiciousTypeConversion.Global
         if (entity is ILastUpdateEntity lastUpdateEntity)
         {
             lastUpdateEntity.LastUpdate = DateTime.Now;
         }
 
-        UpdateUserAttribute<T, TKey>(entity, true);
+        await UpdateUserAttribute<T, TKey>(entity, true);
     }
 
-    private void UpdateUserAttribute<T, TKey>(T entity, bool update = false) where T : Entity<TKey>
+    private async Task UpdateUserAttribute<T, TKey>(T entity, bool update = false) where T : Entity<TKey>
     {
         var props = entity.GetType().GetProperties().Where(p => Attribute.IsDefined(p, typeof(UserAttribute)));
-        props.ToList().ForEach(p =>
+
+        foreach (var p in props.ToList())
         {
             var attr = (UserAttribute?)Attribute.GetCustomAttribute(p, typeof(UserAttribute));
 
             if (ObjectHelper.IsNotNull(attr))
             {
-                var userId = userProvider.GetCurrentUserId();
+                var userId = await userProvider.GetCurrentUserId();
                 if ((attr.Force || ObjectHelper.IsNotNull(userId)) && (!update || !attr.OnlyInit))
                 {
                     p.SetValue(entity, userId);
                 }
             }
-        });
+        }
     }
 }
