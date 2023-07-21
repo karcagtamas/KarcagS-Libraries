@@ -37,9 +37,11 @@ public class MongoPersistence<Configuration> : IPersistence where Configuration 
 
     public Task DeleteByIdAsync<TKey, T>(TKey id, bool doPersist = true) where T : Entity<TKey> => ConstructCollection<TKey, T>().DeleteOneAsync(Builders<T>.Filter.Eq(x => x.Id, id));
 
-    public Task DeleteRangeAsync<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey> => ConstructCollection<TKey, T>().DeleteManyAsync(Builders<T>.Filter.In(x => x.Id, entities.Select(x => x.Id).ToList()));
+    public Task DeleteRangeAsync<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey> =>
+        ConstructCollection<TKey, T>().DeleteManyAsync(Builders<T>.Filter.In(x => x.Id, entities.Select(x => x.Id).ToList()));
 
-    public async Task<IEnumerable<T>> GetAllAsOrderedAsync<TKey, T>(string orderBy, string direction) where T : Entity<TKey> => await GetOrderedListByQueryAsync<TKey, T>(await GetAllAsQueryAsync<TKey, T>(), orderBy, direction);
+    public async Task<IEnumerable<T>> GetAllAsOrderedAsync<TKey, T>(string orderBy, string direction) where T : Entity<TKey> =>
+        await GetOrderedListByQueryAsync<TKey, T>(await GetAllAsQueryAsync<TKey, T>(), orderBy, direction);
 
     public async Task<IQueryable<T>> GetAllAsQueryAsync<TKey, T>() where T : Entity<TKey> => (await ConstructCollection<TKey, T>().Find(x => true).ToListAsync()).AsQueryable();
 
@@ -64,11 +66,13 @@ public class MongoPersistence<Configuration> : IPersistence where Configuration 
         return queryable;
     }
 
-    public async Task<IEnumerable<T>> GetListAsync<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : Entity<TKey> => (await GetListAsQueryAsync<TKey, T>(predicate, count, skip)).AsEnumerable();
+    public async Task<IEnumerable<T>> GetListAsync<TKey, T>(Expression<Func<T, bool>> predicate, int? count = null, int? skip = null) where T : Entity<TKey> =>
+        (await GetListAsQueryAsync<TKey, T>(predicate, count, skip)).AsEnumerable();
 
-    public Task<T?> GetOptionalAsync<TKey, T>(TKey id) where T : Entity<TKey> => ConstructCollection<TKey, T>().Find(Builders<T>.Filter.Eq(x => x.Id, id)).FirstOrDefaultAsync();
+    public async Task<T?> GetOptionalAsync<TKey, T>(TKey id) where T : Entity<TKey> => await ConstructCollection<TKey, T>().Find(Builders<T>.Filter.Eq(x => x.Id, id)).FirstOrDefaultAsync();
 
-    public async Task<IEnumerable<T>> GetOrderedListAsync<TKey, T>(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) where T : Entity<TKey> => await GetOrderedListByQueryAsync<TKey, T>(await GetListAsQueryAsync<TKey, T>(predicate, count, skip), orderBy, direction);
+    public async Task<IEnumerable<T>> GetOrderedListAsync<TKey, T>(Expression<Func<T, bool>> predicate, string orderBy, string direction, int? count = null, int? skip = null) where T : Entity<TKey> =>
+        await GetOrderedListByQueryAsync<TKey, T>(await GetListAsQueryAsync<TKey, T>(predicate, count, skip), orderBy, direction);
 
     public Task<IEnumerable<T>> GetOrderedListByQueryAsync<TKey, T>(IQueryable<T> queryable, string orderBy, string direction) where T : Entity<TKey>
     {
@@ -98,14 +102,14 @@ public class MongoPersistence<Configuration> : IPersistence where Configuration 
 
     public Task PersistAsync() => Task.CompletedTask;
 
-    public Task UpdateAsync<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey>
-    {
-        throw new NotImplementedException();
-    }
+    public Task UpdateAsync<TKey, T>(T entity, bool doPersist = true) where T : Entity<TKey> => ConstructCollection<TKey, T>().ReplaceOneAsync(Builders<T>.Filter.Eq(x => x.Id, entity.Id), entity);
 
-    public Task UpdateRangeAsync<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey>
+    public async Task UpdateRangeAsync<TKey, T>(IEnumerable<T> entities, bool doPersist = true) where T : Entity<TKey>
     {
-        throw new NotImplementedException();
+        foreach (var entity in entities)
+        {
+            await UpdateAsync<TKey, T>(entity);
+        }
     }
 
     private IMongoCollection<T> ConstructCollection<TKey, T>() where T : Entity<TKey>
