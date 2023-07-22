@@ -75,4 +75,8 @@ public class MongoPersistence<Configuration, TUserKey> : AbstractPersistence<TUs
 
         throw new Exception("Invalid entity type");
     }
+
+    protected override void HandleMissingId<TKey, T>(T entity)
+    {
+    }
 }

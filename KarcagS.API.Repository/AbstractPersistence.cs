@@ -260,21 +260,7 @@ public abstract class AbstractPersistence<TUserKey> : IPersistence
 
     protected async Task ApplyCreateModification<TKey, T>(T entity) where T : Entity<TKey>
     {
-        if (entity is Entity<string> e)
-        {
-            if (string.IsNullOrEmpty(e.Id))
-            {
-                e.Id = Guid.NewGuid().ToString();
-            }
-        }
-
-        if (entity is Entity<Guid> eg)
-        {
-            if (eg.Id != Guid.Empty)
-            {
-                eg.Id = Guid.NewGuid();
-            }
-        }
+        HandleMissingId<TKey, T>(entity);
 
         // ReSharper disable once SuspiciousTypeConversion.Global
         if (entity is ILastUpdaterEntity<TUserKey> lue)
@@ -330,6 +316,25 @@ public abstract class AbstractPersistence<TUserKey> : IPersistence
                 {
                     p.SetValue(entity, userId);
                 }
+            }
+        }
+    }
+
+    protected virtual void HandleMissingId<TKey, T>(T entity)
+    {
+        if (entity is Entity<string> e)
+        {
+            if (string.IsNullOrEmpty(e.Id))
+            {
+                e.Id = Guid.NewGuid().ToString();
+            }
+        }
+
+        if (entity is Entity<Guid> eg)
+        {
+            if (eg.Id != Guid.Empty)
+            {
+                eg.Id = Guid.NewGuid();
             }
         }
     }
