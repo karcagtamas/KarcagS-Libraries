@@ -15,10 +15,12 @@ public static class MongoExtensions
         return builder;
     }
 
-    public static IServiceCollection UseMongoPersistence<Configuration, CollectionProvider>(this IServiceCollection services) where Configuration : MongoCollectionConfiguration where CollectionProvider : class, IMongoCollectionProvider<Configuration>
+    public static IServiceCollection UseMongoPersistence<Configuration, CollectionProvider, TUserKey>(this IServiceCollection services)
+        where Configuration : MongoCollectionConfiguration
+        where CollectionProvider : class, IMongoCollectionProvider<Configuration>
     {
         services.AddScoped<IMongoCollectionProvider<Configuration>, CollectionProvider>();
-        services.AddTransient<MongoPersistence<Configuration>>();
+        services.AddTransient<MongoPersistence<Configuration, TUserKey>>();
 
         return services;
     }
