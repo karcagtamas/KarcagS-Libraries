@@ -4,7 +4,7 @@
 @typeparam TItem
 
 <MudSelect T="T?" Label="@Label" Placeholder="@Placeholder" Style="@Style" Class="@Class" Dense Margin="Margin.Dense" Variant="Variant.Outlined" Clearable="Clearable" FullWidth="FullWidth" Required="Required" Value="Value" ValueChanged="ValueChanged" For="For">
-    <MudSelectItem T="T?" Value="null">
+    <MudSelectItem T="T?" Value="default(T?)">
         -
     </MudSelectItem>
     @foreach (var item in Items)
