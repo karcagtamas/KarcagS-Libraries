@@ -7,4 +7,5 @@ public interface IConfirmService
 {
     Task<bool> Open(ConfirmDialogInput input, string title);
     Task<bool> Open(ConfirmDialogInput input, string title, Action action, DialogOptions? options = null);
+    Task<bool> Open(ConfirmDialogInput input, string title, Func<Task> action, DialogOptions? options = null);
 }

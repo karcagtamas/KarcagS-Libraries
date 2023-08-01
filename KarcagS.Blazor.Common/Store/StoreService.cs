@@ -7,7 +7,7 @@ namespace KarcagS.Blazor.Common.Store;
 /// </summary>
 public class StoreService : IStoreService
 {
-    private readonly ILocalStorageService _localStorageService;
+    private readonly ILocalStorageService localStorageService;
     private Dictionary<string, object> Store { get; set; }
 
     /// <summary>
@@ -15,12 +15,9 @@ public class StoreService : IStoreService
     /// </summary>
     public event EventHandler<StoreEventArgs>? Changed;
 
-    /// <summary>
-    /// 
-    /// </summary>
     public StoreService(ILocalStorageService localStorageService)
     {
-        _localStorageService = localStorageService;
+        this.localStorageService = localStorageService;
         Store = new Dictionary<string, object>();
     }
 
@@ -30,7 +27,7 @@ public class StoreService : IStoreService
     /// <returns>Task</returns>
     public void Init(Action<StoreService, ILocalStorageService> action)
     {
-        action(this, _localStorageService);
+        action(this, localStorageService);
     }
 
     /// <inheritdoc />

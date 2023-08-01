@@ -16,7 +16,7 @@ public class FileUploaderService : IFileUploaderService
     public async Task<bool> Open(FileUploaderDialogInput input, string title)
     {
         var parameters = new DialogParameters { { "Input", input } };
-        var dialog = dialogService.Show<FileUploader>(title, parameters, new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true });
+        var dialog = await dialogService.ShowAsync<FileUploader>(title, parameters, new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true });
         var result = await dialog.Result;
 
         return !result.Canceled;

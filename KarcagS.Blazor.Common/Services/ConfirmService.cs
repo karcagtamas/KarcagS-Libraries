@@ -13,9 +13,18 @@ public class ConfirmService : IConfirmService
         this.dialogService = dialogService;
     }
 
-    public async Task<bool> Open(ConfirmDialogInput input, string title) => await Open(input, title, () => { });
+    public Task<bool> Open(ConfirmDialogInput input, string title) => Open(input, title, () => { });
 
-    public async Task<bool> Open(ConfirmDialogInput input, string title, Action action, DialogOptions? options = null)
+    public Task<bool> Open(ConfirmDialogInput input, string title, Action action, DialogOptions? options = null)
+    {
+        return Open(input, title, () =>
+        {
+            action();
+            return Task.CompletedTask;
+        }, options);
+    }
+
+    public async Task<bool> Open(ConfirmDialogInput input, string title, Func<Task> action, DialogOptions? options = null)
     {
         var parameters = new DialogParameters
         {
@@ -24,12 +33,12 @@ public class ConfirmService : IConfirmService
                 input
             }
         };
-        var dialog = dialogService.Show<Confirm>(title, parameters, options);
+        var dialog = await dialogService.ShowAsync<Confirm>(title, parameters, options);
         var result = await dialog.Result;
 
         if (result.Canceled) return false;
 
-        action();
+        await action();
         return true;
     }
 }
