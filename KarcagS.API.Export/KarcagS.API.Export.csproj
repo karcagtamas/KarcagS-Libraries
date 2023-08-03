@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <Title>KarcagS API Export Library</Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>4.1.12</PackageVersion>
-        <AssemblyVersion>4.1.12</AssemblyVersion>
-        <FileVersion>4.1.12</FileVersion>
+        <PackageVersion>4.2.0</PackageVersion>
+        <AssemblyVersion>4.2.0</AssemblyVersion>
+        <FileVersion>4.2.0</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="ClosedXML" Version="0.101.0" />
+      <PackageReference Include="ClosedXML" Version="0.102.0" />
       <PackageReference Include="DinkToPdf" Version="1.0.8" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     </ItemGroup>
