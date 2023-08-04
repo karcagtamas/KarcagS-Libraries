@@ -86,6 +86,8 @@
 
     protected override void OnInitialized()
     {
+        base.OnInitialized();
+
         if (ObjectHelper.IsNotNull(Title))
         {
             TitleText = Title;
@@ -96,7 +98,14 @@
                 ? LocalizationService.GetValue(LibraryLocalizer.EditorEditEntityKey, "Edit {0}", EntityName)
                 : LocalizationService.GetValue(LibraryLocalizer.EditorCreateEntityKey, "Create {0}", EntityName);
         }
-        base.OnInitialized();
+        StateHasChanged();
+    }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        StateHasChanged();
     }
 
     private async Task Save()

@@ -17,6 +17,7 @@
 <button class="btn btn-primary" @onclick="OpenEditor">Editor</button>
 
 <TimeInput Label="Time"/>
+<NullableTextInput Label="Text" @bind-Value="@Text"/>
 <DateInput Label="Date"/>
 
 
@@ -35,6 +36,8 @@
     private IFileUploaderService Uploader { get; set; } = default!;
 
     private int currentCount = 0;
+
+    private string? Text = "Alkma";
 
     private TModel Model { get; set; } = new() { DateTime = DateTime.Now };
 
