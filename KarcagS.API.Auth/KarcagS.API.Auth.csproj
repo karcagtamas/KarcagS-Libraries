@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <Title>KarcagS API Auth Library</Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>4.2.0</PackageVersion>
-        <AssemblyVersion>4.2.0</AssemblyVersion>
-        <FileVersion>4.2.0</FileVersion>
+        <PackageVersion>4.2.1</PackageVersion>
+        <AssemblyVersion>4.2.1</AssemblyVersion>
+        <FileVersion>4.2.1</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
