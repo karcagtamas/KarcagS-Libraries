@@ -19,7 +19,6 @@ public class HttpService : IHttpService
     /// HTTP Service Injector
     /// </summary>
     /// <param name="httpClient">HTTP Client</param>
-    /// <param name="helperService">Helper Service</param>
     /// <param name="configuration">HTTP Configuration</param>
     /// <param name="tokenHandler">Token Handler</param>
     public HttpService(HttpClient httpClient, HttpConfiguration configuration, ITokenHandler tokenHandler)
@@ -184,7 +183,7 @@ public class HttpService : IHttpService
 
         try
         {
-            using var response = await HttpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
@@ -311,7 +310,6 @@ public class HttpService : IHttpService
 
     private static async Task<HttpResult<T>?> Parse<T>(HttpResponseMessage response) => await response.Content.ReadFromJsonAsync<HttpResult<T>>();
 
-
     /// <summary>
     /// Create URL from HTTP settings
     /// Concatenate URL, path parameters and query parameters
@@ -348,9 +346,14 @@ public class HttpService : IHttpService
     protected virtual void ConsoleCallError(Exception e, string url) => Console.WriteLine($"CALL ERROR: {e.Message}");
 
     protected virtual void ConsoleTokenRefreshError(Exception e) => Console.WriteLine($"TOKEN REFRESH ERROR: {e.Message}");
-    
-    protected virtual void AddErrorToaster(string caption, HttpErrorResult? errorResult) {}
-    protected virtual void AddSuccessToaster(string caption) {}
+
+    protected virtual void AddErrorToaster(string caption, HttpErrorResult? errorResult)
+    {
+    }
+
+    protected virtual void AddSuccessToaster(string caption)
+    {
+    }
 
     private async Task Refresh()
     {
@@ -376,7 +379,7 @@ public class HttpService : IHttpService
 
         try
         {
-            using var response = await HttpClient.SendAsync(request);
+            var response = await HttpClient.SendAsync(request);
             var parsedResponse = await Parse<HttpRefreshResult>(response);
 
             if (ObjectHelper.IsNull(parsedResponse) || ObjectHelper.IsNull(parsedResponse.Result))
