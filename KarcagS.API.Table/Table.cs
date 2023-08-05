@@ -77,7 +77,7 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
 
             var dict = new Dictionary<string, ItemValue>();
 
-            Configuration.Columns.ForEach(async col =>
+            foreach (var col in Configuration.Columns)
             {
                 dict.Add(col.Key, new ItemValue
                 {
@@ -85,7 +85,7 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
                     Tags = await UnwrapTags(i, col),
                     ActionDisabled = await Configuration.IsActionsDisabled(i, col)
                 });
-            });
+            }
 
             item.Values = dict;
 

@@ -87,7 +87,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
         return fetcherQuery.ToList();
     }
 
-    private static IQueryable<T> ApplyTextFilter(Column<T, TKey> column, IQueryable<T> query, string filter) => query.Where(obj => ((string?)column.ValueGetter(obj).Result ?? "").ToLower().Contains(filter.ToLower()));
+    private static IQueryable<T> ApplyTextFilter(Column<T, TKey> column, IQueryable<T> query, string filter) => query.Where(obj => ((string?)column.ValueGetter(obj).GetAwaiter().GetResult() ?? "").ToLower().Contains(filter.ToLower()));
 
     private static IQueryable<T> ApplyEFTextFilter(List<string> entries, IQueryable<T> query, string filter)
     {

@@ -47,7 +47,7 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
         return this;
     }
 
-    public Column<T, TKey> AddValueGetter(Func<T, object?> getter) => AddValueGetter((obj) => Task.FromResult(getter(obj)));
+    public Column<T, TKey> AddValueGetter(Func<T, object?> getter) => AddValueGetter(obj => Task.FromResult(getter(obj)));
 
     public Column<T, TKey> SetFormatter(ColumnFormatter value, params string[] args)
     {
