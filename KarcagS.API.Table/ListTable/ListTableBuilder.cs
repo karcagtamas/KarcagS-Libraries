@@ -11,9 +11,9 @@ public class ListTableBuilder<T, TKey> : TableBuilder<T, TKey> where T : class, 
 
     public override Table<T, TKey> Build()
     {
-        if (ObjectHelper.IsNotNull(DataSource) && ObjectHelper.IsNotNull(Configuration) && DataSource is ListTableDataSource<T, TKey> ltDataSoure)
+        if (ObjectHelper.IsNotNull(DataSource) && ObjectHelper.IsNotNull(Configuration) && DataSource is ListTableDataSource<T, TKey> ltDataSource)
         {
-            return new ListTable<T, TKey>(ltDataSoure, Configuration);
+            return new ListTable<T, TKey>(ltDataSource, Configuration);
         }
 
         throw new TableException("Build cannot be produced. Invalid DataSource or Configuration detected.");

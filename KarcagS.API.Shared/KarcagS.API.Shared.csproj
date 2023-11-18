@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Title>KarcagS API Shared Library</Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>4.2.2</PackageVersion>
-        <AssemblyVersion>4.2.2</AssemblyVersion>
-        <FileVersion>4.2.2</FileVersion>
+        <PackageVersion>5.0.0</PackageVersion>
+        <AssemblyVersion>5.0.0</AssemblyVersion>
+        <FileVersion>5.0.0</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,7 +20,7 @@
       <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.2.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     </ItemGroup>
 
 </Project>

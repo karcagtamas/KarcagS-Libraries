@@ -30,6 +30,7 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.AddLoggerAndUtils<string, UserProvider>(conf => conf.GetSection("Utils"));
 builder.Services.AddScoped<IDemoService, DemoService>();
 builder.Services.AddScoped<IGenderService, GenderService>();
+builder.Services.AddScoped<ITestTableService, TestTableService>();
 builder.Services.UseEFPersistence<DemoContext, string>();
 
 // Add AutoMapper
