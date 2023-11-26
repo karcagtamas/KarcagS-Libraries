@@ -14,15 +14,21 @@ public static class HttpExtension
     {
         var conf = new HttpConfiguration();
         configuration(conf);
+
+        var refreshService = new HttpRefreshService();
+        refreshService.RefreshInProgressSubject.OnNext(HttpRefreshService.RefreshState.FinishState(true));
+
+        serviceCollection.AddSingleton<HttpRefreshService>(_ => refreshService);
         serviceCollection.AddTransient<HttpConfiguration>(_ => conf);
 
         serviceCollection.TryAddScoped<ITokenHandler, LocalStorageTokenHandler>();
         serviceCollection.TryAddScoped((Func<IServiceProvider, IHttpService>)(builder =>
                 new BlazorHttpService(
                     builder.GetRequiredService<HttpClient>(),
-                    builder.GetRequiredService<IHelperService>(),
                     conf,
                     builder.GetRequiredService<ITokenHandler>(),
+                    refreshService,
+                    builder.GetRequiredService<IHelperService>(),
                     builder.GetRequiredService<IJSRuntime>(),
                     builder.GetRequiredService<NavigationManager>()))
         );

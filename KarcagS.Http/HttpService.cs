@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Reactive.Threading.Tasks;
 using KarcagS.Http.Exceptions;
 using KarcagS.Http.Models;
 using KarcagS.Shared.Helpers;
@@ -14,6 +15,7 @@ public class HttpService : IHttpService
 
     protected readonly HttpConfiguration Configuration;
     protected readonly ITokenHandler TokenHandler;
+    private readonly HttpRefreshService refreshService;
 
     /// <summary>
     /// HTTP Service Injector
@@ -21,11 +23,13 @@ public class HttpService : IHttpService
     /// <param name="httpClient">HTTP Client</param>
     /// <param name="configuration">HTTP Configuration</param>
     /// <param name="tokenHandler">Token Handler</param>
-    public HttpService(HttpClient httpClient, HttpConfiguration configuration, ITokenHandler tokenHandler)
+    /// <param name="refreshService">HTTP Refresh Service</param>
+    public HttpService(HttpClient httpClient, HttpConfiguration configuration, ITokenHandler tokenHandler, HttpRefreshService refreshService)
     {
         HttpClient = httpClient;
         Configuration = configuration;
         TokenHandler = tokenHandler;
+        this.refreshService = refreshService;
     }
 
     /// <summary>
@@ -191,7 +195,7 @@ public class HttpService : IHttpService
                 {
                     try
                     {
-                        await Refresh();
+                        await RefreshWhenPossible();
                         return await SendRequest<T>(settings, method, content, true);
                     }
                     catch (HttpTokenRefreshException)
@@ -353,6 +357,34 @@ public class HttpService : IHttpService
 
     protected virtual void AddSuccessToaster(string caption)
     {
+    }
+
+    private async Task RefreshWhenPossible()
+    {
+        if (refreshService.Current().InProgress)
+        {
+            var result = await refreshService.RefreshInProgressSubject.ToTask();
+
+            if (!result.LastSuccess)
+            {
+                await Refresh();
+            }
+        }
+        else
+        {
+            refreshService.RefreshInProgressSubject.OnNext(HttpRefreshService.RefreshState.ProgressState(refreshService.Current().LastSuccess));
+            try
+            {
+                await Refresh();
+            }
+            catch (Exception)
+            {
+                refreshService.RefreshInProgressSubject.OnNext(HttpRefreshService.RefreshState.FinishState(false));
+                throw;
+            }
+
+            refreshService.RefreshInProgressSubject.OnNext(HttpRefreshService.RefreshState.FinishState(true));
+        }
     }
 
     private async Task Refresh()

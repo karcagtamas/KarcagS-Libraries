@@ -3,10 +3,10 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>5.0.0</PackageVersion>
+        <PackageVersion>5.0.1</PackageVersion>
         <Title>KarcagS HTTP Library</Title>
-        <AssemblyVersion>5.0.0</AssemblyVersion>
-        <FileVersion>5.0.0</FileVersion>
+        <AssemblyVersion>5.0.1</AssemblyVersion>
+        <FileVersion>5.0.1</FileVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
@@ -14,6 +14,7 @@
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
       <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="8.0.0" />
+      <PackageReference Include="System.Reactive" Version="6.0.0" />
     </ItemGroup>
 
     <ItemGroup>

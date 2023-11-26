@@ -12,8 +12,15 @@ public class BlazorHttpService : ClientHttpService
     private readonly IJSRuntime jsRuntime;
     private readonly NavigationManager navigationManager;
 
-    public BlazorHttpService(HttpClient httpClient, IHelperService helperService, HttpConfiguration configuration, ITokenHandler tokenHandler, IJSRuntime jsRuntime, NavigationManager navigationManager) :
-        base(httpClient, configuration, tokenHandler, helperService)
+    public BlazorHttpService(
+        HttpClient httpClient,
+        HttpConfiguration configuration,
+        ITokenHandler tokenHandler,
+        HttpRefreshService refreshService,
+        IHelperService helperService,
+        IJSRuntime jsRuntime,
+        NavigationManager navigationManager
+    ) : base(httpClient, configuration, tokenHandler, refreshService, helperService)
     {
         this.jsRuntime = jsRuntime;
         this.navigationManager = navigationManager;

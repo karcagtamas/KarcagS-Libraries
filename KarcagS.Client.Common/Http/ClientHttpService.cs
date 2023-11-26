@@ -8,7 +8,14 @@ public class ClientHttpService : HttpService
 {
     private readonly IHelperService helperService;
 
-    public ClientHttpService(HttpClient httpClient, HttpConfiguration configuration, ITokenHandler tokenHandler, IHelperService helperService) : base(httpClient, configuration, tokenHandler)
+    public ClientHttpService(
+        HttpClient httpClient,
+        HttpConfiguration configuration,
+        ITokenHandler tokenHandler,
+        HttpRefreshService refreshService,
+        IHelperService helperService
+    ) : base(httpClient, configuration,
+        tokenHandler, refreshService)
     {
         this.helperService = helperService;
     }
