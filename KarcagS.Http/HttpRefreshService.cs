@@ -4,9 +4,9 @@ namespace KarcagS.Http;
 
 public class HttpRefreshService
 {
-    public readonly AsyncSubject<RefreshState> RefreshInProgressSubject = new();
+    public readonly BehaviorSubject<RefreshState> RefreshInProgressSubject = new(RefreshState.FinishState(true));
 
-    public RefreshState Current() => RefreshInProgressSubject.GetResult();
+    public RefreshState Current() => RefreshInProgressSubject.Value;
 
     public record RefreshState(bool InProgress, bool LastSuccess)
     {

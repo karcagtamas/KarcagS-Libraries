@@ -10,10 +10,7 @@ public static class HttpExtension
     {
         var conf = new HttpConfiguration();
         configuration(conf);
-
         var refreshService = new HttpRefreshService();
-        refreshService.RefreshInProgressSubject.OnNext(HttpRefreshService.RefreshState.FinishState(true));
-
         serviceCollection.AddSingleton<HttpRefreshService>(_ => refreshService);
         serviceCollection.AddTransient<HttpConfiguration>(_ => conf);
         serviceCollection.TryAddScoped((Func<IServiceProvider, IHttpService>)(builder =>
