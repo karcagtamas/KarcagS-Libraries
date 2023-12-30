@@ -4,10 +4,10 @@
 @inject IDemoTableService Service
 
 <div class="flex-box overflow-hidden p-1">
-    <Table @ref="Table" TKey="string" Service="Service" Style="Style" InitialParams="ExtraParams" OnRowClick="RowClickHandler" OnAction="ActionHandler">
+    <Table @ref="Table" TKey="string" Service="Service" TableStyle="Style" InitialParams="ExtraParams" OnRowClick="RowClickHandler" OnAction="ActionHandler">
 
         <FilterRow>
-            <MudTextField Style="width: 220px;" T="string" Label="Text Filter" Variant="Variant.Outlined" Margin="Margin.Dense" TextChanged="@((arg) => context("text", string.IsNullOrEmpty(arg) ? null : arg))"/>
+            <MudTextField Style="width: 220px;" T="string" Label="Text Filter" Variant="Variant.Outlined" Margin="Margin.Dense" TextChanged="@(arg => context.SetAdditionalFilter("text", string.IsNullOrEmpty(arg) ? null : arg))"/>
         </FilterRow>
 
     </Table>

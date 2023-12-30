@@ -1,3 +1,10 @@
 ﻿<div>
-    <MudProgressCircular Indeterminate="true"></MudProgressCircular>
+    <MudProgressCircular Indeterminate="true" Color="Color"></MudProgressCircular>
 </div>
+
+@code {
+
+    [Parameter]
+    public Color Color { get; set; } = Color.Primary;
+
+}

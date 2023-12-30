@@ -7,7 +7,7 @@
 <div class="d-flex flex-column w-100" style="max-height: 100%;">
     @if (MetaData != null)
     {
-        <MudTable @ref="TableComponent" ServerData="@(new Func<TableState, Task<TableData<ResultRowItem<TKey>>>>(TableReload))" Virtualize="true" T="ResultRowItem<TKey>" Class="@AppendedClass" Loading="Loading" Dense="Style.Dense" Elevation="Style.Elevation" FixedHeader="Style.FixedHeader" FixedFooter="true" Hover="Style.Hover" Striped="Style.Striped" Bordered="Style.Bordered" OnRowClick="RowClickHandler">
+        <MudTable @ref="TableComponent" ServerData="@(new Func<TableState, Task<TableData<ResultRowItem<TKey>>>>(TableReload))" Virtualize="true" T="ResultRowItem<TKey>" Class="@AppendedClass" Dense="TableStyle.Dense" Elevation="TableStyle.Elevation" FixedHeader="TableStyle.FixedHeader" FixedFooter="true" Hover="TableStyle.Hover" Striped="TableStyle.Striped" Bordered="TableStyle.Bordered" OnRowClick="RowClickHandler">
             <ColGroup>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
@@ -39,7 +39,7 @@
                         @if (ObjectHelper.IsNotNull(FilterRow))
                         {
                             <div class="d-flex flex-row align-items-center mr-3">
-                                @FilterRow(SetAdditionalFilter)
+                                @FilterRow(this)
                             </div>
                         }
                         @if (MetaData.FilterData.TextFilterEnabled)
@@ -54,7 +54,7 @@
                 {
                     <MudTh @onclick="@(() => HandleOrdering(col))">
                         <div style="@GetTHStyle(col.Alignment)">
-                            <MudText Color="Style.TitleColorGetter(col.Key)" Inline>
+                            <MudText Color="TableStyle.TitleColorGetter(col.Key)" Inline>
                                 <b>@GetColumnTitle(col, Localizer)</b>
                             </MudText>
                             @if (MetaData.OrderingData.OrderingEnabled && col.IsSortable && IsOrderedColumn(col))
@@ -71,13 +71,13 @@
                     <MudTd Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key">
                         @if (!col.IsAction)
                         {
-                            <MudText Color="Style.ColorGetter(context.Values[col.Key])">
+                            <MudText Color="TableStyle.ColorGetter(context.Values[col.Key])">
                                 @GetValue(context.Values[col.Key].Value, Localizer)
                             </MudText>
                         }
                         else
                         {
-                            <MudIconButton Color="Style.IconColorGetter(context.Values[col.Key])" Icon="@Style.IconGetter(context.Values[col.Key])" Size="Size.Small" Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled)" OnClick="@(() => ActionHandler(col, context))"/>
+                            <MudIconButton Color="TableStyle.IconColorGetter(context.Values[col.Key])" Icon="@TableStyle.IconGetter(context.Values[col.Key])" Size="Size.Small" Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled)" OnClick="@(() => ActionHandler(col, context))"/>
                         }
                     </MudTd>
                 }

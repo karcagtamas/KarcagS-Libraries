@@ -11,25 +11,35 @@ namespace KarcagS.Blazor.Common.Components.Table;
 
 public partial class Table<TKey> : ComponentBase
 {
-    [Parameter] public RenderFragment<Action<string, object?>>? FilterRow { get; set; }
+    [Parameter]
+    public RenderFragment<Table<TKey>>? FilterRow { get; set; }
 
-    [Parameter, EditorRequired] public ITableService<TKey> Service { get; set; } = default!;
+    [Parameter, EditorRequired]
+    public ITableService<TKey> Service { get; set; } = default!;
 
-    [Parameter] public StyleConfiguration Style { get; set; } = StyleConfiguration.Build();
+    [Parameter]
+    public StyleConfiguration TableStyle { get; set; } = StyleConfiguration.Build();
 
-    [Parameter] public EventCallback<ResultRowItem<TKey>> OnRowClick { get; set; }
+    [Parameter]
+    public EventCallback<ResultRowItem<TKey>> OnRowClick { get; set; }
 
-    [Parameter] public string Class { get; set; } = string.Empty;
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
 
-    [Parameter] public Dictionary<string, object> InitialParams { get; set; } = new();
+    [Parameter]
+    public Dictionary<string, object> InitialParams { get; set; } = new();
 
-    [Parameter] public bool ReadOnly { get; set; }
+    [Parameter]
+    public bool ReadOnly { get; set; }
 
-    [Parameter] public IStringLocalizer? Localizer { get; set; }
+    [Parameter]
+    public IStringLocalizer? Localizer { get; set; }
 
-    [Parameter] public EventCallback<KeyValuePair<string, ResultRowItem<TKey>>> OnAction { get; set; }
+    [Parameter]
+    public EventCallback<KeyValuePair<string, ResultRowItem<TKey>>> OnAction { get; set; }
 
-    [Inject] private ILocalizationService LocalizationService { get; set; } = default!;
+    [Inject]
+    private ILocalizationService LocalizationService { get; set; } = default!;
 
     private MudTable<ResultRowItem<TKey>>? TableComponent { get; set; }
 
@@ -57,9 +67,6 @@ public partial class Table<TKey> : ComponentBase
 
     private async Task LoadMetaData()
     {
-        Loading = true;
-        StateHasChanged();
-
         var meta = await Service.GetMetaData();
 
         if (ObjectHelper.IsNotNull(meta.Error))
@@ -68,8 +75,7 @@ public partial class Table<TKey> : ComponentBase
         }
 
         MetaData = meta.Result;
-
-        Loading = false;
+        
         await InvokeAsync(StateHasChanged);
     }
 
@@ -92,11 +98,12 @@ public partial class Table<TKey> : ComponentBase
         return base.OnAfterRenderAsync(firstRender);
     }
 
-    public void Refresh() => ObjectHelper.WhenNotNull(TableComponent, async t => await t.ReloadServerData());
+    public Task Refresh() => ObjectHelper.WhenNotNull(TableComponent, async t => await t.ReloadServerData());
 
-    public List<ResultRowItem<TKey>> GetData() => TableComponent?.Context.Rows.Select(x => x.Key).ToList() ?? new List<ResultRowItem<TKey>>();
+    public List<ResultRowItem<TKey>> GetData() =>
+        TableComponent?.Context.Rows.Select(x => x.Key).ToList() ?? new List<ResultRowItem<TKey>>();
 
-    public void SetAdditionalFilter(string key, object? value)
+    public async Task SetAdditionalFilter(string key, object? value)
     {
         var needRefresh = false;
         if (Params.ContainsKey(key))
@@ -120,7 +127,7 @@ public partial class Table<TKey> : ComponentBase
 
         if (needRefresh)
         {
-            Refresh();
+            await Refresh();
         }
     }
 
@@ -150,7 +157,9 @@ public partial class Table<TKey> : ComponentBase
         var data = await Service.GetData(new TableOptions
         {
             Filter = GetCurrentFilter(),
-            Pagination = (MetaData?.PaginationData.PaginationEnabled ?? false) ? new TablePagination { Page = state.Page, Size = state.PageSize } : null,
+            Pagination = (MetaData?.PaginationData.PaginationEnabled ?? false)
+                ? new TablePagination { Page = state.Page, Size = state.PageSize }
+                : null,
             Ordering = Orders
         }, Params);
 
@@ -211,24 +220,20 @@ public partial class Table<TKey> : ComponentBase
         var increased = OrderDirectionIncrease(status);
 
         Orders = increased == OrderDirection.None
-            ? new List<Order>()
-            : new List<Order>
-            {
-                new() { Key = col.Key, Direction = increased }
-            };
+            ? []
+            : [new() { Key = col.Key, Direction = increased }];
 
-        ObjectHelper.WhenNotNull(TableComponent, async t => { await t.ReloadServerData(); });
-
-        return Task.CompletedTask;
+        return Refresh();
     }
 
-    private void TextFilterHandler(string text)
+    private Task TextFilterHandler(string text)
     {
         TextFilter = text;
-        ObjectHelper.WhenNotNull(TableComponent, async t => { await t.ReloadServerData(); });
+        return Refresh();
     }
 
-    private OrderDirection GetOrderingStatus(ColumnData col) => Orders.FirstOrDefault(o => o.Key == col.Key)?.Direction ?? OrderDirection.None;
+    private OrderDirection GetOrderingStatus(ColumnData col) =>
+        Orders.FirstOrDefault(o => o.Key == col.Key)?.Direction ?? OrderDirection.None;
 
     private bool IsOrderedColumn(ColumnData col) => GetOrderingStatus(col) != OrderDirection.None;
 
@@ -307,5 +312,6 @@ public partial class Table<TKey> : ComponentBase
         return col.Title;
     }
 
-    private static string GetValue(string value, IStringLocalizer? localizer) => ObjectHelper.IsNotNull(localizer) ? localizer[value] : value;
+    private static string GetValue(string value, IStringLocalizer? localizer) =>
+        ObjectHelper.IsNotNull(localizer) ? localizer[value] : value;
 }
