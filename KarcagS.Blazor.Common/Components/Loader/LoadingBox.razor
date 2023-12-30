@@ -1,6 +1,6 @@
 ﻿@if (IsLoading)
 {
-    <Loader Color="Color"/>
+    <Loader Color="Color" Flex="Flex" GrowFlex="GrowFlex" Center="Center" CustomStyle="@CustomStyle"/>
 }
 else
 {
@@ -13,9 +13,21 @@ else
     public bool IsLoading { get; set; }
 
     [Parameter]
-    public Color Color { get; set; }
+    public Color Color { get; set; } = Color.Primary;
 
     [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter]
+    public bool Flex { get; set; } = true;
+
+    [Parameter]
+    public bool GrowFlex { get; set; } = true;
+
+    [Parameter]
+    public bool Center { get; set; } = true;
+
+    [Parameter]
+    public string? CustomStyle { get; set; }
 
 }

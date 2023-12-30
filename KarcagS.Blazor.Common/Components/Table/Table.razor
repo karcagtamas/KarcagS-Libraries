@@ -77,7 +77,7 @@
                         }
                         else
                         {
-                            <MudIconButton Color="TableStyle.IconColorGetter(context.Values[col.Key])" Icon="@TableStyle.IconGetter(context.Values[col.Key])" Size="Size.Small" Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled)" OnClick="@(() => ActionHandler(col, context))"/>
+                            <MudIconButton Color="TableStyle.IconColorGetter(context.Values[col.Key])" Icon="@TableStyle.IconGetter(context.Values[col.Key])" Size="Size.Small" Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled || (TableComponent?.Loading ?? true))" OnClick="@(() => ActionHandler(col, context))"/>
                         }
                     </MudTd>
                 }
