@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <Title>KarcagS API Data Library</Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>5.0.4</PackageVersion>
-        <AssemblyVersion>5.0.4</AssemblyVersion>
-        <FileVersion>5.0.4</FileVersion>
+        <PackageVersion>5.0.5</PackageVersion>
+        <AssemblyVersion>5.0.5</AssemblyVersion>
+        <FileVersion>5.0.5</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
