@@ -14,4 +14,6 @@ public class FileUploaderDialogInput
     public bool Required { get; set; } = false;
     public bool Multiple { get; set; } = false;
     public long MaxFileSize { get; set; } = 512000; // In bytes
+    public bool AllowAnyExtension { get; set; }
+    public bool AllowAnyFileSize { get; set; }
 }

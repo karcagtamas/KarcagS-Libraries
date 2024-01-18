@@ -28,8 +28,8 @@
         </div>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.DialogCancelKey, "Cancel")</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Save">@LocalizationService.GetValue(LibraryLocalizer.DialogSaveKey, "Save")</MudButton>
+        <MudButton OnClick="@Cancel">@LocalizationService.GetValue(LibraryLocalizer.DialogCancelKey, "Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@Save">@LocalizationService.GetValue(LibraryLocalizer.DialogSaveKey, "Save")</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -49,8 +49,6 @@
 
     private List<IBrowserFile> Files { get; set; } = new();
 
-        private const long MaxSize = 512000;
-
     private async void Save()
     {
         if (Input.Required && ObjectHelper.IsEmpty(Files))
@@ -62,11 +60,11 @@
 
         foreach (var file in Files)
         {
-            if (!Input.EnabledExtensions.Contains(file.ContentType))
+            if (!Input.AllowAnyExtension && !Input.EnabledExtensions.Contains(file.ContentType))
             {
                 Snackbar.Add(LocalizationService.GetValue(LibraryLocalizer.UploaderInvalidExtensionsKey, "Invalid file extension [{0}]. Please try again with a correct type. [{1}]", file.ContentType, file.Name), Severity.Error);
             }
-            else if (file.Size > Input.MaxFileSize || file.Size > MaxSize)
+            else if (!Input.AllowAnyFileSize && file.Size > Input.MaxFileSize)
             {
                 Snackbar.Add(LocalizationService.GetValue(LibraryLocalizer.UploaderInvalidSizeKey, "The file size [{0}] exceeds the maximum size [{1}]. Please use smaller files.", file.Size.ToString(), Input.MaxFileSize.ToString()), Severity.Error);
             }
@@ -111,8 +109,8 @@
         {
             Files = e.GetMultipleFiles()
                 .ToList()
-                .Where(x => x.Size <= Input.MaxFileSize && x.Size <= MaxSize)
-                .Where(x => Input.EnabledExtensions.Contains(x.ContentType))
+                .Where(x => Input.AllowAnyFileSize || x.Size <= Input.MaxFileSize)
+                .Where(x => Input.AllowAnyExtension || Input.EnabledExtensions.Contains(x.ContentType))
                 .ToList();
         }
         else
@@ -121,17 +119,17 @@
 
             if (ObjectHelper.IsNotNull(f))
             {
-                if (!Input.EnabledExtensions.Contains(f.ContentType))
+                if (!Input.AllowAnyExtension && !Input.EnabledExtensions.Contains(f.ContentType))
                 {
                     Snackbar.Add(LocalizationService.GetValue(LibraryLocalizer.UploaderInvalidExtensionsKey, "Invalid file extension [{0}]. Please try again with a correct type. [{1}]", f.ContentType, f.Name), Severity.Error);
                 }
-                else if (f.Size > Input.MaxFileSize || f.Size > MaxSize)
+                else if (!Input.AllowAnyFileSize && f.Size > Input.MaxFileSize)
                 {
                     Snackbar.Add(LocalizationService.GetValue(LibraryLocalizer.UploaderInvalidSizeKey, "The file size [{0} bytes] exceeds the maximum size [{1} bytes] for the file [{2}]. Please use smaller files.", f.Size.ToString(), Input.MaxFileSize.ToString(), f.Name), Severity.Error);
                 }
                 else
                 {
-                    Files = new List<IBrowserFile> { f };
+                    Files = [f];
                 }
             }
         }
