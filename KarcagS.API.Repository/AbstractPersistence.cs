@@ -103,7 +103,7 @@ public abstract class AbstractPersistence<TUserKey> : IPersistence
 
         await ApplyCreateModification<TKey, T>(entity);
 
-        var id = await CreateActionAsync<TKey, T>(entity);
+        var id = await CreateActionAsync<TKey, T>(entity, doPersist);
 
         if (doPersist)
         {
@@ -113,7 +113,7 @@ public abstract class AbstractPersistence<TUserKey> : IPersistence
         return id;
     }
 
-    protected abstract Task<TKey> CreateActionAsync<TKey, T>(T entity) where T : Entity<TKey>;
+    protected abstract Task<TKey> CreateActionAsync<TKey, T>(T entity, bool retrieveId) where T : Entity<TKey>;
 
     /// <summary>
     /// Add multiple entity.

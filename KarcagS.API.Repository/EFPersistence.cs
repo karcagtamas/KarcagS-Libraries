@@ -104,11 +104,16 @@ public class EFPersistence<TDatabaseContext, TUserKey> : AbstractPersistence<TUs
     /// <returns>Count of entries</returns>
     public override Task<long> CountAsync<TKey, T>(Expression<Func<T, bool>> predicate) => Task.FromResult((long)context.Set<T>().Count(predicate));
 
-    protected override Task<TKey> CreateActionAsync<TKey, T>(T entity)
+    protected override async Task<TKey> CreateActionAsync<TKey, T>(T entity, bool retrieveId)
     {
         context.Set<T>().Add(entity);
 
-        return Task.FromResult(entity.Id);
+        if (retrieveId)
+        {
+            await PersistAsync();
+        }
+
+        return entity.Id;
     }
 
     protected override Task CreateRangeActionAsync<TKey, T>(IEnumerable<T> entities)

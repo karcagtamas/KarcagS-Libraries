@@ -22,7 +22,7 @@ public class MongoPersistence<Configuration, TUserKey> : AbstractPersistence<TUs
 
     public override Task<long> CountAsync<TKey, T>(Expression<Func<T, bool>> predicate) => ConstructCollection<TKey, T>().CountDocumentsAsync(predicate);
 
-    protected override async Task<TKey> CreateActionAsync<TKey, T>(T entity)
+    protected override async Task<TKey> CreateActionAsync<TKey, T>(T entity, bool retrieveId)
     {
         await ConstructCollection<TKey, T>().InsertOneAsync(entity);
 
