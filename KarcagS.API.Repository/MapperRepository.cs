@@ -7,14 +7,10 @@ using KarcagS.Shared.Helpers;
 
 namespace KarcagS.API.Repository;
 
-public abstract class MapperRepository<TEntity, TKey> : Repository<TEntity, TKey>, IMapperRepository<TEntity, TKey> where TEntity : Entity<TKey>
+public abstract class MapperRepository<TEntity, TKey>(ILoggerService loggerService, IMapper mapper, IPersistence persistence, string entity) 
+    : Repository<TEntity, TKey>(loggerService, persistence, entity), IMapperRepository<TEntity, TKey> where TEntity : Entity<TKey>
 {
-    protected readonly IMapper Mapper;
-
-    public MapperRepository(ILoggerService loggerService, IMapper mapper, IPersistence persistence, string entity) : base(loggerService, persistence, entity)
-    {
-        Mapper = mapper;
-    }
+    protected readonly IMapper Mapper = mapper;
 
     public virtual Task<TKey> CreateFromModelAsync<TModel>(TModel model, bool doPersist = true) => CreateAsync(Mapper.Map<TEntity>(model), doPersist);
 

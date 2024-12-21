@@ -13,9 +13,9 @@ public class AppTheme
     {
         ColorPalette = palette;
         DarkColorPalette = darkPalette;
-        Theme = new()
+        Theme = new MudTheme
         {
-            Palette = new PaletteLight
+            PaletteLight = new PaletteLight
             {
                 Primary = palette.MainColor,
                 Secondary = palette.SecondaryColor,
@@ -54,7 +54,7 @@ public class AppTheme
             },
             Typography = new Typography
             {
-                Default = new Default { FontFamily = new[] { "Bree Serif", "serif" } },
+                Default = new Default { FontFamily = ["Bree Serif", "serif"] },
                 Button = new Button
                 {
                     TextTransform = "none"
@@ -66,7 +66,7 @@ public class AppTheme
     public AppTheme(MudTheme theme)
     {
         Theme = theme;
-        ColorPalette = new AppColorPalette(theme.Palette);
+        ColorPalette = new AppColorPalette(theme.PaletteLight);
         DarkColorPalette = new AppColorPalette(theme.PaletteDark);
     }
 
@@ -109,7 +109,7 @@ public class AppTheme
         // palette.Primary = "#776be7";
         palette.Black = "#27272f";
         palette.Background = "#32333d";
-        palette.BackgroundGrey = "#27272f";
+        palette.BackgroundGray = "#27272f";
         palette.Surface = "#373740";
         // palette.DrawerBackground = "#27272f";
         // palette.DrawerText = "rgba(255,255,255, 0.50)";

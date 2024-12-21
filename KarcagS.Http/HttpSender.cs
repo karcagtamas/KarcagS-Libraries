@@ -5,8 +5,8 @@ namespace KarcagS.Http;
 
 public class HttpSender<T>
 {
-    private readonly List<Action<T?>> successActions = new();
-    private readonly List<Action<HttpErrorResult?>> errorActions = new();
+    private readonly List<Action<T?>> successActions = [];
+    private readonly List<Action<HttpErrorResult?>> errorActions = [];
     private readonly Func<Task<HttpResult<T>?>> sender;
 
     public HttpSender(Func<Task<HttpResult<T>?>> sender)

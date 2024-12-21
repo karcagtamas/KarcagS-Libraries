@@ -1,8 +1,6 @@
-﻿using KarcagS.API.Table.Configuration;
-using KarcagS.API.Table.Configurations;
+﻿using KarcagS.API.Table.Configurations;
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Table;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace KarcagS.API.Table;
 

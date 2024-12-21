@@ -4,13 +4,13 @@ using KarcagS.Shared.Helpers;
 
 namespace KarcagS.Shared.Attributes;
 
-public class ContainsCapitalAlphaAttribute : ValidationAttribute
+public partial class ContainsCapitalAlphaAttribute : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         if (ObjectHelper.IsNotNull(value) && value is string v)
         {
-            var m = Regex.Match(v, @"^(?=.*[A-Z]).+$", RegexOptions.None);
+            var m = MyRegex().Match(v);
 
             return m.Success
                 ? ValidationResult.Success
@@ -23,4 +23,7 @@ public class ContainsCapitalAlphaAttribute : ValidationAttribute
     protected string GetInvalidMessage() => "Does not contain any capital alpha characters.";
 
     private ValidationResult Error() => new(GetInvalidMessage());
+
+    [GeneratedRegex(@"^(?=.*[A-Z]).+$", RegexOptions.None)]
+    private static partial Regex MyRegex();
 }

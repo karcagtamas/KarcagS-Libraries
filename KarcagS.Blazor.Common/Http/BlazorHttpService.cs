@@ -7,28 +7,19 @@ using Microsoft.JSInterop;
 
 namespace KarcagS.Blazor.Common.Http;
 
-public class BlazorHttpService : ClientHttpService
+public class BlazorHttpService(
+    HttpClient httpClient,
+    HttpConfiguration configuration,
+    ITokenHandler tokenHandler,
+    HttpRefreshService refreshService,
+    IHelperService helperService,
+    IJSRuntime jsRuntime,
+    NavigationManager navigationManager)
+    : ClientHttpService(httpClient, configuration, tokenHandler, refreshService, helperService)
 {
-    private readonly IJSRuntime jsRuntime;
-    private readonly NavigationManager navigationManager;
-
-    public BlazorHttpService(
-        HttpClient httpClient,
-        HttpConfiguration configuration,
-        ITokenHandler tokenHandler,
-        HttpRefreshService refreshService,
-        IHelperService helperService,
-        IJSRuntime jsRuntime,
-        NavigationManager navigationManager
-    ) : base(httpClient, configuration, tokenHandler, refreshService, helperService)
-    {
-        this.jsRuntime = jsRuntime;
-        this.navigationManager = navigationManager;
-    }
-
     protected override void HandlingUnauthorizedPathRedirection()
     {
-        var query = new Dictionary<string, string>();
+        var query = new Dictionary<string, string?>();
 
         if (ObjectHelper.IsNotNull(Configuration.UnauthorizedPathRedirectQueryParamName))
         {
@@ -40,11 +31,9 @@ public class BlazorHttpService : ClientHttpService
 
     protected override bool Download(ExportResult result)
     {
-        if (jsRuntime is IJSUnmarshalledRuntime unmarshalledRuntime)
+        if (jsRuntime is IJSInProcessRuntime processRuntime)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            unmarshalledRuntime.InvokeUnmarshalled<string, string, byte[], bool>("manageDownload", result.FileName, result.ContentType, result.Content);
-#pragma warning restore CS0618 // Type or member is obsolete
+            processRuntime.InvokeVoid("manageDownload", result.FileName, result.ContentType, result.Content);
         }
 
         return true;

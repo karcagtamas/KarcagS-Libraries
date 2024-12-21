@@ -40,7 +40,7 @@ public static class WriteHelper
     /// <param name="list">String list for append</param>
     /// <param name="separator">Separator</param>
     /// <returns>Appended text separated by the separator value</returns>
-    public static string WriteList(List<string> list, string separator)
+    public static string WriteList(List<string>? list, string separator)
     {
         // Empty check
         if (list == null || list.Count == 0)

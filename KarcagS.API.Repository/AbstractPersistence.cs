@@ -7,14 +7,9 @@ using KarcagS.Shared.Helpers;
 
 namespace KarcagS.API.Repository;
 
-public abstract class AbstractPersistence<TUserKey> : IPersistence
+public abstract class AbstractPersistence<TUserKey>(IUserProvider<TUserKey> userProvider) : IPersistence
 {
-    protected readonly IUserProvider<TUserKey> UserProvider;
-
-    protected AbstractPersistence(IUserProvider<TUserKey> userProvider)
-    {
-        UserProvider = userProvider;
-    }
+    protected readonly IUserProvider<TUserKey> UserProvider = userProvider;
 
     public abstract Task<T> GetAsync<TKey, T>(TKey id) where T : Entity<TKey>;
 

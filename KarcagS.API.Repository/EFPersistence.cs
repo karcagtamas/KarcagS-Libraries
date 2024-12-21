@@ -6,15 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KarcagS.API.Repository;
 
-public class EFPersistence<TDatabaseContext, TUserKey> : AbstractPersistence<TUserKey> where TDatabaseContext : DbContext
+public class EFPersistence<TDatabaseContext, TUserKey>(TDatabaseContext context, IUserProvider<TUserKey> userProvider) : AbstractPersistence<TUserKey>(userProvider) where TDatabaseContext : DbContext
 {
-    private readonly TDatabaseContext context;
-
-    public EFPersistence(TDatabaseContext context, IUserProvider<TUserKey> userProvider) : base(userProvider)
-    {
-        this.context = context;
-    }
-
     /// <summary>
     /// Get entity
     /// </summary>

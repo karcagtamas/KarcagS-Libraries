@@ -2,13 +2,8 @@
 
 namespace KarcagS.Shared.Attributes;
 
-public class NullableEmailAddressAttribute : DataTypeAttribute
+public class NullableEmailAddressAttribute() : DataTypeAttribute(DataType.EmailAddress)
 {
-    public NullableEmailAddressAttribute() : base(DataType.EmailAddress)
-    {
-
-    }
-
     public override bool IsValid(object? value)
     {
         if (value is null)

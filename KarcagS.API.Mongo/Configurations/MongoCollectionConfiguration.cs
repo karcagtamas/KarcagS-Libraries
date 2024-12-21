@@ -1,5 +1,3 @@
 ﻿namespace KarcagS.API.Mongo.Configurations;
 
-public class MongoCollectionConfiguration
-{
-}
+public class MongoCollectionConfiguration;

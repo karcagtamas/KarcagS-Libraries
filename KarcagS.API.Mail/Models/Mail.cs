@@ -20,10 +20,10 @@ public class Mail
     /// </summary>
     public Mail()
     {
-        ToList = new List<MailRecipient>();
-        CcList = new List<MailRecipient>();
-        BccList = new List<MailRecipient>();
-        Attachments = new List<IFormFile>();
+        ToList = [];
+        CcList = [];
+        BccList = [];
+        Attachments = [];
     }
 
     /// <summary>

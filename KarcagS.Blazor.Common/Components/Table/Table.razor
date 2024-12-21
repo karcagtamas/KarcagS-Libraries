@@ -7,7 +7,7 @@
 <div class="d-flex flex-column w-100" style="max-height: 100%;">
     @if (MetaData != null)
     {
-        <MudTable @ref="TableComponent" ServerData="@(new Func<TableState, Task<TableData<ResultRowItem<TKey>>>>(TableReload))" Virtualize="true" T="ResultRowItem<TKey>" Class="@AppendedClass" Dense="TableStyle.Dense" Elevation="TableStyle.Elevation" FixedHeader="TableStyle.FixedHeader" FixedFooter="true" Hover="TableStyle.Hover" Striped="TableStyle.Striped" Bordered="TableStyle.Bordered" OnRowClick="RowClickHandler">
+        <MudTable @ref="TableComponent" ServerData="@(new Func<TableState, CancellationToken, Task<TableData<ResultRowItem<TKey>>>>(TableReload))" Virtualize="true" T="ResultRowItem<TKey>" Class="@AppendedClass" Dense="TableStyle.Dense" Elevation="TableStyle.Elevation" FixedHeader="TableStyle.FixedHeader" FixedFooter="true" Hover="TableStyle.Hover" Striped="TableStyle.Striped" Bordered="TableStyle.Bordered" OnRowClick="RowClickHandler">
             <ColGroup>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {

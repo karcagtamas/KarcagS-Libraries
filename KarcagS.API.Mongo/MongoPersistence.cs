@@ -7,17 +7,9 @@ using MongoDB.Driver;
 
 namespace KarcagS.API.Mongo;
 
-public class MongoPersistence<Configuration, TUserKey> : AbstractPersistence<TUserKey> where Configuration : MongoCollectionConfiguration
+public class MongoPersistence<Configuration, TUserKey>(IMongoCollectionProvider<Configuration> collectionProvider, IMongoService<Configuration> mongoService, IUserProvider<TUserKey> userProvider)
+    : AbstractPersistence<TUserKey>(userProvider) where Configuration : MongoCollectionConfiguration
 {
-    private readonly IMongoCollectionProvider<Configuration> collectionProvider;
-    private readonly IMongoService<Configuration> mongoService;
-
-    public MongoPersistence(IMongoCollectionProvider<Configuration> collectionProvider, IMongoService<Configuration> mongoService, IUserProvider<TUserKey> userProvider) : base(userProvider)
-    {
-        this.collectionProvider = collectionProvider;
-        this.mongoService = mongoService;
-    }
-
     public override Task<long> CountAsync<TKey, T>() => ConstructCollection<TKey, T>().CountDocumentsAsync(p => true);
 
     public override Task<long> CountAsync<TKey, T>(Expression<Func<T, bool>> predicate) => ConstructCollection<TKey, T>().CountDocumentsAsync(predicate);

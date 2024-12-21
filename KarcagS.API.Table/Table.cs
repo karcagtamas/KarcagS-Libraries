@@ -6,16 +6,10 @@ using KarcagS.Shared.Table.Enums;
 
 namespace KarcagS.API.Table;
 
-public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
+public abstract class Table<T, TKey>(DataSource<T, TKey> dataSource, Configuration<T, TKey> configuration) where T : class, IIdentified<TKey>
 {
-    protected readonly DataSource<T, TKey> DataSource;
-    protected readonly Configuration<T, TKey> Configuration;
-
-    public Table(DataSource<T, TKey> dataSource, Configuration<T, TKey> configuration)
-    {
-        DataSource = dataSource;
-        Configuration = configuration;
-    }
+    protected readonly DataSource<T, TKey> DataSource = dataSource;
+    protected readonly Configuration<T, TKey> Configuration = configuration;
 
     public abstract Task<IEnumerable<T>> GetDataAsync(QueryModel query);
 
@@ -101,51 +95,33 @@ public abstract class Table<T, TKey> where T : class, IIdentified<TKey>
     {
         var value = await column.ValueGetter(obj);
 
-        if (column.Formatter == ColumnFormatter.Text)
+        switch (column.Formatter)
         {
-            return value?.ToString() ?? "";
-        }
-
-        if (column.Formatter == ColumnFormatter.Number)
-        {
-            if (value is long? || value is int? || value is decimal?)
-            {
+            case ColumnFormatter.Text:
+            case ColumnFormatter.Number when value is long or int or decimal:
                 return value?.ToString() ?? "";
-            }
-        }
-
-        if (column.Formatter == ColumnFormatter.Date)
-        {
-            if (value is DateTime?)
-            {
+            case ColumnFormatter.Date when value is DateTime:
                 return DateHelper.DateToString((DateTime?)value);
-            }
-        }
-
-        if (column.Formatter == ColumnFormatter.Logic)
-        {
-            if (value is bool?)
+            case ColumnFormatter.Logic when value is bool b:
             {
                 if (ObjectHelper.IsNull(value))
                 {
                     return "";
                 }
-                else
+
+                var trueText = "True";
+                var falseText = "False";
+
+                if (column.FormatterArgs.Length >= 2)
                 {
-                    string trueText = "True";
-                    string falseText = "False";
-
-                    if (column.FormatterArgs.Length >= 2)
-                    {
-                        trueText = column.FormatterArgs[0];
-                        falseText = column.FormatterArgs[1];
-                    }
-
-                    return (bool)value ? trueText : falseText;
+                    trueText = column.FormatterArgs[0];
+                    falseText = column.FormatterArgs[1];
                 }
-            }
-        }
 
-        return value?.ToString() ?? "";
+                return b ? trueText : falseText;
+            }
+            default:
+                return value?.ToString() ?? "";
+        }
     }
 }

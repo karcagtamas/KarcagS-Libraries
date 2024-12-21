@@ -1,5 +1,4 @@
-﻿using KarcagS.API.Table.Configuration;
-using KarcagS.Shared.Common;
+﻿using KarcagS.Shared.Common;
 
 namespace KarcagS.API.Table.Configurations;
 
@@ -19,12 +18,7 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
     public Func<T, Column<T, TKey>, Task<bool>> IsActionsDisabled = (_, _) => Task.FromResult(false);
     public List<Func<T, Column<T, TKey>, Task<string>>> TagProviders { get; set; } = new();
 
-    private Configuration()
-    {
-        Key = "table";
-    }
-
-    private Configuration(string key)
+    private Configuration(string key = "table")
     {
         Key = key;
     }

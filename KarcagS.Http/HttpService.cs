@@ -173,7 +173,7 @@ public class HttpService : IHttpService
     /// <returns>Created url</returns>
     public string BuildUrl(string url, params string[] segments)
     {
-        List<string> parts = new() { url };
+        List<string> parts = [url];
         parts.AddRange(segments);
         return string.Join("/", parts);
     }

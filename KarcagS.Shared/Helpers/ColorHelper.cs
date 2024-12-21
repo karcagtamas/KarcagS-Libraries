@@ -4,9 +4,8 @@ public static class ColorHelper
 {
     public static string GetForegroundColor(string backgroundColor)
     {
-        float luminance = CalculateLuminance(HexToRBG(backgroundColor));
-        string inverse = (luminance < 140) ? "#fff" : "#000";
-        return inverse;
+        var luminance = CalculateLuminance(HexToRBG(backgroundColor));
+        return luminance < 140 ? "#fff" : "#000";
     }
 
     private static float CalculateLuminance(List<int> rgb)

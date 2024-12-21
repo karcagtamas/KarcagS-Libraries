@@ -8,7 +8,7 @@ namespace KarcagS.API.Table.Ordering;
 public class OrderingBuilder<T, TKey> where T : class, IIdentified<TKey>
 {
     private readonly ListTableDataSource<T, TKey> dataSource;
-    private readonly List<OrderingSetting<T, TKey>> ordering = new();
+    private readonly List<OrderingSetting<T, TKey>> ordering = [];
 
     public OrderingBuilder(ListTableDataSource<T, TKey> dataSource, Expression<Func<T, object?>> expression, OrderDirection direction)
     {

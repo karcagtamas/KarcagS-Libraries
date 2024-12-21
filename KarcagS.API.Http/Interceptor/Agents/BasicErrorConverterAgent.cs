@@ -11,7 +11,7 @@ public class BasicErrorConverterAgent : IErrorConverterAgent
         return new(exception)
         {
             Message = new ResourceMessage { Text = FatalError, ResourceKey = "Server.Message.Fatal" },
-            SubMessages = Array.Empty<ResourceMessage>()
+            SubMessages = []
         };
     }
 }

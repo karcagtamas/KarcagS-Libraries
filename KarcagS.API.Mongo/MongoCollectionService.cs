@@ -6,18 +6,13 @@ using MongoDB.Driver;
 
 namespace KarcagS.API.Mongo;
 
-public class MongoCollectionService<T, Configuration> : IMongoCollectionService<T> where T : MongoEntity where Configuration : MongoCollectionConfiguration
+public class MongoCollectionService<T, Configuration>(IMongoService<Configuration> mongoService, IMapper mapper, Func<Configuration, string> collectionNameGetter) : IMongoCollectionService<T>
+    where T : MongoEntity
+    where Configuration : MongoCollectionConfiguration
 {
-    protected readonly IMongoService<Configuration> MongoService;
-    protected readonly IMapper Mapper;
-    protected readonly IMongoCollection<T> Collection;
-
-    public MongoCollectionService(IMongoService<Configuration> mongoService, IMapper mapper, Func<Configuration, string> collectionNameGetter)
-    {
-        MongoService = mongoService;
-        Mapper = mapper;
-        Collection = mongoService.GetDatabase().GetCollection<T>(collectionNameGetter(mongoService.GetConfiguration().CollectionNames));
-    }
+    protected readonly IMongoService<Configuration> MongoService = mongoService;
+    protected readonly IMapper Mapper = mapper;
+    protected readonly IMongoCollection<T> Collection = mongoService.GetDatabase().GetCollection<T>(collectionNameGetter(mongoService.GetConfiguration().CollectionNames));
 
     public List<T> Get() => Collection.Find(x => true).ToList();
 

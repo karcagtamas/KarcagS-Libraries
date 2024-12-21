@@ -1,16 +1,16 @@
 namespace KarcagS.Shared.Common;
 
-public interface IListState<TL>
+public interface IListState<out U>
 {
-    public TL Add<T>(T value, int index);
+    public U Add<T>(T value, int index);
 
-    public TL Add<T>(T value);
+    public U Add<T>(T value);
 
     public T Get<T>(int index);
 
-    public TL TryAdd<T>(T value, int index);
+    public U TryAdd<T>(T value, int index);
 
-    public TL TryAdd<T>(T value);
+    public U TryAdd<T>(T value);
 
     public T? TryGet<T>(int index);
 

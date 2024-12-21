@@ -8,14 +8,14 @@ namespace KarcagS.Http;
 /// </summary>
 public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
 {
-    private readonly Dictionary<string, object> _queryParams;
+    private readonly Dictionary<string, object> queryParams;
 
     /// <summary>
     /// Query parameters
     /// </summary>
     public HttpQueryParameters()
     {
-        _queryParams = new Dictionary<string, object>();
+        queryParams = new Dictionary<string, object>();
     }
 
     public static HttpQueryParameters Build() => new();
@@ -34,12 +34,12 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
             return this;
         }
 
-        if (_queryParams.ContainsKey(key))
+        if (queryParams.ContainsKey(key))
         {
             throw new ArgumentException("Key already exists");
         }
 
-        _queryParams[key] = value;
+        queryParams[key] = value;
         return this;
     }
 
@@ -53,12 +53,7 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     /// <typeparam name="T">Type of the value</typeparam>
     public HttpQueryParameters AddOptional<T>(string key, T value, Predicate<T> predicate)
     {
-        if (predicate(value))
-        {
-            return Add(key, value);
-        }
-
-        return this;
+        return predicate(value) ? Add(key, value) : this;
     }
 
     /// <summary>
@@ -67,10 +62,7 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     /// <typeparam name="T">Type of list items</typeparam>
     /// <param name="key">Key value</param>
     /// <param name="values">Value list</param>
-    public HttpQueryParameters AddMultiple<T>(string key, List<T> values)
-    {
-        return Add(key, values.ToArray());
-    }
+    public HttpQueryParameters AddMultiple<T>(string key, List<T> values) => Add(key, values.ToArray());
 
     /// <summary>
     /// Get value by the given key.
@@ -81,12 +73,12 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     /// <returns>Value for the given key</returns>
     public T Get<T>(string key)
     {
-        if (!_queryParams.ContainsKey(key))
+        if (!queryParams.ContainsKey(key))
         {
             throw new ArgumentException("Key does not exist");
         }
 
-        return (T)_queryParams[key];
+        return (T)queryParams[key];
     }
 
     /// <summary>
@@ -103,12 +95,12 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
             return this;
         }
 
-        if (_queryParams.ContainsKey(key))
+        if (queryParams.ContainsKey(key))
         {
             return this;
         }
 
-        _queryParams[key] = value;
+        queryParams[key] = value;
         return this;
     }
 
@@ -118,10 +110,7 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     /// <param name="key">Key value</param>
     /// <param name="values">Value list</param>
     /// <typeparam name = "T" > Type of list items</typeparam>
-    public HttpQueryParameters TryAddMultiple<T>(string key, List<T> values)
-    {
-        return TryAdd(key, values.ToArray());
-    }
+    public HttpQueryParameters TryAddMultiple<T>(string key, List<T> values) => TryAdd(key, values.ToArray());
 
     /// <summary>
     /// Try get value by the given key.
@@ -132,19 +121,19 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     /// <returns>Value for the given key</returns>
     public T? TryGet<T>(string key)
     {
-        if (!_queryParams.ContainsKey(key))
+        if (!queryParams.ContainsKey(key))
         {
             return default;
         }
 
-        return (T)_queryParams[key];
+        return (T)queryParams[key];
     }
 
     /// <summary>
     /// Get length of the dictionary.
     /// </summary>
     /// <returns>Count number</returns>
-    public int Count() => _queryParams.Keys.Count;
+    public int Count() => queryParams.Keys.Count;
 
 
     /// <summary>
@@ -154,31 +143,31 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     /// <returns></returns>
     public override string ToString()
     {
-        List<string> values = new();
+        List<string> values = [];
 
-        foreach (string key in _queryParams.Keys)
+        foreach (var key in queryParams.Keys)
         {
-            var value = _queryParams[key];
+            var value = queryParams[key];
 
             if (ObjectHelper.IsNull(value))
             {
                 continue;
             }
 
-            if (value is Array arr)
+            switch (value)
             {
-                foreach (var i in arr)
+                case Array arr:
                 {
-                    values.Add($"{key}={i}");
+                    values.AddRange(from object? i in arr select $"{key}={i}");
+
+                    break;
                 }
-            }
-            else if (value is Enum e)
-            {
-                values.Add($"{key}={Convert.ToInt32(e)}");
-            }
-            else
-            {
-                values.Add($"{key}={value}");
+                case Enum e:
+                    values.Add($"{key}={Convert.ToInt32(e)}");
+                    break;
+                default:
+                    values.Add($"{key}={value}");
+                    break;
             }
         }
 

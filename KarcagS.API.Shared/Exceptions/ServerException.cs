@@ -19,6 +19,7 @@ public class ServerException : Exception
     /// Exception with message
     /// </summary>
     /// <param name="msg">Exception message</param>
+    /// <param name="resourceKey">Translate resource key</param>
     public ServerException(string msg, string? resourceKey = null) : base(msg)
     {
         ResourceKey = resourceKey;
@@ -29,6 +30,7 @@ public class ServerException : Exception
     /// </summary>
     /// <param name="message">Message</param>
     /// <param name="innerException">Inner exception</param>
+    /// <param name="resourceKey">Translate resource key</param>
     public ServerException(string message, Exception innerException, string? resourceKey) : base(message, innerException)
     {
         ResourceKey = resourceKey;

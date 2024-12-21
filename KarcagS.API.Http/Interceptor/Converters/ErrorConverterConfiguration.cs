@@ -4,12 +4,7 @@ namespace KarcagS.API.Http.Interceptor.Converters;
 
 public class ErrorConverterConfiguration
 {
-    public List<IErrorConverterAgent> Agents { get; set; } = new();
-
-    public ErrorConverterConfiguration()
-    {
-
-    }
+    public List<IErrorConverterAgent> Agents { get; set; } = [];
 
     public ErrorConverterConfiguration AddAgent(IErrorConverterAgent agent)
     {

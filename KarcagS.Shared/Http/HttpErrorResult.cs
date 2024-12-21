@@ -16,7 +16,7 @@ public class HttpErrorResult
     }
 
     public ResourceMessage Message { get; set; } = new();
-    public ResourceMessage[] SubMessages { get; set; } = Array.Empty<ResourceMessage>();
+    public ResourceMessage[] SubMessages { get; set; } = [];
     public string? StackTrace { get; set; }
 
     public Dictionary<string, object> Context { get; set; } = new();

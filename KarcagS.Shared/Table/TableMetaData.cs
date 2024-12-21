@@ -33,8 +33,8 @@ public class PaginationData
 
 public class ColumnsData
 {
-    public List<ColumnData> Columns { get; set; } = new();
-    public int ColumnNumber { get => Columns.Count; }
+    public List<ColumnData> Columns { get; set; } = [];
+    public int ColumnNumber => Columns.Count;
 }
 
 public class ColumnData

@@ -1,4 +1,4 @@
-namespace KarcagS.Common.Tools;
+namespace KarcagS.API.Shared.Configurations;
 
 /// <summary>
 /// Application Settings

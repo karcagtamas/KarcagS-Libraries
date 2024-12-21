@@ -1,5 +1,3 @@
 ﻿namespace KarcagS.API.Table;
 
-public class TableNotAuthorizedException : TableException
-{
-}
+public class TableNotAuthorizedException : TableException;

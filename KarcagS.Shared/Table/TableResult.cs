@@ -2,7 +2,7 @@
 
 public class TableResult<TKey>
 {
-    public List<ResultItem<TKey>> Items { get; set; } = new();
+    public List<ResultItem<TKey>> Items { get; set; } = [];
     public int AllItemCount { get; set; } = -1;
     public int FilteredAllItemCount { get; set; } = -1;
 
@@ -14,7 +14,7 @@ public class ResultItem<TKey>
 {
     public TKey ItemKey { get; set; } = default!;
     public Dictionary<string, ItemValue> Values { get; set; } = new();
-    public List<string> Tags { get; set; } = new();
+    public List<string> Tags { get; set; } = [];
     public bool ClickDisabled { get; set; } = false;
 
 

@@ -6,16 +6,10 @@ using KarcagS.Shared.Http;
 
 namespace KarcagS.Client.Common.Services;
 
-public class HelperService : IHelperService
+public class HelperService(IToasterService toasterService, ILocalizationService localizationService) : IHelperService
 {
-    protected readonly IToasterService ToasterService;
-    protected readonly ILocalizationService LocalizationService;
-
-    public HelperService(IToasterService toasterService, ILocalizationService localizationService)
-    {
-        ToasterService = toasterService;
-        LocalizationService = localizationService;
-    }
+    protected readonly IToasterService ToasterService = toasterService;
+    protected readonly ILocalizationService LocalizationService = localizationService;
 
     public JsonSerializerOptions GetSerializerOptions() => new() { PropertyNameCaseInsensitive = true };
 

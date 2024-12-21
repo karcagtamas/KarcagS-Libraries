@@ -3,13 +3,8 @@
 namespace KarcagS.Shared.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
-public class NullablePhoneAttribute : DataTypeAttribute
+public class NullablePhoneAttribute() : DataTypeAttribute(DataType.PhoneNumber)
 {
-    public NullablePhoneAttribute() : base(DataType.PhoneNumber)
-    {
-
-    }
-
     public override bool IsValid(object? value)
     {
         if (value is null)

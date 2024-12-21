@@ -11,7 +11,7 @@ public class ErrorConverter : IErrorConverter
 
     public ErrorConverter()
     {
-        agents = new();
+        agents = [];
     }
 
     public ErrorConverter(List<IErrorConverterAgent> agents)
@@ -38,24 +38,18 @@ public class ErrorConverter : IErrorConverter
     {
         result.Context.Add("HTTP", new HttpErrorResultHttpContext
         {
-            Host = httpContext.Request.Host.Value,
+            Host = httpContext.Request.Host.Value ?? "Unknown Host",
             Path = httpContext.Request.Path.Value,
             Method = httpContext.Request.Method,
             QueryParams = httpContext.Request.Query
             .ToDictionary(x => x.Key, x =>
             {
-                if (x.Value.Count == 0)
+                return x.Value.Count switch
                 {
-                    return null;
-                }
-                else if (x.Value.Count == 1)
-                {
-                    return (object?)x.Value[0];
-                }
-                else
-                {
-                    return (object?)x.Value.ToList();
-                }
+                    0 => null,
+                    1 => x.Value[0],
+                    _ => (object?)x.Value.ToList()
+                };
             })
         });
 

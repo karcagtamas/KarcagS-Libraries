@@ -35,28 +35,15 @@ public class MaxNumberAttribute : ValidationAttribute
                 return ValidationResult.Success;
             }
 
-            long? number = null;
-
-            if (value is long longValue)
+            long? number = value switch
             {
-                number = longValue;
-            }
-            else if (value is int intValue)
-            {
-                number = intValue;
-            }
-            else if (value is byte byteValue)
-            {
-                number = byteValue;
-            }
-            else if (value is uint uintValue)
-            {
-                number = uintValue;
-            }
-            else if (value is sbyte sbyteValue)
-            {
-                number = sbyteValue;
-            }
+                long longValue => longValue,
+                int intValue => intValue,
+                byte byteValue => byteValue,
+                uint uintValue => uintValue,
+                sbyte sbyteValue => sbyteValue,
+                _ => null
+            };
 
             if (number is null)
             {

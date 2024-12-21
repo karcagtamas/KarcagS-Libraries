@@ -10,7 +10,7 @@ namespace KarcagS.API.Mail.Services;
 /// </summary>
 public class MailService : IMailService
 {
-    private readonly EmailSettings _settings;
+    private readonly EmailSettings settings;
 
     /// <summary>
     /// Mail Service init
@@ -18,7 +18,7 @@ public class MailService : IMailService
     /// <param name="emailOptions">E-mail options</param>
     public MailService(IOptions<EmailSettings> emailOptions)
     {
-        _settings = emailOptions.Value;
+        settings = emailOptions.Value;
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class MailService : IMailService
         var smtp = new SmtpClient();
 
         // From
-        message.From = new MailAddress(_settings.Mail, _settings.DisplayName);
+        message.From = new MailAddress(settings.Mail, settings.DisplayName);
 
         // To
         foreach (var to in mail.ToList)
@@ -87,11 +87,11 @@ public class MailService : IMailService
     /// <returns>Smtp</returns>
     private SmtpClient ConfigSMTP(SmtpClient smtp)
     {
-        smtp.Port = _settings.Port;
-        smtp.Host = _settings.Host;
+        smtp.Port = settings.Port;
+        smtp.Host = settings.Host;
         smtp.EnableSsl = true;
         smtp.UseDefaultCredentials = false;
-        smtp.Credentials = new NetworkCredential(_settings.Mail, _settings.Password);
+        smtp.Credentials = new NetworkCredential(settings.Mail, settings.Password);
         smtp.DeliveryMethod = SmtpDeliveryMethod.Network;
         return smtp;
     }

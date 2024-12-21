@@ -1,6 +1,6 @@
 namespace KarcagS.Shared.Common;
 
-public interface IDictionaryState<TD>
+public interface IDictionaryState<out TD>
 {
     public TD Add<T>(string key, T value);
 

@@ -8,17 +8,8 @@ using Newtonsoft.Json;
 
 namespace KarcagS.API.Http.Interceptor;
 
-public class HttpInterceptor
+public class HttpInterceptor(RequestDelegate next, HttpInterceptorOptions options)
 {
-    private readonly RequestDelegate next;
-    private readonly HttpInterceptorOptions options;
-
-    public HttpInterceptor(RequestDelegate next, HttpInterceptorOptions options)
-    {
-        this.next = next;
-        this.options = options;
-    }
-
     public async Task InvokeAsync(HttpContext context, ILoggerService logger, IErrorConverter errorConverter)
     {
         logger.LogRequest(context);
@@ -42,20 +33,21 @@ public class HttpInterceptor
                     return;
                 }
 
-                if (context.Response.StatusCode == (int)HttpStatusCode.OK)
+                switch (context.Response.StatusCode)
                 {
-                    var body = JsonConvert.DeserializeObject(await FormatResponse(context.Response));
+                    case (int)HttpStatusCode.OK:
+                    {
+                        var body = JsonConvert.DeserializeObject(await FormatResponse(context.Response));
 
-                    await HandleSuccessRequestAsync(context, body, context.Response.StatusCode);
-                }
-                else if (context.Response.StatusCode == ValidationErrorActionResult.ValidationErrorCode)
-                {
-                    logger.LogValidationError();
-                    return;
-                }
-                else
-                {
-                    await HandleNotSuccessRequestAsync(context, context.Response.StatusCode, logger);
+                        await HandleSuccessRequestAsync(context, body, context.Response.StatusCode);
+                        break;
+                    }
+                    case ValidationErrorActionResult.ValidationErrorCode:
+                        logger.LogValidationError();
+                        return;
+                    default:
+                        await HandleNotSuccessRequestAsync(context, context.Response.StatusCode, logger);
+                        break;
                 }
             }
             catch (Exception ex)
@@ -132,7 +124,7 @@ public class HttpInterceptor
             response.Error = new HttpErrorResult
             {
                 Message = new ResourceMessage { Text = "Resource not found.", ResourceKey = "Server.Message.ResourceNotFound" },
-                SubMessages = Array.Empty<ResourceMessage>()
+                SubMessages = []
             };
         }
         else
@@ -140,7 +132,7 @@ public class HttpInterceptor
             response.Error = new HttpErrorResult
             {
                 Message = new ResourceMessage { Text = "Request cannot be processed.", ResourceKey = "Server.Message.RequestCannotProcessed" },
-                SubMessages = Array.Empty<ResourceMessage>()
+                SubMessages = []
             };
         }
 

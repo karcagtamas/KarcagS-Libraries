@@ -2,7 +2,7 @@
 
 public class TableException : Exception
 {
-    public string? ResourceKey { get; set; } = null;
+    public string? ResourceKey { get; set; }
 
     public TableException()
     {

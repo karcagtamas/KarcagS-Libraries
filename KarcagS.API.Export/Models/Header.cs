@@ -36,8 +36,8 @@ public class Header
         }
 
         var type = obj.GetType();
-        var property = type.GetProperty(this.PropertyName);
+        var property = type.GetProperty(PropertyName);
 
-        return property is not null ? Displaying(property?.GetValue(obj) ?? string.Empty) : string.Empty;
+        return property is not null ? Displaying(property.GetValue(obj) ?? string.Empty) : string.Empty;
     }
 }

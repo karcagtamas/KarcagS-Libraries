@@ -12,10 +12,10 @@ public class ServerErrorConverterAgent : IErrorConverterAgent
             return new(s)
             {
                 Message = new ResourceMessage { Text = s.Message, ResourceKey = s.ResourceKey },
-                SubMessages = Array.Empty<ResourceMessage>()
+                SubMessages = []
             };
         }
 
-        return default;
+        return null;
     }
 }

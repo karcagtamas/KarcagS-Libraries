@@ -4,22 +4,9 @@ using KarcagS.Shared.Http;
 
 namespace KarcagS.Client.Common.Http;
 
-public class ClientHttpService : HttpService
+public class ClientHttpService(HttpClient httpClient, HttpConfiguration configuration, ITokenHandler tokenHandler, HttpRefreshService refreshService, IHelperService helperService)
+    : HttpService(httpClient, configuration, tokenHandler, refreshService)
 {
-    private readonly IHelperService helperService;
-
-    public ClientHttpService(
-        HttpClient httpClient,
-        HttpConfiguration configuration,
-        ITokenHandler tokenHandler,
-        HttpRefreshService refreshService,
-        IHelperService helperService
-    ) : base(httpClient, configuration,
-        tokenHandler, refreshService)
-    {
-        this.helperService = helperService;
-    }
-
     protected override void AddErrorToaster(string caption, HttpErrorResult? errorResult) => helperService.AddHttpErrorToaster(caption, errorResult);
 
     protected override void AddSuccessToaster(string caption) => helperService.AddHttpSuccessToaster(caption);

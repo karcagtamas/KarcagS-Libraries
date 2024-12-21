@@ -4,7 +4,7 @@
 @typeparam TKey
 
 <div class="d-flex flex-column w-100" style="max-height: 100%;">
-    <MudTable @ref="Table" ServerData="@(new Func<TableState, Task<TableData<RowItem<T, TKey>>>>(TableReload))" Virtualize="true" T="RowItem<T, TKey>" Class="@AppendedClass" Items="DataSource.data" Loading="Loading" Dense="Config.Style.Dense" Elevation="Config.Style.Elevation" FixedHeader="Config.Style.FixedHeader" FixedFooter="true" Hover="Config.Style.Hover" Striped="Config.Style.Striped" Bordered="Config.Style.Bordered" OnRowClick="RowClickHandler">
+    <MudTable @ref="Table" ServerData="@(new Func<TableState, CancellationToken, Task<TableData<RowItem<T, TKey>>>>(TableReload))" Virtualize="true" T="RowItem<T, TKey>" Class="@AppendedClass" Items="DataSource.data" Loading="Loading" Dense="Config.Style.Dense" Elevation="Config.Style.Elevation" FixedHeader="Config.Style.FixedHeader" FixedFooter="true" Hover="Config.Style.Hover" Striped="Config.Style.Striped" Bordered="Config.Style.Bordered" OnRowClick="RowClickHandler">
         <ColGroup>
             @foreach (var col in Config.Columns)
             {

@@ -143,7 +143,7 @@ public partial class Table<TKey> : ComponentBase
         };
     }
 
-    private async Task<TableData<ResultRowItem<TKey>>> TableReload(TableState state)
+    private async Task<TableData<ResultRowItem<TKey>>> TableReload(TableState state, CancellationToken cancellationToken = default)
     {
         if (ObjectHelper.IsNotNull(ErrorResult))
         {

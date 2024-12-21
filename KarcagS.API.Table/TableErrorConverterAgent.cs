@@ -12,10 +12,10 @@ public class TableErrorConverterAgent : IErrorConverterAgent
             return new(exception)
             {
                 Message = new ResourceMessage { Text = t.Message, ResourceKey = t.ResourceKey },
-                SubMessages = Array.Empty<ResourceMessage>()
+                SubMessages = []
             };
         }
 
-        return default;
+        return null;
     }
 }

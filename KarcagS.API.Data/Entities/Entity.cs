@@ -11,22 +11,17 @@ public abstract class Entity<T> : IIdentified<T>
     [BsonIgnore]
     public abstract T Id { get; set; }
 
-    public override string? ToString() => $"[Id = {Id}]";
+    public override string ToString() => $"[Id = {Id}]";
 
     public override int GetHashCode() => Id!.GetHashCode();
 
     public override bool Equals(object? obj)
     {
-        if (obj == null)
+        return obj switch
         {
-            return false;
-        }
-
-        if (obj is Entity<T> entity && entity.Id is not null)
-        {
-            return entity.Id.Equals(Id);
-        }
-
-        return false;
+            null => false,
+            Entity<T> { Id: not null } entity => entity.Id.Equals(Id),
+            _ => false
+        };
     }
 }

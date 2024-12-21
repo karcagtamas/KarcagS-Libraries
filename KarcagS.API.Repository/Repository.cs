@@ -10,18 +10,11 @@ namespace KarcagS.API.Repository;
 /// </summary>
 /// <typeparam name="T">Type of Entity</typeparam>
 /// <typeparam name="TKey">Type of key</typeparam>
-public abstract class Repository<T, TKey> : IRepository<T, TKey> where T : Entity<TKey>
+public abstract class Repository<T, TKey>(ILoggerService logger, IPersistence persistence, string entity) : IRepository<T, TKey> where T : Entity<TKey>
 {
-    protected readonly ILoggerService Logger;
-    protected readonly string Entity;
-    protected readonly IPersistence Persistence;
-
-    protected Repository(ILoggerService logger, IPersistence persistence, string entity)
-    {
-        Logger = logger;
-        Entity = entity;
-        Persistence = persistence;
-    }
+    protected readonly ILoggerService Logger = logger;
+    protected readonly string Entity = entity;
+    protected readonly IPersistence Persistence = persistence;
 
     /// <summary>
     /// Get entity

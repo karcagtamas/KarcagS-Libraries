@@ -8,14 +8,14 @@ namespace KarcagS.Http;
 public class HttpPathParameters : IListState<HttpPathParameters>
 {
 
-    private readonly List<object> _pathParams;
+    private readonly List<object> pathParams;
 
     /// <summary>
     /// HTTP path parameters
     /// </summary>
     public HttpPathParameters()
     {
-        _pathParams = new List<object>();
+        pathParams = [];
     }
 
     public static HttpPathParameters Build() => new HttpPathParameters();
@@ -36,26 +36,24 @@ public class HttpPathParameters : IListState<HttpPathParameters>
             return this;
         }
 
-        // Add to end of the list
-        if (index == -1)
+        switch (index)
         {
-            _pathParams.Add(value);
-            return this;
-        }
-
-        // Negative index
-        if (index < -1)
-        {
-            throw new ArgumentException("Index cannot be negative");
+            // Add to end of the list
+            case -1:
+                pathParams.Add(value);
+                return this;
+            // Negative index
+            case < -1:
+                throw new ArgumentException("Index cannot be negative");
         }
 
         // Out of range
-        if (index > _pathParams.Count)
+        if (index > pathParams.Count)
         {
             throw new ArgumentException("Index cannot be bigger than the list");
         }
 
-        _pathParams.Insert(index, value);
+        pathParams.Insert(index, value);
         return this;
     }
 
@@ -65,7 +63,7 @@ public class HttpPathParameters : IListState<HttpPathParameters>
     /// <returns>Length number</returns>
     public int Count()
     {
-        return _pathParams.Count;
+        return pathParams.Count;
     }
 
     /// <summary>
@@ -84,12 +82,12 @@ public class HttpPathParameters : IListState<HttpPathParameters>
         }
 
         // Out of range
-        if (index >= _pathParams.Count)
+        if (index >= pathParams.Count)
         {
             throw new ArgumentException("Index cannot be larger than the list size");
         }
 
-        return (T)_pathParams[index];
+        return (T)pathParams[index];
     }
 
     /// <summary>
@@ -107,26 +105,24 @@ public class HttpPathParameters : IListState<HttpPathParameters>
             return this;
         }
 
-        // Add element end of the row
-        if (index == -1)
+        switch (index)
         {
-            _pathParams.Add(value);
-            return this;
-        }
-
-        // Negative
-        if (index < -1)
-        {
-            return this;
+            // Add element end of the row
+            case -1:
+                pathParams.Add(value);
+                return this;
+            // Negative
+            case < -1:
+                return this;
         }
 
         // Out of range
-        if (index > _pathParams.Count)
+        if (index > pathParams.Count)
         {
             return this;
         }
 
-        _pathParams.Insert(index, value);
+        pathParams.Insert(index, value);
         return this;
     }
 
@@ -146,22 +142,19 @@ public class HttpPathParameters : IListState<HttpPathParameters>
         }
 
         // Out of range
-        if (index >= _pathParams.Count)
+        if (index >= pathParams.Count)
         {
             return default;
         }
 
-        return (T)_pathParams[index];
+        return (T)pathParams[index];
     }
 
     /// <summary>
     /// List to string.
     /// </summary>
     /// <returns>String in path format</returns>
-    public override string ToString()
-    {
-        return this._pathParams.Aggregate("", (current, param) => current + $"/{param}");
-    }
+    public override string ToString() => pathParams.Aggregate("", (current, param) => current + $"/{param}");
 
     /// <summary>
     /// Add value to a specified index into a row (insert).
@@ -170,10 +163,7 @@ public class HttpPathParameters : IListState<HttpPathParameters>
     /// </summary>
     /// <param name="value">Value for adding</param>
     /// <typeparam name="T">Type of the value</typeparam>
-    public HttpPathParameters Add<T>(T value)
-    {
-        return Add(value, -1);
-    }
+    public HttpPathParameters Add<T>(T value) => Add(value, -1);
 
     /// <summary>
     /// Add value to a specified index into a row (insert).
@@ -182,8 +172,5 @@ public class HttpPathParameters : IListState<HttpPathParameters>
     /// </summary>
     /// <param name="value"></param>
     /// <typeparam name="T"></typeparam>
-    public HttpPathParameters TryAdd<T>(T value)
-    {
-        return TryAdd(value, -1);
-    }
+    public HttpPathParameters TryAdd<T>(T value) => TryAdd(value, -1);
 }

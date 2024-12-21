@@ -10,7 +10,7 @@ namespace KarcagS.API.Shared.Services;
 /// </summary>
 public class LoggerService<TUserKey> : ILoggerService
 {
-    private readonly ILogger<LoggerService<TUserKey>> _logger;
+    private readonly ILogger<LoggerService<TUserKey>> logger;
 
     /// <summary>
     /// Injector Constructor
@@ -18,7 +18,7 @@ public class LoggerService<TUserKey> : ILoggerService
     /// <param name="logger">Logger</param>
     public LoggerService(ILogger<LoggerService<TUserKey>> logger)
     {
-        _logger = logger;
+        this.logger = logger;
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public class LoggerService<TUserKey> : ILoggerService
     {
         if (ObjectHelper.IsNotNull(e))
         {
-            _logger.LogError(e, "ERROR");
+            logger.LogError(e, "ERROR");
         }
     }
 
@@ -38,7 +38,7 @@ public class LoggerService<TUserKey> : ILoggerService
     {
         if (ObjectHelper.IsNotNull(error))
         {
-            _logger.LogError("Error occurred during the request process[Message={@ErrorMessage}, Code={Code}]", error.Message, code);
+            logger.LogError("Error occurred during the request process[Message={@ErrorMessage}, Code={Code}]", error.Message, code);
         }
     }
 
@@ -47,9 +47,9 @@ public class LoggerService<TUserKey> : ILoggerService
         if (ObjectHelper.IsNotNull(context))
         {
             var request = context.Request;
-            _logger.LogInformation("[{RequestMethod}]: {RequestPath}", request.Method, request.Path);
+            logger.LogInformation("[{RequestMethod}]: {RequestPath}", request.Method, request.Path);
         }
     }
 
-    public void LogValidationError() => _logger.LogError("Validation error occurred during the request process");
+    public void LogValidationError() => logger.LogError("Validation error occurred during the request process");
 }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace KarcagS.Shared.Attributes;
 
 /// <summary>
-/// Check date is after an other property
+/// Check date is after another property
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
 public class DateAfterAttribute : ValidationAttribute
@@ -31,17 +31,14 @@ public class DateAfterAttribute : ValidationAttribute
     {
         var current = (DateTime?)value;
 
-        var before = (DateTime?)validationContext.ObjectType.GetProperty(CompareFieldName)
-            ?.GetValue(validationContext.ObjectInstance, null);
+        var before = (DateTime?)validationContext.ObjectType.GetProperty(CompareFieldName)?.GetValue(validationContext.ObjectInstance, null);
 
-        if (current == null && before == null)
+        switch (current)
         {
-            return ValidationResult.Success;
-        }
-
-        if (current == null)
-        {
-            return new ValidationResult(GetMessage());
+            case null when before == null:
+                return ValidationResult.Success;
+            case null:
+                return new ValidationResult(GetMessage());
         }
 
         if (before == null)

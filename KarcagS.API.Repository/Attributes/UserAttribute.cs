@@ -1,14 +1,8 @@
 namespace KarcagS.API.Repository.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
-public class UserAttribute : Attribute
+public class UserAttribute(bool onlyInit = false, bool force = true) : Attribute
 {
-    public bool OnlyInit { get; }
-    public bool Force { get; }
-
-    public UserAttribute(bool onlyInit = false, bool force = true)
-    {
-        OnlyInit = onlyInit;
-        Force = force;
-    }
+    public bool OnlyInit { get; } = onlyInit;
+    public bool Force { get; } = force;
 }

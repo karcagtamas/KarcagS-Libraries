@@ -20,11 +20,14 @@
             <LoadingBox IsLoading="IsLoading">
                 <MudTreeView Items="DataList">
                     <ItemTemplate>
-                        <MudTreeViewItem @bind-Expanded="context.IsExpanded" Items="context.Items">
+                        @{
+                            var item = context as TreeItem<T>;
+                        }
+                        <MudTreeViewItem @bind-Expanded="@context.Expanded" Items="context.Children">
                             <Content>
-                                <MudTreeViewItemToggleButton @bind-Expanded="context.IsExpanded" Visible="context.HasChild"/>
-                                <MudCheckBox Checked="context.IsSelected" CheckedChanged="(bool val) => ToggleSelect(context, val)" Disabled="IsSelectDisabled(context)"/>
-                                <MudText Class="mr-1">@TitleGetter(context.Data)</MudText>
+                                <MudTreeViewItemToggleButton @bind-Expanded="context.Expanded" Visible="item!.HasChild"/>
+                                <MudCheckBox Checked="context.IsSelected" CheckedChanged="(bool val) => ToggleSelect(context, val)" Disabled="IsSelectDisabled(item)"/>
+                                <MudText Class="mr-1">@TitleGetter(item.Data)</MudText>
                             </Content>
                         </MudTreeViewItem>
                     </ItemTemplate>
@@ -56,10 +59,10 @@
     public string EntityName { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public Func<Task<List<T>>> Fetcher { get; set; } = async () => await Task.FromResult<List<T>>(new());
+    public Func<Task<List<T>>> Fetcher { get; set; } = async () => await Task.FromResult<List<T>>([]);
 
     [Parameter, EditorRequired]
-    public Func<T, List<T>> ItemExtractor { get; set; } = _ => new();
+    public Func<T, List<T>> ItemExtractor { get; set; } = _ => [];
 
     [Parameter, EditorRequired]
     public Func<T, string> TitleGetter { get; set; } = _ => "";
@@ -82,9 +85,9 @@
     [Inject]
     private ILocalizationService LocalizationService { get; set; } = default!;
 
-    public HashSet<TreeItem<T>> DataList { get; set; } = new();
+    public IReadOnlyCollection<TreeItem<T>> DataList { get; set; } = [];
 
-    private List<T> Selection { get; } = new();
+    private List<T> Selection { get; } = [];
     private string TitleText { get; set; } = "";
 
     private bool IsLoading { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace KarcagS.API.Table.Configuration;
+﻿namespace KarcagS.API.Table.Configurations;
 
 public class PaginationConfiguration
 {

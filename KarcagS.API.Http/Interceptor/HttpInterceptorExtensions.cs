@@ -34,12 +34,7 @@ public static class HttpInterceptorExtensions
                                 SubMessages = context.ModelState
                                     .SelectMany(x =>
                                     {
-                                        if (x.Value is null)
-                                        {
-                                            return new List<ResourceMessage>();
-                                        }
-
-                                        return x.Value.Errors.Select(e => { return new ResourceMessage { Text = $"{x.Key}: {e.ErrorMessage}" }; }).ToList();
+                                        return x.Value is null ? [] : x.Value.Errors.Select(e => new ResourceMessage { Text = $"{x.Key}: {e.ErrorMessage}" }).ToList();
                                     })
                                     .ToArray()
                             }

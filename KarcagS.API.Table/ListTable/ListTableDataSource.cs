@@ -14,9 +14,9 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
 {
     protected readonly Func<QueryModel, Task<IQueryable<T>>> Fetcher;
 
-    protected List<string> TextFilteredColumns = new();
-    protected List<string> EFTextFilteredEntries = new();
-    public List<OrderingSetting<T, TKey>> DefaultOrdering = new();
+    protected List<string> TextFilteredColumns = [];
+    protected List<string> EFTextFilteredEntries = [];
+    public List<OrderingSetting<T, TKey>> DefaultOrdering = [];
 
     private ListTableDataSource(Func<QueryModel, Task<IQueryable<T>>> fetcher)
     {

@@ -4,13 +4,13 @@ using KarcagS.Shared.Helpers;
 
 namespace KarcagS.Shared.Attributes;
 
-public class ContainsAlphaAttribute : ValidationAttribute
+public partial class ContainsAlphaAttribute : ValidationAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
         if (ObjectHelper.IsNotNull(value) && value is string v)
         {
-            var m = Regex.Match(v, @"^(?=.*[a-z]).+$", RegexOptions.None);
+            var m = MyRegex().Match(v);
 
             return m.Success
                 ? ValidationResult.Success
@@ -23,4 +23,7 @@ public class ContainsAlphaAttribute : ValidationAttribute
     protected string GetInvalidMessage() => "Does not contain any alpha characters.";
 
     private ValidationResult Error() => new(GetInvalidMessage());
+
+    [GeneratedRegex(@"^(?=.*[a-z]).+$", RegexOptions.None)]
+    private static partial Regex MyRegex();
 }

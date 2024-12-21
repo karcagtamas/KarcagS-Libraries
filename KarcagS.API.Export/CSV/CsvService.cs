@@ -17,9 +17,7 @@ public class CsvService : ICsvService
     /// <param name="appendCurrentDate">Append current date to file name</param>
     /// <typeparam name="T">Type of the table rows</typeparam>
     /// <returns>Generated file</returns>
-    public ExportResult? GenerateTableExport<T>(IEnumerable<T> objectList, IEnumerable<Header> columnList,
-        string fileName,
-        bool appendCurrentDate)
+    public ExportResult? GenerateTableExport<T>(IEnumerable<T> objectList, IEnumerable<Header> columnList, string fileName, bool appendCurrentDate)
     {
         var stringBuilder = new StringBuilder();
         stringBuilder.AppendLine(string.Join(",", columnList.Select(x => x.DisplayName).ToList()));
