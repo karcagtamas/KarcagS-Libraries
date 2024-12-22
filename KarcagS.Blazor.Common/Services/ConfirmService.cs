@@ -36,7 +36,7 @@ public class ConfirmService : IConfirmService
         var dialog = await dialogService.ShowAsync<Confirm>(title, parameters, options);
         var result = await dialog.Result;
 
-        if (result.Canceled) return false;
+        if (ObjectHelper.MapOrDefault(result, res => res.Canceled)) return false;
 
         await action();
         return true;

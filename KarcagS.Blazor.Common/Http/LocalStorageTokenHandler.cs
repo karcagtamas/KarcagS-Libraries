@@ -29,7 +29,13 @@ public class LocalStorageTokenHandler : ITokenHandler
 
     public Task RemoveClientId(HttpConfiguration configuration) => RemoveFromLocalStorage(configuration.ClientIdName);
 
-    private Task<string> GetFromLocalStorage(string key) => localStorageService.GetItemAsync<string>(key).AsTask();
+    private async Task<string> GetFromLocalStorage(string key)
+    {
+        var value = await localStorageService.GetItemAsync<string>(key).AsTask();
+
+        return value ?? string.Empty;
+    }
+
     private Task SetToLocalStorage(string key, string value) => localStorageService.SetItemAsync(key, value).AsTask();
     private Task RemoveFromLocalStorage(string key) => localStorageService.RemoveItemAsync(key).AsTask();
 }

@@ -75,7 +75,7 @@ public partial class Table<TKey> : ComponentBase
         }
 
         MetaData = meta.Result;
-        
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -191,7 +191,7 @@ public partial class Table<TKey> : ComponentBase
 
     private async Task RowClickHandler(TableRowClickEventArgs<ResultRowItem<TKey>> e)
     {
-        if (ReadOnly || e.Item.Disabled || e.Item.ClickDisabled)
+        if (ReadOnly || ObjectHelper.IsNull(e.Item) || e.Item.Disabled || e.Item.ClickDisabled)
         {
             return;
         }

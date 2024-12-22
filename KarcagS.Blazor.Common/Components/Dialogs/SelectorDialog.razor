@@ -15,10 +15,12 @@
             <MudText Class="mb-2" Typo="Typo.body1">@BodyText</MudText>
         }
         <LoadingBox IsLoading="IsLoading">
-            <MudTable Style="margin-top: 2rem;" T="SelectableRowItem<Data, Key>" Items="DataList" Dense="true" Striped="true" OnRowClick="e => ToggleSelect(e.Item)" RowClassFunc="RowClassFunc">
+            <MudTable Style="margin-top: 2rem;" T="SelectableRowItem<Data, Key>" Items="DataList" Dense="true"
+                      Striped="true" OnRowClick="e => ToggleSelect(e.Item)" RowClassFunc="RowClassFunc">
                 <HeaderContent>
                     <MudTh>
-                        <MudText Color="Color.Primary">@LocalizationService.GetValue(LibraryLocalizer.SelectorValuesColumnHeaderKey, "Values")</MudText>
+                        <MudText
+                            Color="Color.Primary">@LocalizationService.GetValue(LibraryLocalizer.SelectorValuesColumnHeaderKey, "Values")</MudText>
                     </MudTh>
                 </HeaderContent>
                 <RowTemplate>
@@ -29,8 +31,10 @@
     </DialogContent>
     <DialogActions>
         <MudSpacer/>
-        <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Cancel")</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit" Disabled="@(!CanSubmit())">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
+        <MudButton
+            OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit"
+                   Disabled="@(!CanSubmit())">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -119,8 +123,13 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    private void ToggleSelect(SelectableRowItem<Data, Key> item)
+    private void ToggleSelect(SelectableRowItem<Data, Key>? item)
     {
+        if (ObjectHelper.IsNull(item))
+        {
+            return;
+        }
+
         if (MultiSelect)
         {
             if (item.Selected)

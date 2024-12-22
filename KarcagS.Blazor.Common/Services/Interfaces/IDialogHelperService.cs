@@ -7,8 +7,8 @@ namespace KarcagS.Blazor.Common.Services.Interfaces;
 public interface IDialogHelperService
 {
     Task OpenDialog<TComponent>(string title, Action action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase;
-    Task<TData?> OpenDialog<TComponent, TData>(string title, Action<TData> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase;
-    Task<TData?> OpenDialog<TComponent, TData>(string title, Func<TData, Task> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase;
+    Task<TData?> OpenDialog<TComponent, TData>(string title, Action<TData?> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase;
+    Task<TData?> OpenDialog<TComponent, TData>(string title, Func<TData?, Task> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase;
     Task OpenEditorDialog<TComponent>(string title, Action<EditorDialogResult> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase;
     Task OpenEditorDialog<TComponent>(string title, Func<EditorDialogResult, Task> action, DialogParameters? parameters = null, DialogOptions? options = null) where TComponent : ComponentBase;
 }

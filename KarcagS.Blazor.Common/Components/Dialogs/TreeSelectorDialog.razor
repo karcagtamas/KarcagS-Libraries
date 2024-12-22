@@ -26,7 +26,7 @@
                         <MudTreeViewItem @bind-Expanded="@context.Expanded" Items="context.Children">
                             <Content>
                                 <MudTreeViewItemToggleButton @bind-Expanded="context.Expanded" Visible="item!.HasChild"/>
-                                <MudCheckBox Checked="context.IsSelected" CheckedChanged="(bool val) => ToggleSelect(context, val)" Disabled="IsSelectDisabled(item)"/>
+                                <MudCheckBox Checked="@item.Selected" CheckedChanged="@((bool val) => ToggleSelect(item, val))" Disabled="IsSelectDisabled(item)"/>
                                 <MudText Class="mr-1">@TitleGetter(item.Data)</MudText>
                             </Content>
                         </MudTreeViewItem>

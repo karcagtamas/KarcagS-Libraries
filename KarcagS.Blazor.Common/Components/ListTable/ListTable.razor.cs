@@ -7,7 +7,6 @@ namespace KarcagS.Blazor.Common.Components.ListTable;
 
 public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdentified<TKey>
 {
-
     [Parameter, EditorRequired]
     public TableDataSource<T, TKey> DataSource { get; set; } = default!;
 
@@ -22,7 +21,10 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
 
     private MudTable<RowItem<T, TKey>>? Table { get; set; }
 
-    private string AppendedClass { get => $"w-100 flex-box h-100 {Class}"; }
+    private string AppendedClass
+    {
+        get => $"w-100 flex-box h-100 {Class}";
+    }
 
     private bool Loading { get; set; } = false;
     private string TextFilter { get; set; } = string.Empty;
@@ -50,7 +52,7 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
 
     public async Task Refresh(TableState state) => await DataSource.Refresh(state);
 
-    public void ForceRefresh() => ObjectHelper.WhenNotNull(Table, async t => await t.ReloadServerData());
+    public Task ForceRefresh() => ObjectHelper.WhenNotNull(Table, async t => await t.ReloadServerData());
 
     public TableFilter GetCurrentFilter()
     {
@@ -80,7 +82,7 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
 
     private async Task RowClickHandler(TableRowClickEventArgs<RowItem<T, TKey>> e)
     {
-        if (e.Item.Disabled || e.Item.Hidden || Config.ClickDisableOn(e.Item.Data))
+        if (ObjectHelper.IsNull(e.Item) || e.Item.Disabled || e.Item.Hidden || Config.ClickDisableOn(e.Item.Data))
         {
             return;
         }
@@ -88,10 +90,10 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
         await OnRowClick.InvokeAsync(e.Item);
     }
 
-    private void TextFilterHandler(string text)
+    private async Task TextFilterHandler(string text)
     {
         TextFilter = text;
 
-        ObjectHelper.WhenNotNull(Table, async t => await t.ReloadServerData());
+        await ObjectHelper.WhenNotNull(Table, async t => await t.ReloadServerData());
     }
 }

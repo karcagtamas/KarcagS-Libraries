@@ -4,21 +4,14 @@ using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Services;
 
-public class FileUploaderService : IFileUploaderService
+public class FileUploaderService(IDialogService dialogService) : IFileUploaderService
 {
-    private readonly IDialogService dialogService;
-
-    public FileUploaderService(IDialogService dialogService)
-    {
-        this.dialogService = dialogService;
-    }
-
     public async Task<bool> Open(FileUploaderDialogInput input, string title)
     {
         var parameters = new DialogParameters { { "Input", input } };
         var dialog = await dialogService.ShowAsync<FileUploader>(title, parameters, new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true });
         var result = await dialog.Result;
 
-        return !result.Canceled;
+        return !result?.Canceled ?? false;
     }
 }

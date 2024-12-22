@@ -5,8 +5,7 @@ namespace KarcagS.Blazor.Common.Components.Tree;
 public sealed class TreeItem<T> : TreeItemData<T>
 {
     public T Data { get; set; } = default!;
-    public bool IsSelected { get; set; } = false;
-    public int Level { get; set; } = 0;
+    public int Level { get; set; }
     public bool HasChild => Children?.Count > 0;
     public bool IsLeaf => Children?.Count == 0;
 
@@ -44,7 +43,7 @@ public sealed class TreeItem<T> : TreeItemData<T>
 
     public void ToggleSelection(bool toggleAll = false)
     {
-        IsSelected = !IsSelected;
+        Selected = !Selected;
 
         if (toggleAll)
         {
