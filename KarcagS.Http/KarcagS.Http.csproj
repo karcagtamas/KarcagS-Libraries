@@ -3,10 +3,10 @@
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>6.0.0</PackageVersion>
+        <PackageVersion>6.0.1</PackageVersion>
         <Title>KarcagS HTTP Library</Title>
-        <AssemblyVersion>6.0.0</AssemblyVersion>
-        <FileVersion>6.0.0</FileVersion>
+        <AssemblyVersion>6.0.1</AssemblyVersion>
+        <FileVersion>6.0.1</FileVersion>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <PackageReadmeFile>README.md</PackageReadmeFile>
