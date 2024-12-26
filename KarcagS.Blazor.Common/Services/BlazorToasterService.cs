@@ -1,6 +1,7 @@
 ﻿using KarcagS.Client.Common.Services.Interfaces;
 using KarcagS.Http.Enums;
 using KarcagS.Http.Models;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Services;
@@ -24,7 +25,7 @@ public class BlazorToasterService : IToasterService
     /// <param name="settings">Toaster Settings</param>
     public void Open(ToasterSettings settings) => snackbar.Add(GenerateString(settings), GetType(settings));
 
-    private static string GenerateString(ToasterSettings settings) => $"<h5>{settings.Caption}</h5><h6>{settings.Message}</h6>";
+    private static MarkupString GenerateString(ToasterSettings settings) => new($"<h5>{settings.Caption}</h5><h6>{settings.Message}</h6>");
 
     private static Severity GetType(ToasterSettings settings)
     {
