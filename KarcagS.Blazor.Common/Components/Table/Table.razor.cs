@@ -1,15 +1,17 @@
-﻿using KarcagS.Blazor.Common.Services.Interfaces;
+﻿using System.Reactive.Subjects;
+using KarcagS.Blazor.Common.Services.Interfaces;
 using KarcagS.Client.Common.Services.Interfaces;
 using KarcagS.Shared.Enums;
 using KarcagS.Shared.Http;
 using KarcagS.Shared.Table;
+using KarcagS.Shared.Utils;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Components.Table;
 
-public partial class Table<TKey> : ComponentBase
+public partial class Table<TKey> : ComponentBase, IDisposable
 {
     [Parameter]
     public RenderFragment<Table<TKey>>? FilterRow { get; set; }
@@ -21,7 +23,7 @@ public partial class Table<TKey> : ComponentBase
     public StyleConfiguration TableStyle { get; set; } = StyleConfiguration.Build();
 
     [Parameter]
-    public EventCallback<ResultRowItem<TKey>> OnRowClick { get; set; }
+    public EventCallback<TableRowClickArgs<ResultRowItem<TKey>>> OnRowClick { get; set; }
 
     [Parameter]
     public string Class { get; set; } = string.Empty;
@@ -43,17 +45,20 @@ public partial class Table<TKey> : ComponentBase
 
     private MudTable<ResultRowItem<TKey>>? TableComponent { get; set; }
 
-    private string AppendedClass => $"w-100 flex-box h-100 {Class}";
+    private string AppendedClass => $"lib-table w-100 flex-box h-100 {Class}";
 
     private bool Loading { get; set; } = false;
     private string? TextFilter { get; set; }
     private Dictionary<string, object> Params { get; set; } = new();
-    private List<Order> Orders { get; set; } = new();
+    private List<Order> Orders { get; set; } = [];
 
     private TableMetaData? MetaData { get; set; }
     private HttpErrorResult? ErrorResult { get; set; }
 
-    protected override async void OnInitialized()
+    private Subject<TableRowClickArgs<ResultRowItem<TKey>>> rowClickSubject = new();
+    private IDisposable? disposable;
+
+    protected override async Task OnInitializedAsync()
     {
         foreach (var p in InitialParams)
         {
@@ -61,8 +66,10 @@ public partial class Table<TKey> : ComponentBase
         }
 
         await LoadMetaData();
-
         await base.OnInitializedAsync();
+
+        disposable = rowClickSubject.ThrottleMax(TimeSpan.FromMilliseconds(200), TimeSpan.FromMilliseconds(800))
+            .Subscribe(async void (args) => { await OnRowClick.InvokeAsync(args); });
     }
 
     private async Task LoadMetaData()
@@ -189,14 +196,18 @@ public partial class Table<TKey> : ComponentBase
         };
     }
 
-    private async Task RowClickHandler(TableRowClickEventArgs<ResultRowItem<TKey>> e)
+    private void RowClickHandler(TableRowClickEventArgs<ResultRowItem<TKey>> e)
     {
         if (ReadOnly || ObjectHelper.IsNull(e.Item) || e.Item.Disabled || e.Item.ClickDisabled)
         {
             return;
         }
 
-        await OnRowClick.InvokeAsync(e.Item);
+        rowClickSubject.OnNext(new TableRowClickArgs<ResultRowItem<TKey>>
+        {
+            Item = e.Item,
+            MouseEventArgs = e.MouseEventArgs,
+        });
     }
 
     private async Task ActionHandler(ColumnData col, ResultRowItem<TKey> item)
@@ -258,6 +269,22 @@ public partial class Table<TKey> : ComponentBase
         };
     }
 
+    private static string GetTDClass(ColumnData col, ResultRowItem<TKey> item)
+    {
+        List<string> classes =
+        [
+            "lib-table-cell",
+            $"lib-table-cell-{col.Key}"
+        ];
+
+        if (item.Disabled || item.ClickDisabled)
+        {
+            classes.Add("lib-table-cell-disabled");
+        }
+
+        return string.Join(" ", classes);
+    }
+
     private static string GetTDStyle(Alignment alignment)
     {
         var alignmentText = alignment switch
@@ -268,6 +295,22 @@ public partial class Table<TKey> : ComponentBase
             _ => ""
         };
         return $"text-align: {alignmentText}";
+    }
+    
+    private static string GetTHClass(ColumnData col)
+    {
+        List<string> classes =
+        [
+            "lib-table-header-cell",
+            $"lib-table-header-cell-{col.Key}"
+        ];
+
+        if (col.IsSortable)
+        {
+            classes.Add("lib-table-header-cell-sortable");
+        }
+
+        return string.Join(" ", classes);
     }
 
     private static string GetTHStyle(Alignment alignment)
@@ -314,4 +357,6 @@ public partial class Table<TKey> : ComponentBase
 
     private static string GetValue(string value, IStringLocalizer? localizer) =>
         ObjectHelper.IsNotNull(localizer) ? localizer[value] : value;
+
+    public void Dispose() => disposable?.Dispose();
 }

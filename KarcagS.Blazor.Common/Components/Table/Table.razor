@@ -1,13 +1,12 @@
-﻿@using KarcagS.Shared.Common
-@using KarcagS.Shared.Localization
+﻿@using KarcagS.Shared.Localization
 @using KarcagS.Shared.Table
 
 @typeparam TKey
 
-<div class="d-flex flex-column w-100" style="max-height: 100%;">
+<div class="lib-table-frame d-flex flex-column w-100" style="max-height: 100%;">
     @if (MetaData != null)
     {
-        <MudTable @ref="TableComponent" ServerData="@(new Func<TableState, CancellationToken, Task<TableData<ResultRowItem<TKey>>>>(TableReload))" Virtualize="true" T="ResultRowItem<TKey>" Class="@AppendedClass" Dense="TableStyle.Dense" Elevation="TableStyle.Elevation" FixedHeader="TableStyle.FixedHeader" FixedFooter="true" Hover="TableStyle.Hover" Striped="TableStyle.Striped" Bordered="TableStyle.Bordered" OnRowClick="RowClickHandler">
+        <MudTable @ref="TableComponent" ServerData="@(new Func<TableState, CancellationToken, Task<TableData<ResultRowItem<TKey>>>>(TableReload))" Virtualize="true" T="ResultRowItem<TKey>" Class="@AppendedClass" Dense="TableStyle.Dense" Elevation="TableStyle.Elevation" FixedHeader="TableStyle.FixedHeader" FixedFooter="true" Hover="TableStyle.Hover" Striped="TableStyle.Striped" Bordered="TableStyle.Bordered" OnRowClick="@RowClickHandler">
             <ColGroup>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
@@ -52,7 +51,7 @@
             <HeaderContent>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    <MudTh @onclick="@(() => HandleOrdering(col))">
+                    <MudTh Class="@GetTHClass(col)" @onclick="@(() => HandleOrdering(col))">
                         <div style="@GetTHStyle(col.Alignment)">
                             <MudText Color="TableStyle.TitleColorGetter(col.Key)" Inline>
                                 <b>@GetColumnTitle(col, Localizer)</b>
@@ -68,7 +67,7 @@
             <RowTemplate>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    <MudTd Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key">
+                    <MudTd Class="@GetTDClass(col, context)" Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key">
                         @if (!col.IsAction)
                         {
                             <MudText Color="TableStyle.ColorGetter(context.Values[col.Key])">
@@ -77,7 +76,11 @@
                         }
                         else
                         {
-                            <MudIconButton Color="TableStyle.IconColorGetter(context.Values[col.Key])" Icon="@TableStyle.IconGetter(context.Values[col.Key])" Size="Size.Small" Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled || (TableComponent?.Loading ?? true))" OnClick="@(() => ActionHandler(col, context))"/>
+                            <MudIconButton Color="TableStyle.IconColorGetter(context.Values[col.Key])" 
+                                           Icon="@TableStyle.IconGetter(context.Values[col.Key])" 
+                                           Size="Size.Small" 
+                                           Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled || (TableComponent?.Loading ?? true))" 
+                                           OnClick="@(() => ActionHandler(col, context))"/>
                         }
                     </MudTd>
                 }

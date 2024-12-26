@@ -1,7 +1,0 @@
-﻿.box {
-    display: flex;
-    flex-direction: row;
-    flex: 1;
-    gap: 0.5rem;
-    align-items: center;
-}

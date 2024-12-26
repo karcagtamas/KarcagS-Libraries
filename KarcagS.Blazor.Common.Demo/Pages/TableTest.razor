@@ -4,10 +4,13 @@
 @inject IDemoTableService Service
 
 <div class="flex-box overflow-hidden p-1">
-    <Table @ref="Table" TKey="string" Service="Service" TableStyle="Style" InitialParams="ExtraParams" OnRowClick="RowClickHandler" OnAction="ActionHandler">
+    <Table @ref="Table" TKey="string" Service="Service" TableStyle="Style" InitialParams="ExtraParams"
+           OnRowClick="@RowClickHandler" OnAction="@ActionHandler">
 
         <FilterRow>
-            <MudTextField Style="width: 220px;" T="string" Label="Text Filter" Variant="Variant.Outlined" Margin="Margin.Dense" TextChanged="@(arg => context.SetAdditionalFilter("text", string.IsNullOrEmpty(arg) ? null : arg))"/>
+            <MudTextField Style="width: 220px;" T="string" Label="Text Filter" Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          TextChanged="@(arg => context.SetAdditionalFilter("text", string.IsNullOrEmpty(arg) ? null : arg))"/>
         </FilterRow>
 
     </Table>
@@ -40,10 +43,12 @@
         { "key", 1 }
     };
 
-    private void RowClickHandler(ResultRowItem<string> item)
+    private void RowClickHandler(TableRowClickArgs<ResultRowItem<string>> item)
     {
-        var items = Table?.GetData();
-        Console.WriteLine(item.ItemKey);
+        // var items = Table?.GetData();
+        Console.WriteLine(item.Item.ItemKey);
+        Console.WriteLine(item.IsDoubleClick);
+        Console.WriteLine(item.Button.ToString());
     }
 
     private void ActionHandler(KeyValuePair<string, ResultRowItem<string>> pair)

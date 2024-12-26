@@ -5,3 +5,39 @@
 .mud-table-dense * .mud-table-row .mud-table-cell {
     padding-inline-end: 16px !important;
 }
+
+.lib-table-frame .lib-table-cell:not(.lib-table-cell-disabled):hover {
+    cursor: pointer;
+}
+
+.lib-table-frame .lib-table-header-cell.lib-table-header-cell-sortable:hover {
+    cursor: pointer;
+}
+
+.lib-data-row.ellipsis {
+    overflow: hidden;
+}
+
+.ellipsis .lib-data-row-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ellipsis .lib-data-row-value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.lib-rates .lib-rates-element:hover {
+    cursor: pointer;
+}
+
+.lib-action-bar .box {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    gap: 0.5rem;
+    align-items: center;
+}
