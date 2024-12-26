@@ -1,25 +1,30 @@
 ﻿@using KarcagS.Shared.Helpers
 
-<div class="lib-data-row mb-2">
-    <MudText Typo="Typo.body1" Color="Color.Primary" Inline="OneRow">
+<div class="@Class">
+    <MudText Class="lib-data-row-title" Typo="Typo.body1" Color="Color.Primary" Inline="OneRow">
         <b>@Title: </b>
     </MudText>
-    <MudText Typo="Typo.body1" Color="ValueColor" Inline="OneRow">
+    <MudText Class="lib-data-row-value" Typo="Typo.body1" Color="ValueColor" Inline="OneRow">
         @WriteHelper.WriteEmptyableField(Value)
     </MudText>
-
 </div>
 
 @code {
+
     [Parameter, EditorRequired]
     public string Title { get; set; } = default!;
 
     [Parameter]
-    public string? Value { get; set; } = default!;
+    public string? Value { get; set; }
 
     [Parameter]
-    public bool OneRow { get; set; } = false;
+    public bool OneRow { get; set; }
 
     [Parameter]
     public Color ValueColor { get; set; } = Color.Default;
+
+    [Parameter]
+    public bool Ellipsis { get; set; } = true;
+
+    private string Class => "lib-data-row d-flex " + (OneRow ? "flex-row" : "flex-column") + " mb-2 gap-1 " + (Ellipsis ? "ellipsis" : "");
 }

@@ -1,5 +1,5 @@
 ﻿@using KarcagS.Shared.Helpers
-<DataRow Title="@Title" Value="@DateHelper.DateToString(Date)" OneRow="OneRow" />
+<DataRow Title="@Title" Value="@DateHelper.DateToString(Date)" OneRow="OneRow" Ellipsis="Ellipsis" />
 
 @code {
     [Parameter, EditorRequired]
@@ -9,5 +9,8 @@
     public DateTime? Date { get; set; }
 
     [Parameter]
-    public bool OneRow { get; set; } = false;
+    public bool OneRow { get; set; }
+    
+    [Parameter]
+    public bool Ellipsis { get; set; } = true;
 }

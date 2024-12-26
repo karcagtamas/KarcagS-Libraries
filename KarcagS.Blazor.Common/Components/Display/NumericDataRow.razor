@@ -1,8 +1,9 @@
 ﻿@using KarcagS.Shared.Helpers
 
-<DataRow Title="@Title" Value="@WriteHelper.WriteNumberWithSuffix(Number, Suffix)" OneRow="OneRow" />
+<DataRow Title="@Title" Value="@WriteHelper.WriteNumberWithSuffix(Number, Suffix)" OneRow="OneRow" Ellipsis="Ellipsis"/>
 
 @code {
+
     [Parameter, EditorRequired]
     public string Title { get; set; } = default!;
 
@@ -13,5 +14,9 @@
     public string Suffix { get; set; } = default!;
 
     [Parameter]
-    public bool OneRow { get; set; } = false;
+    public bool OneRow { get; set; }
+
+    [Parameter]
+    public bool Ellipsis { get; set; } = true;
+
 }

@@ -1,4 +1,4 @@
-﻿<DataRow Title="@Title" Value="@Number.ToString($"N{DecimalPlaces}")" OneRow="OneRow"/>
+﻿<DataRow Title="@Title" Value="@Number.ToString($"N{DecimalPlaces}")" OneRow="OneRow" Ellipsis="Ellipsis"/>
 
 @code {
 
@@ -13,5 +13,8 @@
 
     [Parameter]
     public int DecimalPlaces { get; set; } = 2;
+    
+    [Parameter]
+    public bool Ellipsis { get; set; } = true;
 
 }

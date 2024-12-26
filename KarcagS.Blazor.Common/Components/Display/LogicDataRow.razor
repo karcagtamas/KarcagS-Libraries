@@ -1,13 +1,11 @@
-﻿@using KarcagS.Shared.Helpers
-
-<DataRow Title="@Title" Value="@(Value ? TrueValue : FalseValue)" OneRow="OneRow" ValueColor="@(Value ? TrueColor : FalseColor)" />
+﻿<DataRow Title="@Title" Value="@(Value ? TrueValue : FalseValue)" OneRow="OneRow" ValueColor="@(Value ? TrueColor : FalseColor)" Ellipsis="Ellipsis" />
 
 @code {
     [Parameter, EditorRequired]
     public string Title { get; set; } = default!;
 
     [Parameter, EditorRequired]
-    public bool Value { get; set; } = default!;
+    public bool Value { get; set; }
 
     [Parameter, EditorRequired]
     public string TrueValue { get; set; } = "";
@@ -22,5 +20,8 @@
     public Color FalseColor { get; set; } = Color.Default;
 
     [Parameter]
-    public bool OneRow { get; set; } = false;
+    public bool OneRow { get; set; }
+    
+    [Parameter]
+    public bool Ellipsis { get; set; } = true;
 }

@@ -1,0 +1,15 @@
+﻿.lib-data-row.ellipsis {
+    overflow: hidden;
+}
+
+.ellipsis ::deep .lib-data-row-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ellipsis ::deep .lib-data-row-value {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

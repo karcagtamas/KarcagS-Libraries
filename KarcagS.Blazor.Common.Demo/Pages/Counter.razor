@@ -4,6 +4,7 @@
 @using KarcagS.Blazor.Common.Demo.Shared.Dialogs
 @using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Http
+@using KarcagS.Blazor.Common.Components.Display
 @inject IDialogHelperService DialogHelper
 
 <PageTitle>Counter</PageTitle>
@@ -19,6 +20,10 @@
 <TimeInput Label="Time"/>
 <NullableTextInput Label="Text" @bind-Value="@Text"/>
 <DateInput Label="Date"/>
+
+<div style="width: 600px">
+    <DataRow Title="Alma asdf asd asd fasdasd f" Value="Coreasd asd asd as das dasd asd" Ellipsis OneRow/>
+</div>
 
 
 @code {
@@ -43,11 +48,11 @@
 
     private async Task IncrementCount()
     {
-    // await HttpService.Post<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast"), new TestModel { }).Execute();
-    //sawait HttpService.Get<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast")).Execute();
+        // await HttpService.Post<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast"), new TestModel { }).Execute();
+        //sawait HttpService.Get<TestModel>(new HttpSettings("https://localhost:7205/weatherforecast")).Execute();
 
-    //await Client.GetFromJsonAsync<TestModel>("https://localhost:7205/weatherforecast");
-    // await Client.PostAsJsonAsync<TestModel>("https://localhost:7205/weatherforecast", new TestModel { });
+        //await Client.GetFromJsonAsync<TestModel>("https://localhost:7205/weatherforecast");
+        // await Client.PostAsJsonAsync<TestModel>("https://localhost:7205/weatherforecast", new TestModel { });
 
         await Confirm.Open(new Components.Confirm.ConfirmDialogInput { ActionFunction = async () => await Task.FromResult(true), Message = "HELLO" }, "Confirm Action Log Delete because it's needed");
     }
