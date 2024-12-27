@@ -20,10 +20,10 @@
 @code {
     private Table<string>? Table { get; set; }
 
-    private StyleConfiguration Style { get; set; } = StyleConfiguration.Build()
+    private StyleConfiguration<string> Style { get; set; } = StyleConfiguration<string>.Build()
         .AddColumnStyleGetter(colKey =>
         {
-            var builder = ColumnStyleBuilder.Init()
+            var builder = ColumnStyleBuilder<string>.Init()
                 .TitleColor(colKey == "id" ? Color.Primary : Color.Secondary);
 
             switch (colKey)
@@ -39,7 +39,7 @@
                 case "date":
                     builder.Width(200);
                     break;
-                case "gender" or "other":
+                case "gender" or "other-gender":
                     builder.Width(120);
                     break;
             }
@@ -48,7 +48,7 @@
         })
         .AddCellStyleGetter((_, item) =>
         {
-            var builder = CellStyleBuilder.Init();
+            var builder = CellStyleBuilder<string>.Init();
 
             if (item.Tags.Contains("TRUE_VALUE"))
             {

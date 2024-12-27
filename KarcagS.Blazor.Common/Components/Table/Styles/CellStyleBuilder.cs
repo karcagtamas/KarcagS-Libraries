@@ -2,7 +2,7 @@
 
 namespace KarcagS.Blazor.Common.Components.Table.Styles;
 
-public class CellStyleBuilder
+public class CellStyleBuilder<TKey>
 {
     private Color textColor = Color.Default;
     private string icon = Icons.Material.Filled.Info;
@@ -12,25 +12,25 @@ public class CellStyleBuilder
     {
     }
 
-    public static CellStyleBuilder Init() => new();
+    public static CellStyleBuilder<TKey> Init() => new();
 
-    public static CellStyle Default() => Init().Build();
+    public static CellStyle<TKey> Default() => Init().Build();
 
-    public CellStyle Build() => new(textColor, icon, iconColor);
+    public CellStyle<TKey> Build() => new(textColor, icon, iconColor);
 
-    public CellStyleBuilder TextColor(Color value)
+    public CellStyleBuilder<TKey> TextColor(Color value)
     {
         textColor = value;
         return this;
     }
 
-    public CellStyleBuilder Icon(string value)
+    public CellStyleBuilder<TKey> Icon(string value)
     {
         icon = value;
         return this;
     }
 
-    public CellStyleBuilder IconColor(Color value)
+    public CellStyleBuilder<TKey> IconColor(Color value)
     {
         iconColor = value;
         return this;

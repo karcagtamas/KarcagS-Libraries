@@ -21,7 +21,7 @@ public partial class Table<TKey> : ComponentBase, IDisposable
     public ITableService<TKey> Service { get; set; } = default!;
 
     [Parameter]
-    public StyleConfiguration TableStyle { get; set; } = StyleConfiguration.Build();
+    public StyleConfiguration<TKey> TableStyle { get; set; } = StyleConfiguration<TKey>.Build();
 
     [Parameter]
     public EventCallback<TableRowClickArgs<TableRowItem<TKey>>> OnRowClick { get; set; }
@@ -54,7 +54,7 @@ public partial class Table<TKey> : ComponentBase, IDisposable
     private List<Order> Orders { get; set; } = [];
 
     private TableMetaData? MetaData { get; set; }
-    private Dictionary<string, ColumnStyle> ColumnStyles { get; set; } = new();
+    private Dictionary<string, TableHeaderStyle<TKey>> ColumnStyles { get; set; } = new();
     private HttpErrorResult? ErrorResult { get; set; }
 
     private Subject<TableRowClickArgs<TableRowItem<TKey>>> rowClickSubject = new();
@@ -84,7 +84,12 @@ public partial class Table<TKey> : ComponentBase, IDisposable
         }
 
         MetaData = meta.Result;
-        MetaData?.ColumnsData.Columns.ForEach(column => { ColumnStyles.Add(column.Key, TableStyle.ColumnStyleGetter(column.Key)); });
+        ColumnStyles = new Dictionary<string, TableHeaderStyle<TKey>>();
+        MetaData?.ColumnsData.Columns.ForEach(column =>
+        {
+            var columnStyle = TableStyle.ColumnStyleGetter(column.Key);
+            ColumnStyles.Add(column.Key, new TableHeaderStyle<TKey>(columnStyle, columnStyle.GetClass(TableStyle, column), columnStyle.GetStyle(), columnStyle.GetInnerClass(), columnStyle.GetInnerStyle()));
+        });
 
         await InvokeAsync(StateHasChanged);
     }
@@ -180,14 +185,14 @@ public partial class Table<TKey> : ComponentBase, IDisposable
             return emptyData;
         }
 
-        if (ObjectHelper.IsNull(data.Result))
+        if (ObjectHelper.IsNull(data.Result) || ObjectHelper.IsNull(MetaData))
         {
             return emptyData;
         }
 
         return new TableData<TableRowItem<TKey>>
         {
-            Items = data.Result.Items.Select(x => new TableRowItem<TKey>(x, TableStyle.CellStyleGetter)).ToList(),
+            Items = data.Result.Items.Select(x => new TableRowItem<TKey>(x, TableStyle, MetaData)).ToList(),
             TotalItems = data.Result.FilteredAll
         };
     }
@@ -265,91 +270,20 @@ public partial class Table<TKey> : ComponentBase, IDisposable
         };
     }
 
-    private static string GetTDClass(ColumnData col, TableRowItem<TKey> item)
-    {
-        List<string> classes =
-        [
-            "lib-table-cell",
-            $"lib-table-cell-{col.Key}"
-        ];
+    private static string GetErrorMessage(ResourceMessage message, IStringLocalizer? localizer) =>
+        ObjectHelper.IsNotNull(message.ResourceKey) && ObjectHelper.IsNotNull(localizer)
+            ? localizer[message.ResourceKey]
+            : message.Text;
 
-        if (item.Disabled || item.ClickDisabled)
-        {
-            classes.Add("lib-table-cell-disabled");
-        }
+    private static string GetTitle(TableMetaData meta, IStringLocalizer? localizer) =>
+        ObjectHelper.IsNotNull(meta.ResourceKey) && ObjectHelper.IsNotNull(localizer)
+            ? localizer[meta.ResourceKey]
+            : meta.Title;
 
-        return string.Join(" ", classes);
-    }
-
-    private static string GetTDStyle(ColumnStyle style)
-    {
-        var alignmentText = style.Alignment switch
-        {
-            Alignment.Left => "left",
-            Alignment.Center => "center",
-            Alignment.Right => "right",
-            _ => ""
-        };
-        return $"text-align: {alignmentText}";
-    }
-
-    private static string GetTHClass(ColumnData col)
-    {
-        List<string> classes =
-        [
-            "lib-table-header-cell",
-            $"lib-table-header-cell-{col.Key}"
-        ];
-
-        if (col.IsSortable)
-        {
-            classes.Add("lib-table-header-cell-sortable");
-        }
-
-        return string.Join(" ", classes);
-    }
-
-    private static string GetTHStyle(ColumnStyle style)
-    {
-        var alignmentText = style.Alignment switch
-        {
-            Alignment.Left => "left",
-            Alignment.Center => "center",
-            Alignment.Right => "right",
-            _ => ""
-        };
-        return $"display: flex; flex-direction: row; align-items: center; justify-content: {alignmentText};";
-    }
-
-    private static string GetErrorMessage(ResourceMessage message, IStringLocalizer? localizer)
-    {
-        if (ObjectHelper.IsNotNull(message.ResourceKey) && ObjectHelper.IsNotNull(localizer))
-        {
-            return localizer[message.ResourceKey];
-        }
-
-        return message.Text;
-    }
-
-    private static string GetTitle(TableMetaData meta, IStringLocalizer? localizer)
-    {
-        if (ObjectHelper.IsNotNull(meta.ResourceKey) && ObjectHelper.IsNotNull(localizer))
-        {
-            return localizer[meta.ResourceKey];
-        }
-
-        return meta.Title;
-    }
-
-    private static string GetColumnTitle(ColumnData col, IStringLocalizer? localizer)
-    {
-        if (ObjectHelper.IsNotNull(col.ResourceKey) && ObjectHelper.IsNotNull(localizer))
-        {
-            return localizer[col.ResourceKey];
-        }
-
-        return col.Title;
-    }
+    private static string GetColumnTitle(ColumnData col, IStringLocalizer? localizer) =>
+        ObjectHelper.IsNotNull(col.ResourceKey) && ObjectHelper.IsNotNull(localizer)
+            ? localizer[col.ResourceKey]
+            : col.Title;
 
     private static string GetValue(string value, IStringLocalizer? localizer) =>
         ObjectHelper.IsNotNull(localizer) ? localizer[value] : value;

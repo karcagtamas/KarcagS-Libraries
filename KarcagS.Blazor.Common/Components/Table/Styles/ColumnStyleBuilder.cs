@@ -3,7 +3,7 @@ using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Components.Table.Styles;
 
-public class ColumnStyleBuilder
+public class ColumnStyleBuilder<TKey>
 {
     private int? width;
     private Alignment textAlignment = Alignment.Left;
@@ -13,25 +13,25 @@ public class ColumnStyleBuilder
     {
     }
 
-    public static ColumnStyleBuilder Init() => new();
+    public static ColumnStyleBuilder<TKey> Init() => new();
 
-    public static ColumnStyle Default() => Init().Build();
+    public static ColumnStyle<TKey> Default() => Init().Build();
 
-    public ColumnStyle Build() => new(width, textAlignment, titleColor);
+    public ColumnStyle<TKey> Build() => new(width, textAlignment, titleColor);
 
-    public ColumnStyleBuilder Width(int value)
+    public ColumnStyleBuilder<TKey> Width(int value)
     {
         width = value;
         return this;
     }
 
-    public ColumnStyleBuilder TextAlignment(Alignment value)
+    public ColumnStyleBuilder<TKey> TextAlignment(Alignment value)
     {
         textAlignment = value;
         return this;
     }
 
-    public ColumnStyleBuilder TitleColor(Color value)
+    public ColumnStyleBuilder<TKey> TitleColor(Color value)
     {
         titleColor = value;
         return this;

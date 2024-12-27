@@ -7,25 +7,28 @@ public class TableRowItem<TKey> : ResultItem<TKey>
 {
     public bool Selected { get; set; } = false;
     public bool Disabled { get; set; } = false;
-    public Dictionary<string, CellStyle> Styles { get; set; } = new();
+    public Dictionary<string, TableDataStyle<TKey>> Styles { get; set; } = new();
 
     public TableRowItem()
     {
     }
 
-    public TableRowItem(ResultItem<TKey> item) : this(item, (_, _) => CellStyleBuilder.Default())
-    {
-    }
-
-    public TableRowItem(ResultItem<TKey> item, Func<string, ItemValue, CellStyle> cellStyleGetter)
+    public TableRowItem(ResultItem<TKey> item, StyleConfiguration<TKey> styleConfiguration, TableMetaData metaData)
     {
         ItemKey = item.ItemKey;
         Values = item.Values;
         Tags = item.Tags;
         ClickDisabled = item.ClickDisabled;
 
-        var styles = new Dictionary<string, CellStyle>();
-        Values.Keys.ToList().ForEach(key => { styles.Add(key, cellStyleGetter(key, Values[key])); });
+        var styles = new Dictionary<string, TableDataStyle<TKey>>();
+        Values.Keys.ToList().ForEach(key =>
+        {
+            var cellStyle = styleConfiguration.CellStyleGetter(key, Values[key]);
+            styles.Add(key,
+                new TableDataStyle<TKey>(cellStyle,
+                    cellStyle.GetClass(styleConfiguration, metaData.ColumnsData.Columns.First(col => col.Key == key), this),
+                    cellStyle.GetStyle(styleConfiguration.ColumnStyleGetter(key))));
+        });
         Styles = styles;
     }
 }

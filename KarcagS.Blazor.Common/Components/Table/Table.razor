@@ -20,9 +20,9 @@
             <ColGroup>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    @if (ObjectHelper.IsNotNull(ColumnStyles[col.Key].Width))
+                    @if (ObjectHelper.IsNotNull(ColumnStyles[col.Key].ColumnStyle.Width))
                     {
-                        <col style="width: @(ColumnStyles[col.Key].Width)px;"/>
+                        <col style="width: @(ColumnStyles[col.Key].ColumnStyle.Width)px;"/>
                     }
                     else
                     {
@@ -75,9 +75,11 @@
             <HeaderContent>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    <MudTh Class="@GetTHClass(col)" @onclick="@(() => HandleOrdering(col))">
-                        <div style="@GetTHStyle(ColumnStyles[col.Key])">
-                            <MudText Color="ColumnStyles[col.Key].TitleColor" Inline>
+                    <MudTh Class="@ColumnStyles[col.Key].Class"
+                           Style="@ColumnStyles[col.Key].Style"
+                           @onclick="@(() => HandleOrdering(col))">
+                        <div style="@ColumnStyles[col.Key].InnerStyle" class="@ColumnStyles[col.Key].InnerClass">
+                            <MudText Color="ColumnStyles[col.Key].ColumnStyle.TitleColor" Inline>
                                 <b>@GetColumnTitle(col, Localizer)</b>
                             </MudText>
                             @if (MetaData.OrderingData.OrderingEnabled && col.IsSortable && IsOrderedColumn(col))
@@ -93,19 +95,19 @@
             <RowTemplate>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    <MudTd Class="@GetTDClass(col, context)"
-                           Style="@GetTDStyle(ColumnStyles[col.Key])"
+                    <MudTd Class="@context.Styles[col.Key].Class"
+                           Style="@context.Styles[col.Key].Style"
                            DataLabel="@col.Key">
                         @if (!col.IsAction)
                         {
-                            <MudText Color="context.Styles[col.Key].Color">
+                            <MudText Color="context.Styles[col.Key].CellStyle.Color">
                                 @GetValue(context.Values[col.Key].Value, Localizer)
                             </MudText>
                         }
                         else
                         {
-                            <MudIconButton Color="context.Styles[col.Key].IconColor"
-                                           Icon="@context.Styles[col.Key].Icon"
+                            <MudIconButton Color="context.Styles[col.Key].CellStyle.IconColor"
+                                           Icon="@context.Styles[col.Key].CellStyle.Icon"
                                            Size="Size.Small"
                                            Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled || (TableComponent?.Loading ?? true))"
                                            OnClick="@(() => ActionHandler(col, context))"/>
