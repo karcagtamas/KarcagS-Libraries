@@ -42,9 +42,7 @@ public class ColumnData
     public string Key { get; set; } = default!;
     public string Title { get; set; } = default!;
     public string? ResourceKey { get; set; }
-    public Alignment Alignment { get; set; }
     public ColumnFormatter Formatter { get; set; }
-    public int? Width { get; set; }
     public bool IsAction { get; set; }
     public bool IsSortable { get; set; }
 }

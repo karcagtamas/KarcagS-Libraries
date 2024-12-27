@@ -1,6 +1,7 @@
 ﻿@page "/table"
+@using KarcagS.Blazor.Common.Components.Table.Styles
 @using KarcagS.Blazor.Common.Demo.Services
-@using KarcagS.Shared.Table
+@using KarcagS.Shared.Enums
 @inject IDemoTableService Service
 
 <div class="flex-box overflow-hidden p-1">
@@ -20,30 +21,60 @@
     private Table<string>? Table { get; set; }
 
     private StyleConfiguration Style { get; set; } = StyleConfiguration.Build()
-        .AddTitleColorGetter(colKey => colKey == "id" ? Color.Primary : Color.Secondary)
-        .AddColorGetter(item =>
+        .AddColumnStyleGetter(colKey =>
         {
+            var builder = ColumnStyleBuilder.Init()
+                .TitleColor(colKey == "id" ? Color.Primary : Color.Secondary);
+
+            switch (colKey)
+            {
+                case "id":
+                    builder.Width(80);
+                    builder.TextAlignment(Alignment.Center);
+                    break;
+                case "age":
+                    builder.Width(50);
+                    builder.TextAlignment(Alignment.Right);
+                    break;
+                case "date":
+                    builder.Width(200);
+                    break;
+                case "gender" or "other":
+                    builder.Width(120);
+                    break;
+            }
+
+            return builder.Build();
+        })
+        .AddCellStyleGetter((_, item) =>
+        {
+            var builder = CellStyleBuilder.Init();
+
             if (item.Tags.Contains("TRUE_VALUE"))
             {
-                return Color.Success;
+                builder.TextColor(Color.Success);
             }
-
-            if (item.Tags.Contains("FALSE_VALUE"))
+            else if (item.Tags.Contains("FALSE_VALUE"))
             {
-                return Color.Error;
+                builder.TextColor(Color.Error);
             }
 
-            return Color.Default;
-        })
-        .AddIconGetter(item => item.Value == "open" ? Icons.Material.Filled.OpenWith : Icons.Material.Filled.Info)
-        .AddIconColorGetter(item => item.Value == "open" ? Color.Error : Color.Default);
+            if (item.Value == "open")
+            {
+            }
+
+            builder.Icon(item.Value == "open" ? Icons.Material.Filled.OpenWith : Icons.Material.Filled.Info);
+            builder.IconColor(item.Value == "open" ? Color.Error : Color.Default);
+
+            return builder.Build();
+        });
 
     private Dictionary<string, object> ExtraParams { get; set; } = new()
     {
         { "key", 1 }
     };
 
-    private void RowClickHandler(TableRowClickArgs<ResultRowItem<string>> item)
+    private void RowClickHandler(TableRowClickArgs<TableRowItem<string>> item)
     {
         // var items = Table?.GetData();
         Console.WriteLine(item.Item.ItemKey);
@@ -51,7 +82,7 @@
         Console.WriteLine(item.Button.ToString());
     }
 
-    private void ActionHandler(KeyValuePair<string, ResultRowItem<string>> pair)
+    private void ActionHandler(KeyValuePair<string, TableRowItem<string>> pair)
     {
         Console.WriteLine(pair.Key);
     }

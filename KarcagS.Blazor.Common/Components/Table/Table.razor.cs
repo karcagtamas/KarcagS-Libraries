@@ -1,4 +1,5 @@
 ﻿using System.Reactive.Subjects;
+using KarcagS.Blazor.Common.Components.Table.Styles;
 using KarcagS.Blazor.Common.Services.Interfaces;
 using KarcagS.Client.Common.Services.Interfaces;
 using KarcagS.Shared.Enums;
@@ -23,7 +24,7 @@ public partial class Table<TKey> : ComponentBase, IDisposable
     public StyleConfiguration TableStyle { get; set; } = StyleConfiguration.Build();
 
     [Parameter]
-    public EventCallback<TableRowClickArgs<ResultRowItem<TKey>>> OnRowClick { get; set; }
+    public EventCallback<TableRowClickArgs<TableRowItem<TKey>>> OnRowClick { get; set; }
 
     [Parameter]
     public string Class { get; set; } = string.Empty;
@@ -38,12 +39,12 @@ public partial class Table<TKey> : ComponentBase, IDisposable
     public IStringLocalizer? Localizer { get; set; }
 
     [Parameter]
-    public EventCallback<KeyValuePair<string, ResultRowItem<TKey>>> OnAction { get; set; }
+    public EventCallback<KeyValuePair<string, TableRowItem<TKey>>> OnAction { get; set; }
 
     [Inject]
     private ILocalizationService LocalizationService { get; set; } = default!;
 
-    private MudTable<ResultRowItem<TKey>>? TableComponent { get; set; }
+    private MudTable<TableRowItem<TKey>>? TableComponent { get; set; }
 
     private string AppendedClass => $"lib-table w-100 flex-box h-100 {Class}";
 
@@ -53,9 +54,10 @@ public partial class Table<TKey> : ComponentBase, IDisposable
     private List<Order> Orders { get; set; } = [];
 
     private TableMetaData? MetaData { get; set; }
+    private Dictionary<string, ColumnStyle> ColumnStyles { get; set; } = new();
     private HttpErrorResult? ErrorResult { get; set; }
 
-    private Subject<TableRowClickArgs<ResultRowItem<TKey>>> rowClickSubject = new();
+    private Subject<TableRowClickArgs<TableRowItem<TKey>>> rowClickSubject = new();
     private IDisposable? disposable;
 
     protected override async Task OnInitializedAsync()
@@ -82,6 +84,7 @@ public partial class Table<TKey> : ComponentBase, IDisposable
         }
 
         MetaData = meta.Result;
+        MetaData?.ColumnsData.Columns.ForEach(column => { ColumnStyles.Add(column.Key, TableStyle.ColumnStyleGetter(column.Key)); });
 
         await InvokeAsync(StateHasChanged);
     }
@@ -107,8 +110,8 @@ public partial class Table<TKey> : ComponentBase, IDisposable
 
     public Task Refresh() => ObjectHelper.WhenNotNull(TableComponent, async t => await t.ReloadServerData());
 
-    public List<ResultRowItem<TKey>> GetData() =>
-        TableComponent?.Context.Rows.Select(x => x.Key).ToList() ?? new List<ResultRowItem<TKey>>();
+    public List<TableRowItem<TKey>> GetData() =>
+        TableComponent?.Context.Rows.Select(x => x.Key).ToList() ?? [];
 
     public async Task SetAdditionalFilter(string key, object? value)
     {
@@ -150,15 +153,16 @@ public partial class Table<TKey> : ComponentBase, IDisposable
         };
     }
 
-    private async Task<TableData<ResultRowItem<TKey>>> TableReload(TableState state, CancellationToken cancellationToken = default)
+    private async Task<TableData<TableRowItem<TKey>>> TableReload(TableState state, CancellationToken cancellationToken = default)
     {
+        var emptyData = new TableData<TableRowItem<TKey>>()
+        {
+            Items = new List<TableRowItem<TKey>>(),
+            TotalItems = 0,
+        };
         if (ObjectHelper.IsNotNull(ErrorResult))
         {
-            return new TableData<ResultRowItem<TKey>>
-            {
-                Items = new List<ResultRowItem<TKey>>(),
-                TotalItems = 0,
-            };
+            return emptyData;
         }
 
         var data = await Service.GetData(new TableOptions
@@ -173,44 +177,36 @@ public partial class Table<TKey> : ComponentBase, IDisposable
         if (ObjectHelper.IsNotNull(data.Error))
         {
             ErrorResult = data.Error;
-            return new TableData<ResultRowItem<TKey>>
-            {
-                Items = new List<ResultRowItem<TKey>>(),
-                TotalItems = 0,
-            };
+            return emptyData;
         }
 
         if (ObjectHelper.IsNull(data.Result))
         {
-            return new TableData<ResultRowItem<TKey>>
-            {
-                Items = new List<ResultRowItem<TKey>>(),
-                TotalItems = 0,
-            };
+            return emptyData;
         }
 
-        return new TableData<ResultRowItem<TKey>>
+        return new TableData<TableRowItem<TKey>>
         {
-            Items = data.Result.Items.Select(x => new ResultRowItem<TKey>(x)).ToList(),
+            Items = data.Result.Items.Select(x => new TableRowItem<TKey>(x, TableStyle.CellStyleGetter)).ToList(),
             TotalItems = data.Result.FilteredAll
         };
     }
 
-    private void RowClickHandler(TableRowClickEventArgs<ResultRowItem<TKey>> e)
+    private void RowClickHandler(TableRowClickEventArgs<TableRowItem<TKey>> e)
     {
         if (ReadOnly || ObjectHelper.IsNull(e.Item) || e.Item.Disabled || e.Item.ClickDisabled)
         {
             return;
         }
 
-        rowClickSubject.OnNext(new TableRowClickArgs<ResultRowItem<TKey>>
+        rowClickSubject.OnNext(new TableRowClickArgs<TableRowItem<TKey>>
         {
             Item = e.Item,
             MouseEventArgs = e.MouseEventArgs,
         });
     }
 
-    private async Task ActionHandler(ColumnData col, ResultRowItem<TKey> item)
+    private async Task ActionHandler(ColumnData col, TableRowItem<TKey> item)
     {
         if (ReadOnly || item.Disabled || item.ClickDisabled || item.Values[col.Key].ActionDisabled)
         {
@@ -269,7 +265,7 @@ public partial class Table<TKey> : ComponentBase, IDisposable
         };
     }
 
-    private static string GetTDClass(ColumnData col, ResultRowItem<TKey> item)
+    private static string GetTDClass(ColumnData col, TableRowItem<TKey> item)
     {
         List<string> classes =
         [
@@ -285,9 +281,9 @@ public partial class Table<TKey> : ComponentBase, IDisposable
         return string.Join(" ", classes);
     }
 
-    private static string GetTDStyle(Alignment alignment)
+    private static string GetTDStyle(ColumnStyle style)
     {
-        var alignmentText = alignment switch
+        var alignmentText = style.Alignment switch
         {
             Alignment.Left => "left",
             Alignment.Center => "center",
@@ -296,7 +292,7 @@ public partial class Table<TKey> : ComponentBase, IDisposable
         };
         return $"text-align: {alignmentText}";
     }
-    
+
     private static string GetTHClass(ColumnData col)
     {
         List<string> classes =
@@ -313,9 +309,9 @@ public partial class Table<TKey> : ComponentBase, IDisposable
         return string.Join(" ", classes);
     }
 
-    private static string GetTHStyle(Alignment alignment)
+    private static string GetTHStyle(ColumnStyle style)
     {
-        var alignmentText = alignment switch
+        var alignmentText = style.Alignment switch
         {
             Alignment.Left => "left",
             Alignment.Center => "center",

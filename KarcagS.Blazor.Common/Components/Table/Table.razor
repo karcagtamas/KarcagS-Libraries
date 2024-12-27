@@ -1,18 +1,28 @@
 ﻿@using KarcagS.Shared.Localization
-@using KarcagS.Shared.Table
 
 @typeparam TKey
 
 <div class="lib-table-frame d-flex flex-column w-100" style="max-height: 100%;">
     @if (MetaData != null)
     {
-        <MudTable @ref="TableComponent" ServerData="@(new Func<TableState, CancellationToken, Task<TableData<ResultRowItem<TKey>>>>(TableReload))" Virtualize="true" T="ResultRowItem<TKey>" Class="@AppendedClass" Dense="TableStyle.Dense" Elevation="TableStyle.Elevation" FixedHeader="TableStyle.FixedHeader" FixedFooter="true" Hover="TableStyle.Hover" Striped="TableStyle.Striped" Bordered="TableStyle.Bordered" OnRowClick="@RowClickHandler">
+        <MudTable @ref="TableComponent"
+                  ServerData="@(new Func<TableState, CancellationToken, Task<TableData<TableRowItem<TKey>>>>(TableReload))"
+                  Virtualize="true" T="TableRowItem<TKey>"
+                  Class="@AppendedClass"
+                  Dense="TableStyle.Dense"
+                  Elevation="TableStyle.Elevation"
+                  FixedHeader="TableStyle.FixedHeader"
+                  FixedFooter="true"
+                  Hover="TableStyle.Hover"
+                  Striped="TableStyle.Striped"
+                  Bordered="TableStyle.Bordered"
+                  OnRowClick="@RowClickHandler">
             <ColGroup>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    @if (ObjectHelper.IsNotNull(col.Width))
+                    @if (ObjectHelper.IsNotNull(ColumnStyles[col.Key].Width))
                     {
-                        <col style="width: @(col.Width)px;"/>
+                        <col style="width: @(ColumnStyles[col.Key].Width)px;"/>
                     }
                     else
                     {
@@ -30,7 +40,10 @@
                     {
                         <div class="d-flex flex-row align-items-center gap-2">
                             <MudIcon Icon="@Icons.Material.Filled.Error" Color="Color.Error"/>
-                            <MudText Style="white-space: nowrap;" Typo="Typo.body2" Inline="true" Color="Color.Error">@GetErrorMessage(ErrorResult.Message, Localizer)</MudText>
+                            <MudText Style="white-space: nowrap;"
+                                     Typo="Typo.body2"
+                                     Inline="true"
+                                     Color="Color.Error">@GetErrorMessage(ErrorResult.Message, Localizer)</MudText>
                         </div>
                     }
                     else
@@ -41,9 +54,20 @@
                                 @FilterRow(this)
                             </div>
                         }
+
                         @if (MetaData.FilterData.TextFilterEnabled)
                         {
-                            <MudTextField Class="mr-3" T="string" DebounceInterval="500" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="true" Style="width: 300px;" Value="TextFilter" ValueChanged="TextFilterHandler" Placeholder="@LocalizationService.GetValue(LibraryLocalizer.TableSearchLabelKey, "Search")" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"/>
+                            <MudTextField Class="mr-3" T="string"
+                                          DebounceInterval="500"
+                                          Variant="Variant.Outlined"
+                                          Margin="Margin.Dense"
+                                          Clearable="true"
+                                          Style="width: 300px;"
+                                          Value="TextFilter"
+                                          ValueChanged="TextFilterHandler"
+                                          Placeholder="@LocalizationService.GetValue(LibraryLocalizer.TableSearchLabelKey, "Search")"
+                                          Adornment="Adornment.Start"
+                                          AdornmentIcon="@Icons.Material.Filled.Search"/>
                         }
                     }
                 </div>
@@ -52,13 +76,15 @@
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
                     <MudTh Class="@GetTHClass(col)" @onclick="@(() => HandleOrdering(col))">
-                        <div style="@GetTHStyle(col.Alignment)">
-                            <MudText Color="TableStyle.TitleColorGetter(col.Key)" Inline>
+                        <div style="@GetTHStyle(ColumnStyles[col.Key])">
+                            <MudText Color="ColumnStyles[col.Key].TitleColor" Inline>
                                 <b>@GetColumnTitle(col, Localizer)</b>
                             </MudText>
                             @if (MetaData.OrderingData.OrderingEnabled && col.IsSortable && IsOrderedColumn(col))
                             {
-                                <MudIcon Icon="@GetOrderingIcon(GetOrderingStatus(col))" Color="Color.Primary" Size="Size.Small"/>
+                                <MudIcon Icon="@GetOrderingIcon(GetOrderingStatus(col))"
+                                         Color="Color.Primary"
+                                         Size="Size.Small"/>
                             }
                         </div>
                     </MudTh>
@@ -67,19 +93,21 @@
             <RowTemplate>
                 @foreach (var col in MetaData.ColumnsData.Columns)
                 {
-                    <MudTd Class="@GetTDClass(col, context)" Style="@GetTDStyle(col.Alignment)" DataLabel="@col.Key">
+                    <MudTd Class="@GetTDClass(col, context)"
+                           Style="@GetTDStyle(ColumnStyles[col.Key])"
+                           DataLabel="@col.Key">
                         @if (!col.IsAction)
                         {
-                            <MudText Color="TableStyle.ColorGetter(context.Values[col.Key])">
+                            <MudText Color="context.Styles[col.Key].Color">
                                 @GetValue(context.Values[col.Key].Value, Localizer)
                             </MudText>
                         }
                         else
                         {
-                            <MudIconButton Color="TableStyle.IconColorGetter(context.Values[col.Key])" 
-                                           Icon="@TableStyle.IconGetter(context.Values[col.Key])" 
-                                           Size="Size.Small" 
-                                           Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled || (TableComponent?.Loading ?? true))" 
+                            <MudIconButton Color="context.Styles[col.Key].IconColor"
+                                           Icon="@context.Styles[col.Key].Icon"
+                                           Size="Size.Small"
+                                           Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled || (TableComponent?.Loading ?? true))"
                                            OnClick="@(() => ActionHandler(col, context))"/>
                         }
                     </MudTd>
@@ -89,7 +117,8 @@
                 @if (MetaData.PaginationData.PaginationEnabled)
                 {
                     <div style="min-height: 52px;">
-                        <MudTablePager PageSizeOptions="@(new[] { MetaData.PaginationData.PageSize })" HideRowsPerPage="true"/>
+                        <MudTablePager PageSizeOptions="@(new[] { MetaData.PaginationData.PageSize })"
+                                       HideRowsPerPage="true"/>
                     </div>
                 }
             </PagerContent>

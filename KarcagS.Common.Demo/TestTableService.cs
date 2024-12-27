@@ -47,7 +47,7 @@ public class TestTableService : TableService<TestEntity, string>, ITestTableServ
         var config = Configuration<TestEntity, string>
             .Build("test-table")
             .SetTitle("Test Table")
-            .AddColumn(Column<TestEntity, string>.Build("id").SetTitle("Id").AddValueGetter(x => x.Id).SetWidth(80).SetAlignment(Alignment.Center))
+            .AddColumn(Column<TestEntity, string>.Build("id").SetTitle("Id").AddValueGetter(x => x.Id))
             .AddColumn(Column<TestEntity, string>.Build("name").SetTitle("Name").AddValueGetter(x => x.Name).MarkAsSortable("Name"))
             .AddFilter(FilterConfiguration.Build().IsTextFilterEnabled(true))
             .AddPagination(PaginationConfiguration.Build().IsPaginationEnabled(true))

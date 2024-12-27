@@ -1,5 +1,4 @@
 ﻿using KarcagS.Shared.Common;
-using KarcagS.Shared.Enums;
 using KarcagS.Shared.Table.Enums;
 
 namespace KarcagS.API.Table.Configurations;
@@ -9,11 +8,9 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
     public string Key { get; }
     public string Title { get; set; } = string.Empty;
     public string? ResourceKey { get; set; }
-    public Alignment Alignment { get; set; } = Alignment.Left;
     public Func<T, Task<object?>> ValueGetter { get; set; } = _ => Task.FromResult(default(object?));
     public ColumnFormatter Formatter { get; set; } = ColumnFormatter.Text;
-    public string[] FormatterArgs { get; set; } = Array.Empty<string>();
-    public int? Width { get; set; }
+    public string[] FormatterArgs { get; set; } = [];
     public bool IsAction { get; set; }
     public string OrderBy { get; set; } = string.Empty;
     public bool IsSortable { get; set; }
@@ -21,21 +18,14 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
     private Column(string key)
     {
         Key = key;
+        ResourceKey = $"Table.Column.{key}";
     }
 
     public static Column<T, TKey> Build(string key) => new(key);
 
-    public Column<T, TKey> SetTitle(string value, string? resourceKey = null)
+    public Column<T, TKey> SetTitle(string value)
     {
         Title = value;
-        ResourceKey = resourceKey;
-
-        return this;
-    }
-
-    public Column<T, TKey> SetAlignment(Alignment value)
-    {
-        Alignment = value;
 
         return this;
     }
@@ -53,13 +43,6 @@ public class Column<T, TKey> where T : class, IIdentified<TKey>
     {
         Formatter = value;
         FormatterArgs = args;
-
-        return this;
-    }
-
-    public Column<T, TKey> SetWidth(int value)
-    {
-        Width = value;
 
         return this;
     }

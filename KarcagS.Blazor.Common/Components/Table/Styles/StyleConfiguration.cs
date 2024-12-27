@@ -1,7 +1,6 @@
 ﻿using KarcagS.Shared.Table;
-using MudBlazor;
 
-namespace KarcagS.Blazor.Common.Components.Table;
+namespace KarcagS.Blazor.Common.Components.Table.Styles;
 
 public class StyleConfiguration
 {
@@ -12,10 +11,8 @@ public class StyleConfiguration
     public int Elevation { get; set; } = 2;
     public bool Bordered { get; set; } = true;
 
-    public Func<ItemValue, Color> ColorGetter = _ => Color.Default;
-    public Func<string, Color> TitleColorGetter = _ => Color.Primary;
-    public Func<ItemValue, string> IconGetter = _ => Icons.Material.Filled.Info;
-    public Func<ItemValue, Color> IconColorGetter = _ => Color.Primary;
+    public Func<string, ColumnStyle> ColumnStyleGetter = _ => ColumnStyleBuilder.Default();
+    public Func<string, ItemValue, CellStyle> CellStyleGetter = (_, _) => CellStyleBuilder.Default();
 
     private StyleConfiguration()
     {
@@ -65,30 +62,16 @@ public class StyleConfiguration
         return this;
     }
 
-    public StyleConfiguration AddColorGetter(Func<ItemValue, Color> getter)
+    public StyleConfiguration AddColumnStyleGetter(Func<string, ColumnStyle> getter)
     {
-        ColorGetter = getter;
+        ColumnStyleGetter = getter;
 
         return this;
     }
 
-    public StyleConfiguration AddTitleColorGetter(Func<string, Color> getter)
+    public StyleConfiguration AddCellStyleGetter(Func<string, ItemValue, CellStyle> getter)
     {
-        TitleColorGetter = getter;
-
-        return this;
-    }
-
-    public StyleConfiguration AddIconGetter(Func<ItemValue, string> getter)
-    {
-        IconGetter = getter;
-
-        return this;
-    }
-
-    public StyleConfiguration AddIconColorGetter(Func<ItemValue, Color> getter)
-    {
-        IconColorGetter = getter;
+        CellStyleGetter = getter;
 
         return this;
     }

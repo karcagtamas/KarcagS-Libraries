@@ -60,9 +60,7 @@ public static class TableExtensions
             Key = column.Key,
             Title = column.Title,
             ResourceKey = column.ResourceKey,
-            Alignment = column.Alignment,
             Formatter = column.Formatter,
-            Width = column.Width,
             IsAction = column.IsAction,
             IsSortable = column.IsSortable
         };
