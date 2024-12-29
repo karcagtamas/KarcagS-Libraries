@@ -98,20 +98,22 @@
                     <MudTd Class="@context.Styles[col.Key].Class"
                            Style="@context.Styles[col.Key].Style"
                            DataLabel="@col.Key">
-                        @if (!col.IsAction)
-                        {
-                            <MudText Color="context.Styles[col.Key].CellStyle.Color">
-                                @GetValue(context.Values[col.Key].Value, Localizer)
-                            </MudText>
-                        }
-                        else
-                        {
-                            <MudIconButton Color="context.Styles[col.Key].CellStyle.IconColor"
-                                           Icon="@context.Styles[col.Key].CellStyle.Icon"
-                                           Size="Size.Small"
-                                           Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled || (TableComponent?.Loading ?? true))"
-                                           OnClick="@(() => ActionHandler(col, context))"/>
-                        }
+                        <div style="@context.Styles[col.Key].InnerStyle" class="@context.Styles[col.Key].InnerClass">
+                            @if (!col.IsAction)
+                            {
+                                <MudText Color="context.Styles[col.Key].CellStyle.Color">
+                                    @GetValue(context.Values[col.Key].Value, Localizer)
+                                </MudText>
+                            }
+                            else
+                            {
+                                <MudIconButton Color="context.Styles[col.Key].CellStyle.IconColor"
+                                               Icon="@context.Styles[col.Key].CellStyle.Icon"
+                                               Size="Size.Small"
+                                               Disabled="@(ReadOnly || context.Disabled || context.ClickDisabled || context.Values[col.Key].ActionDisabled || (TableComponent?.Loading ?? true))"
+                                               OnClick="@(() => ActionHandler(col, context))"/>
+                            }
+                        </div>
                     </MudTd>
                 }
             </RowTemplate>

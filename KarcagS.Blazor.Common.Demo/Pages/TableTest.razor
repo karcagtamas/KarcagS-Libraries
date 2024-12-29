@@ -29,15 +29,18 @@
             switch (colKey)
             {
                 case "id":
-                    builder.Width(80);
+                    builder.Width(120);
                     builder.TextAlignment(Alignment.Center);
                     break;
+                case "name":
+                    builder.Width(60, true);
+                    break;
                 case "age":
-                    builder.Width(50);
+                    builder.Width(200, true);
                     builder.TextAlignment(Alignment.Right);
                     break;
                 case "date":
-                    builder.Width(200);
+                    builder.MaxWidth(200);
                     break;
                 case "gender" or "other-gender":
                     builder.Width(120);

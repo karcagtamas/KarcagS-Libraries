@@ -10,10 +10,15 @@
     cursor: pointer;
 }
 
-.lib-table-frame .lib-table-cell.ellipsis p {
+.lib-table-frame .lib-table-cell.ellipsis {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.lib-table-frame .lib-table-cell.ellipsis p {
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .lib-table-frame .lib-table-header-cell.lib-table-header-cell-sortable:hover {

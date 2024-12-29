@@ -24,10 +24,13 @@ public class TableRowItem<TKey> : ResultItem<TKey>
         Values.Keys.ToList().ForEach(key =>
         {
             var cellStyle = styleConfiguration.CellStyleGetter(key, Values[key]);
+            var columnStyle = styleConfiguration.ColumnStyleGetter(key);
             styles.Add(key,
                 new TableDataStyle<TKey>(cellStyle,
                     cellStyle.GetClass(styleConfiguration, metaData.ColumnsData.Columns.First(col => col.Key == key), this),
-                    cellStyle.GetStyle(styleConfiguration.ColumnStyleGetter(key))));
+                    cellStyle.GetStyle(columnStyle),
+                    cellStyle.GetInnerClass(),
+                    cellStyle.GetInnerStyle(columnStyle)));
         });
         Styles = styles;
     }

@@ -4,29 +4,34 @@ using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Components.Table.Styles;
 
-public record CellStyle<TKey>(Color Color, string Icon, Color IconColor)
+public class CellStyle<TKey>(Color color, string icon, Color iconColor) : Style
 {
+    public Color Color => color;
+    public string Icon => icon;
+    public Color IconColor => iconColor;
+
     public string GetStyle(ColumnStyle<TKey> style)
     {
-        var alignmentText = style.Alignment switch
-        {
-            Alignment.Left => "left",
-            Alignment.Center => "center",
-            Alignment.Right => "right",
-            _ => "left"
-        };
+        List<string> styles = [];
 
-        List<string> styles =
-        [
-            $"justify-content: {alignmentText}"
-        ];
-
-        if (ObjectHelper.IsNotNull(style.Width))
+        if (!style.ForceWidth || ObjectHelper.IsNull(style.Width))
         {
-            styles.Add($"max-width: {style.Width}px");
+            ObjectHelper.WhenNotNull(style.MaxWidth, w => styles.Add(ToProperty("max-width", w)));
+            ObjectHelper.WhenNotNull(style.MinWidth, w => styles.Add(ToProperty("min-width", w)));
         }
 
-        return string.Join("; ", styles);
+        ObjectHelper.WhenNotNull(style.Width, w =>
+        {
+            styles.Add(ToProperty("width", w));
+
+            if (style.ForceWidth)
+            {
+                styles.Add(ToProperty("max-width", w));
+                styles.Add(ToProperty("min-width", w));
+            }
+        });
+
+        return ConcatStyles(styles);
     }
 
     public string GetClass(StyleConfiguration<TKey> styleConfiguration, ColumnData columnData, TableRowItem<TKey> item)
@@ -49,4 +54,27 @@ public record CellStyle<TKey>(Color Color, string Icon, Color IconColor)
 
         return string.Join(" ", classes);
     }
+
+    public string GetInnerStyle(ColumnStyle<TKey> style)
+    {
+        var alignmentText = style.Alignment switch
+        {
+            Alignment.Left => "left",
+            Alignment.Center => "center",
+            Alignment.Right => "right",
+            _ => "left"
+        };
+
+        List<string> styles =
+        [
+            ToProperty("display", "flex"),
+            ToProperty("flex-direction", "row"),
+            ToProperty("align-items", "center"),
+            ToProperty("justify-content", alignmentText),
+        ];
+
+        return ConcatStyles(styles);
+    }
+
+    public string GetInnerClass() => string.Empty;
 }
