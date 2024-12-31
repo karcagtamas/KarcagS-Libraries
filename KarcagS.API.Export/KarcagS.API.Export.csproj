@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <Title>KarcagS API Export Library</Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>6.1.1</PackageVersion>
-        <AssemblyVersion>6.1.1</AssemblyVersion>
-        <FileVersion>6.1.1</FileVersion>
+        <PackageVersion>6.1.2</PackageVersion>
+        <AssemblyVersion>6.1.2</AssemblyVersion>
+        <FileVersion>6.1.2</FileVersion>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
