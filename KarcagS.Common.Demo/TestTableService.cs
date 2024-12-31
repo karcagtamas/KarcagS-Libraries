@@ -1,6 +1,6 @@
 ﻿using KarcagS.API.Table;
+using KarcagS.API.Table.AutoListTable;
 using KarcagS.API.Table.Configurations;
-using KarcagS.API.Table.ListTable;
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Enums;
 
@@ -8,17 +8,11 @@ namespace KarcagS.Common.Demo;
 
 public class TestTableService : TableService<TestEntity, string>, ITestTableService
 {
-    public override async Task<Table<TestEntity, string>> BuildTableAsync()
-    {
-        return ListTableBuilder<TestEntity, string>.Construct()
-            .AddDataSource(await BuildDataSourceAsync())
-            .AddConfiguration(await BuildConfigurationAsync())
-            .Build();
-    }
+    public override TableBuilder<TestEntity, string> Builder() => AutoListTableBuilder<TestEntity, string>.Construct();
 
     public override Task<DataSource<TestEntity, string>> BuildDataSourceAsync()
     {
-        var dataSource = (DataSource<TestEntity, string>)ListTableDataSource<TestEntity, string>.Build(_ =>
+        var dataSource = (DataSource<TestEntity, string>)AutoListTableDataSource<TestEntity, string>.Build(_ =>
             {
                 return Task.FromResult(new List<TestEntity>
                 {

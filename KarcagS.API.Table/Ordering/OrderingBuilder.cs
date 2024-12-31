@@ -1,5 +1,5 @@
 ﻿using System.Linq.Expressions;
-using KarcagS.API.Table.ListTable;
+using KarcagS.API.Table.AutoListTable;
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Enums;
 
@@ -7,10 +7,10 @@ namespace KarcagS.API.Table.Ordering;
 
 public class OrderingBuilder<T, TKey> where T : class, IIdentified<TKey>
 {
-    private readonly ListTableDataSource<T, TKey> dataSource;
+    private readonly AutoListTableDataSource<T, TKey> dataSource;
     private readonly List<OrderingSetting<T, TKey>> ordering = [];
 
-    public OrderingBuilder(ListTableDataSource<T, TKey> dataSource, Expression<Func<T, object?>> expression, OrderDirection direction)
+    public OrderingBuilder(AutoListTableDataSource<T, TKey> dataSource, Expression<Func<T, object?>> expression, OrderDirection direction)
     {
         this.dataSource = dataSource;
         ordering.Add(new OrderingSetting<T, TKey> { Exp = expression, Direction = direction });
@@ -23,7 +23,7 @@ public class OrderingBuilder<T, TKey> where T : class, IIdentified<TKey>
         return this;
     }
 
-    public ListTableDataSource<T, TKey> ApplyOrdering()
+    public AutoListTableDataSource<T, TKey> ApplyOrdering()
     {
         dataSource.DefaultOrdering = ordering;
         return dataSource;

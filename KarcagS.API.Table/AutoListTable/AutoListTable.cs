@@ -2,9 +2,9 @@
 using KarcagS.Shared.Common;
 using KarcagS.Shared.Table;
 
-namespace KarcagS.API.Table.ListTable;
+namespace KarcagS.API.Table.AutoListTable;
 
-public class ListTable<T, TKey>(ListTableDataSource<T, TKey> dataSource, Configuration<T, TKey> configuration) : Table<T, TKey>(dataSource, configuration)
+public class AutoListTable<T, TKey>(AutoListTableDataSource<T, TKey> dataSource, Configuration<T, TKey> configuration) : Table<T, TKey>(dataSource, configuration)
     where T : class, IIdentified<TKey>
 {
     public override Task<int> GetAllDataCountAsync(QueryModel query) => DataSource.LoadAllDataCountAsync(query);

@@ -4,11 +4,7 @@ using KarcagS.Http;
 
 namespace KarcagS.Blazor.Common.Demo.Services;
 
-public class DemoTableService : TableService<string>, IDemoTableService
+public class DemoTableService(IHttpService http) : TableService<string>(http), IDemoTableService
 {
-    public DemoTableService(IHttpService http) : base(http)
-    {
-    }
-
     public override string GetBaseUrl() => $"{ApplicationSettings.BaseApiUrl}/DemoTable";
 }

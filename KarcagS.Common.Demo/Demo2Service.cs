@@ -1,13 +1,12 @@
 ﻿using KarcagS.API.Table;
-using KarcagS.API.Table.AutoListTable;
 using KarcagS.API.Table.Configurations;
-using KarcagS.Shared.Enums;
+using KarcagS.API.Table.ListTable;
 using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
 
 namespace KarcagS.Common.Demo;
 
-public class DemoService(DemoContext context) : TableService<DemoEntry, string>, IDemoService
+public class Demo2Service(DemoContext context) : TableService<DemoEntry, string>, IDemo2Service
 {
     public override Configuration<DemoEntry, string> BuildConfiguration()
     {
@@ -40,15 +39,11 @@ public class DemoService(DemoContext context) : TableService<DemoEntry, string>,
             });
     }
 
-    public override TableBuilder<DemoEntry, string> Builder() => AutoListTableBuilder<DemoEntry, string>.Construct();
+    public override TableBuilder<DemoEntry, string> Builder() => ListTableBuilder<DemoEntry, string>.Construct();
 
     public override Task<DataSource<DemoEntry, string>> BuildDataSourceAsync()
     {
-        var dataSource = (DataSource<DemoEntry, string>)AutoListTableDataSource<DemoEntry, string>.Build(_ => Task.FromResult(context.Set<DemoEntry>().AsQueryable()))
-            .SetEFFilteredEntries("Name", "Gender.Name", "OtherGender.Name")
-            .OrderBy(x => x.Name, OrderDirection.Descend)
-            .ThenBy(x => x.Id)
-            .ApplyOrdering();
+        var dataSource = (DataSource<DemoEntry, string>)ListTableDataSource<DemoEntry, string>.Build(_ => Task.FromResult(context.Set<DemoEntry>().AsQueryable()));
 
         return Task.FromResult(dataSource);
     }
@@ -56,6 +51,6 @@ public class DemoService(DemoContext context) : TableService<DemoEntry, string>,
     public override Task<bool> AuthorizeAsync(QueryModel query) => Task.FromResult(true);
 }
 
-public interface IDemoService : ITableService<DemoEntry, string>
+public interface IDemo2Service : ITableService<DemoEntry, string>
 {
 }

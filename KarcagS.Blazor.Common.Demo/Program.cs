@@ -53,6 +53,7 @@ builder.Services.AddScoped<IConfirmService, ConfirmService>();
 builder.Services.AddScoped<IFileUploaderService, FileUploaderService>();
 
 builder.Services.AddScoped<IDemoTableService, DemoTableService>();
+builder.Services.AddScoped<IDemo2TableService, Demo2TableService>();
 
 builder.Services.AddLibraryLocalization();
 

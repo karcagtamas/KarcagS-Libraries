@@ -21,9 +21,23 @@ public abstract class TableService<T, TKey> : ITableService<T, TKey> where T : c
 
     protected bool IsInitialized() => Initialized;
 
-    public abstract Task<Table<T, TKey>> BuildTableAsync();
+    public async Task<Table<T, TKey>> BuildTableAsync() => await BuildTableAsync(await BuildDataSourceAsync(), await BuildConfigurationAsync());
+
+    public virtual Task<Table<T, TKey>> BuildTableAsync(DataSource<T, TKey> dataSource, Configuration<T, TKey> configuration)
+    {
+        return Task.FromResult(Builder()
+            .AddDataSource(dataSource)
+            .AddConfiguration(configuration)
+            .Build());
+    }
+
+    public abstract TableBuilder<T, TKey> Builder();
+
     public abstract Task<DataSource<T, TKey>> BuildDataSourceAsync();
-    public abstract Task<Configuration<T, TKey>> BuildConfigurationAsync();
+
+    public virtual Configuration<T, TKey> BuildConfiguration() => Configuration<T, TKey>.Build("table").SetTitle("Table");
+
+    public virtual Task<Configuration<T, TKey>> BuildConfigurationAsync() => Task.FromResult(BuildConfiguration());
 
     public async Task<TableResult<TKey>> GetDataAsync(QueryModel query)
     {

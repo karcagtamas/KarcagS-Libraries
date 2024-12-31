@@ -6,15 +6,8 @@ namespace KarcagS.Common.Demo.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class DemoTableController : TableController<DemoEntry, string>
+public class DemoTableController(IDemoService demoService) : TableController<DemoEntry, string>
 {
-    private readonly IDemoService demoService;
-
-    public DemoTableController(IDemoService demoService)
-    {
-        this.demoService = demoService;
-    }
-
     protected override ITableService<DemoEntry, string> GetService() => demoService;
 }
 

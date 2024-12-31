@@ -1,0 +1,93 @@
+﻿@page "/table2"
+@using KarcagS.Blazor.Common.Components.Table.Styles
+@using KarcagS.Blazor.Common.Demo.Services
+@using KarcagS.Shared.Enums
+@inject IDemo2TableService Service
+
+<div class="flex-box overflow-hidden p-1">
+    <Table @ref="Table" TKey="string" Service="Service" TableStyle="Style" InitialParams="ExtraParams"
+           OnRowClick="@RowClickHandler" OnAction="@ActionHandler">
+
+        <FilterRow>
+            <MudTextField Style="width: 220px;" T="string" Label="Text Filter" Variant="Variant.Outlined"
+                          Margin="Margin.Dense"
+                          TextChanged="@(arg => context.SetAdditionalFilter("text", string.IsNullOrEmpty(arg) ? null : arg))"/>
+        </FilterRow>
+
+    </Table>
+</div>
+
+@code {
+    private Table<string>? Table { get; set; }
+
+    private StyleConfiguration<string> Style { get; set; } = StyleConfiguration<string>.Build()
+        .AddColumnStyleGetter(colKey =>
+        {
+            var builder = ColumnStyleBuilder<string>.Init()
+                .TitleColor(colKey == "id" ? Color.Primary : Color.Secondary);
+
+            switch (colKey)
+            {
+                case "id":
+                    builder.Width(120);
+                    builder.TextAlignment(Alignment.Center);
+                    break;
+                case "name":
+                    builder.Width(60, true);
+                    break;
+                case "age":
+                    builder.Width(200, true);
+                    builder.TextAlignment(Alignment.Right);
+                    break;
+                case "date":
+                    builder.MaxWidth(200);
+                    break;
+                case "gender" or "other-gender":
+                    builder.Width(120);
+                    break;
+            }
+
+            return builder.Build();
+        })
+        .AddCellStyleGetter((_, item) =>
+        {
+            var builder = CellStyleBuilder<string>.Init();
+
+            if (item.Tags.Contains("TRUE_VALUE"))
+            {
+                builder.TextColor(Color.Success);
+            }
+            else if (item.Tags.Contains("FALSE_VALUE"))
+            {
+                builder.TextColor(Color.Error);
+            }
+
+            if (item.Value == "open")
+            {
+            }
+
+            builder.Icon(item.Value == "open" ? Icons.Material.Filled.OpenWith : Icons.Material.Filled.Info);
+            builder.IconColor(item.Value == "open" ? Color.Error : Color.Default);
+
+            return builder.Build();
+        });
+
+    private Dictionary<string, object> ExtraParams { get; set; } = new()
+    {
+        { "key", 1 }
+    };
+
+    private void RowClickHandler(TableRowClickArgs<TableRowItem<string>> item)
+    {
+        // var items = Table?.GetData();
+        Console.WriteLine(item.Item.ItemKey);
+        Console.WriteLine(item.IsDoubleClick);
+        Console.WriteLine(item.Button.ToString());
+    }
+
+    private void ActionHandler(KeyValuePair<string, TableRowItem<string>> pair)
+    {
+        Console.WriteLine(pair.Key);
+    }
+
+}
