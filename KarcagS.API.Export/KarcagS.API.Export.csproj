@@ -6,10 +6,9 @@
         <Nullable>enable</Nullable>
         <Title>KarcagS API Export Library</Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>6.2.0</PackageVersion>
-        <AssemblyVersion>6.2.0</AssemblyVersion>
-        <FileVersion>6.2.0</FileVersion>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageVersion>6.2.1</PackageVersion>
+        <AssemblyVersion>6.2.1</AssemblyVersion>
+        <FileVersion>6.2.1</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,8 +21,14 @@
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.11" />
     </ItemGroup>
 
+    <PropertyGroup>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+    </PropertyGroup>
+
     <ItemGroup>
         <None Include="README.md" Pack="true" PackagePath="\" />
+        <None Include="LICENSE.txt" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>
