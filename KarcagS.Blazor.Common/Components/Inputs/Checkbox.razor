@@ -4,13 +4,13 @@
 
 @code {
     [Parameter, EditorRequired]
-    public string Label { get; set; } = default!;
+    public required string Label { get; set; } = null!;
 
     [Parameter]
-    public string Style { get; set; } = default!;
+    public string Style { get; set; } = null!;
 
     [Parameter]
-    public string Class { get; set; } = default!;
+    public string Class { get; set; } = null!;
 
     [Parameter]
     public bool? Value { get; set; }

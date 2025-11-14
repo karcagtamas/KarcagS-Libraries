@@ -12,21 +12,21 @@
         </MudText>
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">@GetCancelText()</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">@GetConfirmText()</MudButton>
+        <MudButton OnClick="@Cancel">@GetCancelText()</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@Submit">@GetConfirmText()</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
 
     [CascadingParameter]
-    private MudDialogInstance Dialog { get; set; } = default!;
+    private IMudDialogInstance Dialog { get; set; } = null!;
 
     /// <summary>
     /// Dialog Input
     /// </summary>
     [Parameter]
-    public ConfirmDialogInput Input { get; set; } = default!;
+    public ConfirmDialogInput Input { get; set; } = null!;
 
     private async Task Submit()
     {

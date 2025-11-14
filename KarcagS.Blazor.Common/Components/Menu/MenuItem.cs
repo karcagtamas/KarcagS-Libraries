@@ -2,28 +2,20 @@
 
 namespace KarcagS.Blazor.Common.Components.Menu;
 
-public class MenuItem
+public class MenuItem(string title, string? icon, string? path, List<MenuItem> children)
 {
-    public string Title { get; set; }
+    public string Title { get; set; } = title;
     public string? ResourceKey { get; set; }
-    public string? Icon { get; set; }
+    public string? Icon { get; set; } = icon;
     public Color? IconColor { get; set; }
-    public string? Path { get; set; }
-    public List<MenuItem> Children { get; set; }
+    public string? Path { get; set; } = path;
+    public List<MenuItem> Children { get; set; } = children;
     public bool IsDivider { get; set; } = false;
     public Action? Action { get; set; }
     public bool Authenticated { get; set; } = true;
 
-    public bool IsGroup { get { return Children.Count > 0; } }
-    public bool IsAction { get { return Path != null; } }
-
-    public MenuItem(string title, string? icon, string? path, List<MenuItem> children)
-    {
-        Title = title;
-        Icon = icon;
-        Path = path;
-        Children = children;
-    }
+    public bool IsGroup => Children.Count > 0;
+    public bool IsAction => Path != null;
 
     public static MenuItem CreateGroupItem(string title, List<MenuItem> children) => new(title, null, null, children);
 

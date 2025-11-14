@@ -5,8 +5,8 @@
 
 @code {
     [Parameter, EditorRequired]
-    public string Label { get; set; } = default!;
+    public required string Label { get; set; }
 
-    [Parameter, EditorRequired]
+    [Parameter]
     public string? Uri { get; set; }
 }

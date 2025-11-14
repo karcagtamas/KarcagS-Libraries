@@ -3,7 +3,7 @@
 
 @code {
     [Parameter, EditorRequired]
-    public string Title { get; set; } = default!;
+    public required string Title { get; set; } = null!;
 
     [Parameter]
     public DateTime? Date { get; set; }

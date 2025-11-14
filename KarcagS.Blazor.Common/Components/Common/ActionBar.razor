@@ -9,7 +9,7 @@
 
 @code {
     [Parameter, EditorRequired]
-    public RenderFragment ChildContent { get; set; } = default!;
+    public required RenderFragment ChildContent { get; set; }
 
     [Parameter]
     public RenderFragment? OtherRows { get; set; }

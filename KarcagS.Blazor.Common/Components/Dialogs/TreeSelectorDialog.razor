@@ -36,18 +36,18 @@
         </div>
     </DialogContent>
     <DialogActions>
-        <MudIconButton Icon="@Icons.Material.Filled.ExpandMore" Size="Size.Small" OnClick="ExpandAll" Disabled="@ObjectHelper.IsEmpty(DataList)"/>
-        <MudIconButton Icon="@Icons.Material.Filled.ExpandLess" Size="Size.Small" OnClick="CollapseAll" Disabled="@ObjectHelper.IsEmpty(DataList)"/>
+        <MudIconButton Icon="@Icons.Material.Filled.ExpandMore" Size="Size.Small" OnClick="@ExpandAll" Disabled="@ObjectHelper.IsEmpty(DataList)"/>
+        <MudIconButton Icon="@Icons.Material.Filled.ExpandLess" Size="Size.Small" OnClick="@CollapseAll" Disabled="@ObjectHelper.IsEmpty(DataList)"/>
         <MudSpacer/>
-        <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Cancel")</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit" Disabled="@(!CanSubmit())">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
+        <MudButton OnClick="@Cancel">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@Submit" Disabled="@(!CanSubmit())">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
 
     [CascadingParameter]
-    private MudDialogInstance Dialog { get; set; } = null!;
+    private IMudDialogInstance Dialog { get; set; } = null!;
 
     [Parameter]
     public string? Title { get; set; }
@@ -56,16 +56,16 @@
     public string? BodyText { get; set; }
 
     [Parameter, EditorRequired]
-    public string EntityName { get; set; } = default!;
+    public required string EntityName { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public Func<Task<List<T>>> Fetcher { get; set; } = async () => await Task.FromResult<List<T>>([]);
+    public required Func<Task<List<T>>> Fetcher { get; set; } = async () => await Task.FromResult<List<T>>([]);
 
     [Parameter, EditorRequired]
-    public Func<T, List<T>> ItemExtractor { get; set; } = _ => [];
+    public required Func<T, List<T>> ItemExtractor { get; set; } = _ => [];
 
     [Parameter, EditorRequired]
-    public Func<T, string> TitleGetter { get; set; } = _ => "";
+    public required Func<T, string> TitleGetter { get; set; } = _ => "";
 
     [Parameter]
     public bool MultiSelect { get; set; }
@@ -80,10 +80,10 @@
     public int MinWidth { get; set; } = 300;
 
     [Parameter]
-    public List<TKey> DisabledIds { get; set; } = new();
+    public List<TKey> DisabledIds { get; set; } = [];
 
     [Inject]
-    private ILocalizationService LocalizationService { get; set; } = default!;
+    private ILocalizationService LocalizationService { get; set; } = null!;
 
     public IReadOnlyCollection<TreeItem<T>> DataList { get; set; } = [];
 

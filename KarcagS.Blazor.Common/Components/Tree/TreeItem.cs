@@ -4,7 +4,7 @@ namespace KarcagS.Blazor.Common.Components.Tree;
 
 public sealed class TreeItem<T> : TreeItemData<T>
 {
-    public T Data { get; set; } = default!;
+    public T Data { get; set; }
     public int Level { get; set; }
     public bool HasChild => Children?.Count > 0;
     public bool IsLeaf => Children?.Count == 0;

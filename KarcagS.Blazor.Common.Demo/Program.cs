@@ -84,6 +84,6 @@ builder.Services.AddMudServices(config =>
 ApplicationSettings.BaseUrl = builder.Configuration.GetSection("SecureApi").Value ?? "";
 ApplicationSettings.BaseApiUrl = $"{ApplicationSettings.BaseUrl}/api";
 
-ApplicationContext.ApplicationName = "Papyrus";
+ApplicationContext.ApplicationName = "KarcagS";
 
 await builder.Build().RunAsync();

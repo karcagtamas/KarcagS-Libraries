@@ -9,13 +9,13 @@ else
 
 @code {
     [Parameter, EditorRequired]
-    public bool LogicValue { get; set; }
+    public required bool LogicValue { get; set; }
 
     [Parameter, EditorRequired]
-    public string TrueText { get; set; } = default!;
+    public required string TrueText { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public string FalseText { get; set; } = default!;
+    public required string FalseText { get; set; } = null!;
 
     [Parameter]
     public bool Colorize { get; set; }

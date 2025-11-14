@@ -7,21 +7,21 @@ namespace KarcagS.Blazor.Common.Components.ListTable;
 public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 {
     private readonly Func<TableOptions, Task<TableResult<TKey>>> fetcher;
-    private List<T> rawData = new();
+    private readonly List<T> rawData = [];
     private int allDataCount = 0;
     private bool initialized = false;
 
     private Predicate<T> isDisabled = (data) => false;
     private Predicate<T> isHidden = (data) => false;
 
-    private ListTable<T, TKey> tableInstance = default!;
+    private ListTable<T, TKey> tableInstance = null!;
 
     private List<TKey> preSelection = new();
 
-    public List<RowItem<T, TKey>> data = new();
+    public List<RowItem<T, TKey>> Data = new();
 
-    public List<T> RawData { get => data.Select(x => x.Data).ToList(); }
-    public int AllDataCount { get => allDataCount; }
+    public List<T> RawData => Data.Select(x => x.Data).ToList();
+    public int AllDataCount => allDataCount;
 
     public TableDataSource(Func<TableOptions, Task<TableResult<TKey>>> fetcher)
     {
@@ -53,7 +53,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
     {
         await Fetch(state);
 
-        data.ForEach(x =>
+        Data.ForEach(x =>
         {
             if (preSelection.Contains(x.Id))
             {
@@ -66,7 +66,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
     {
         isHidden = predicate;
 
-        data.ForEach(x =>
+        Data.ForEach(x =>
         {
             x.Hidden = isHidden(x.Data);
         });
@@ -78,7 +78,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
     {
         isDisabled = predicate;
 
-        data.ForEach(x =>
+        Data.ForEach(x =>
         {
             x.Disabled = isDisabled(x.Data);
         });
@@ -103,10 +103,10 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
         //rawData = result.Items;
         allDataCount = result.All;
 
-        data = rawData.Select(x => new RowItem<T, TKey> { Id = x.Id, Data = x })
+        Data = rawData.Select(x => new RowItem<T, TKey> { Id = x.Id, Data = x })
             .ToList();
 
-        data.ForEach(x =>
+        Data.ForEach(x =>
         {
             x.Hidden = isHidden(x.Data);
             x.Disabled = isDisabled(x.Data);
@@ -119,7 +119,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 public class RowItem<T, TKey> where T : class, IIdentified<TKey>
 {
     public TKey Id { get; set; } = default!;
-    public T Data { get; set; } = default!;
+    public T Data { get; set; } = null!;
     public bool Selected { get; set; }
     public bool Disabled { get; set; }
     public bool Hidden { get; set; }

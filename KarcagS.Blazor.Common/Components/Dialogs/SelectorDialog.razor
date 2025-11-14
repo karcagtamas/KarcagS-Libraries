@@ -32,8 +32,8 @@
     <DialogActions>
         <MudSpacer/>
         <MudButton
-            OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Cancel")</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit"
+            OnClick="@Cancel">@LocalizationService.GetValue(LibraryLocalizer.SelectorCancelActionKey, "Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@Submit"
                    Disabled="@(!CanSubmit())">@LocalizationService.GetValue(LibraryLocalizer.SelectorSelectActionKey, "Select")</MudButton>
     </DialogActions>
 </MudDialog>
@@ -41,7 +41,7 @@
 @code {
 
     [CascadingParameter]
-    private MudDialogInstance Dialog { get; set; } = null!;
+    private IMudDialogInstance Dialog { get; set; } = null!;
 
     [Parameter]
     public string? Title { get; set; }
@@ -50,13 +50,13 @@
     public string? BodyText { get; set; }
 
     [Parameter, EditorRequired]
-    public string EntityName { get; set; } = default!;
+    public required string EntityName { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public Func<Task<List<Data>>> Fetcher { get; set; } = async () => await Task.FromResult<List<Data>>(new());
+    public required Func<Task<List<Data>>> Fetcher { get; set; } = async () => await Task.FromResult<List<Data>>([]);
 
     [Parameter, EditorRequired]
-    public Func<Data, string> TitleGetter { get; set; } = _ => "";
+    public required Func<Data, string> TitleGetter { get; set; } = _ => "";
 
     [Parameter]
     public bool MultiSelect { get; set; }
@@ -68,14 +68,14 @@
     public Key? PreSelectedId { get; set; }
 
     [Parameter]
-    public List<Key> PreSelectedIds { get; set; } = new();
+    public List<Key> PreSelectedIds { get; set; } = [];
 
     [Inject]
-    private ILocalizationService LocalizationService { get; set; } = default!;
+    private ILocalizationService LocalizationService { get; set; } = null!;
 
     private string TitleText { get; set; } = "";
-    public List<SelectableRowItem<Data, Key>> DataList { get; set; } = new();
-    private List<Data> Selection { get; set; } = new();
+    public List<SelectableRowItem<Data, Key>> DataList { get; set; } = [];
+    private List<Data> Selection { get; set; } = [];
 
     private bool IsLoading { get; set; }
 
@@ -148,13 +148,13 @@
             if (item.Selected)
             {
                 item.Selected = false;
-                Selection = new();
+                Selection = [];
             }
             else
             {
                 DataList.ForEach(x => x.Selected = false);
                 item.Selected = true;
-                Selection = new List<Data> { item.Data };
+                Selection = [item.Data];
             }
         }
     }

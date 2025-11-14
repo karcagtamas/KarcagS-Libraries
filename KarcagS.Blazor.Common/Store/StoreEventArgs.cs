@@ -2,19 +2,12 @@
 
 namespace KarcagS.Blazor.Common.Store;
 
-public class StoreEventArgs : EventArgs
+public class StoreEventArgs(string key, StoreEvent type, object? value, StoreContext context)
+    : EventArgs
 {
-    public string Key { get; set; }
-    public StoreEvent Type { get; set; }
-    public object? Value { get; set; }
+    public string Key { get; set; } = key;
+    public StoreEvent Type { get; set; } = type;
+    public object? Value { get; set; } = value;
 
-    public StoreContext Context { get; set; }
-
-    public StoreEventArgs(string key, StoreEvent type, object? value, StoreContext context)
-    {
-        Key = key;
-        Type = type;
-        Value = value;
-        Context = context;
-    }
+    public StoreContext Context { get; set; } = context;
 }

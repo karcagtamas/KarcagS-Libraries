@@ -3,15 +3,8 @@ using KarcagS.Http;
 
 namespace KarcagS.Blazor.Common.Http;
 
-public class LocalStorageTokenHandler : ITokenHandler
+public class LocalStorageTokenHandler(ILocalStorageService localStorageService) : ITokenHandler
 {
-    private readonly ILocalStorageService localStorageService;
-
-    public LocalStorageTokenHandler(ILocalStorageService localStorageService)
-    {
-        this.localStorageService = localStorageService;
-    }
-
     public Task<string> GetAccessToken(HttpConfiguration configuration) => GetFromLocalStorage(configuration.AccessTokenName);
     public Task<string> GetRefreshToken(HttpConfiguration configuration) => GetFromLocalStorage(configuration.RefreshTokenName);
 

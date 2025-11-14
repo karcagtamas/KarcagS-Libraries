@@ -2,12 +2,9 @@
 
 public class ConfirmDialogInput
 {
-    /// <summary>
-    /// Delete function
-    /// </summary>
     public Func<Task<bool>>? ActionFunction { get; set; }
 
-    public string Message { get; set; } = default!;
+    public string Message { get; set; } = null!;
     public int MinContentWidth { get; set; } = 360;
     public bool IsYesNo { get; set; }
 }

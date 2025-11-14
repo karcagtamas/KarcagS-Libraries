@@ -9,7 +9,8 @@ public class AppTheme
     public AppColorPalette ColorPalette { get; }
     public AppColorPalette DarkColorPalette { get; }
 
-    public AppTheme(AppColorPalette palette, AppColorPalette darkPalette, int drawerWidthLeft = 260, int drawerWidthRight = 300)
+    public AppTheme(AppColorPalette palette, AppColorPalette darkPalette, int drawerWidthLeft = 260,
+        int drawerWidthRight = 300)
     {
         ColorPalette = palette;
         DarkColorPalette = darkPalette;
@@ -54,12 +55,15 @@ public class AppTheme
             },
             Typography = new Typography
             {
-                Default = new Default { FontFamily = ["Bree Serif", "serif"] },
-                Button = new Button
+                Default = new DefaultTypography
                 {
-                    TextTransform = "none"
-                }
-            }
+                    FontFamily = ["Bree Serif", "serif"],
+                },
+                Button = new ButtonTypography
+                {
+                    TextTransform = "none",
+                },
+            },
         };
     }
 

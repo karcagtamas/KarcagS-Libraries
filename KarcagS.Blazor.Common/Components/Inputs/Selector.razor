@@ -15,25 +15,25 @@
 
 @code {
     [Parameter, EditorRequired]
-    public List<TItem> Items { get; set; } = new();
+    public required List<TItem> Items { get; set; } = [];
 
     [Parameter, EditorRequired]
-    public string Label { get; set; } = default!;
+    public required string Label { get; set; } = null!;
 
     [Parameter]
-    public RenderFragment<TItem> SelectItem { get; set; } = default!;
+    public RenderFragment<TItem> SelectItem { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public Func<TItem, T> KeyGetter { get; set; } = default!;
+    public required Func<TItem, T> KeyGetter { get; set; } = null!;
 
     [Parameter]
-    public string Placeholder { get; set; } = default!;
+    public string Placeholder { get; set; } = null!;
 
     [Parameter]
-    public string Style { get; set; } = default!;
+    public string Style { get; set; } = null!;
 
     [Parameter]
-    public string Class { get; set; } = default!;
+    public string Class { get; set; } = null!;
 
     [Parameter]
     public bool Clearable { get; set; }

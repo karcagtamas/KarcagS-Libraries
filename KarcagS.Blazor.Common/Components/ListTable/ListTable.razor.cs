@@ -7,37 +7,29 @@ namespace KarcagS.Blazor.Common.Components.ListTable;
 
 public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdentified<TKey>
 {
-    [Parameter, EditorRequired]
-    public TableDataSource<T, TKey> DataSource { get; set; } = default!;
+    [Parameter, EditorRequired] public required TableDataSource<T, TKey> DataSource { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public TableConfiguration<T, TKey> Config { get; set; } = TableConfiguration<T, TKey>.Build();
+    public required TableConfiguration<T, TKey> Config { get; set; } = TableConfiguration<T, TKey>.Build();
 
-    [Parameter]
-    public EventCallback<RowItem<T, TKey>> OnRowClick { get; set; }
+    [Parameter] public EventCallback<RowItem<T, TKey>> OnRowClick { get; set; }
 
-    [Parameter]
-    public string Class { get; set; } = string.Empty;
+    [Parameter] public string Class { get; set; } = string.Empty;
 
     private MudTable<RowItem<T, TKey>>? Table { get; set; }
 
-    private string AppendedClass
-    {
-        get => $"w-100 flex-box h-100 {Class}";
-    }
+    private string AppendedClass => $"w-100 flex-box h-100 {Class}";
 
     private bool Loading { get; set; } = false;
     private string TextFilter { get; set; } = string.Empty;
 
-    protected override async void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         Loading = true;
         StateHasChanged();
         await DataSource.Init(this);
         Loading = false;
         StateHasChanged();
-
-        await base.OnInitializedAsync();
     }
 
     protected override Task OnAfterRenderAsync(bool firstRender)
@@ -62,10 +54,11 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
         };
     }
 
-    private async Task<TableData<RowItem<T, TKey>>> TableReload(TableState state, CancellationToken cancellationToken = default)
+    private async Task<TableData<RowItem<T, TKey>>> TableReload(TableState state,
+        CancellationToken cancellationToken = default)
     {
         await Refresh(state);
-        return new TableData<RowItem<T, TKey>> { Items = DataSource.data, TotalItems = DataSource.AllDataCount };
+        return new TableData<RowItem<T, TKey>> { Items = DataSource.Data, TotalItems = DataSource.AllDataCount };
     }
 
     private string GetTDStyle(Alignment alignment)

@@ -11,7 +11,7 @@
     </TitleContent>
     <DialogContent>
         <div style="min-width: @(MinWidth)px;">
-            <MudForm @ref="Form" IsTouchedChanged="HandleTouchedChanged" IsValidChanged="HandleValidChanged">
+            <MudForm @ref="Form" IsTouchedChanged="@HandleTouchedChanged" IsValidChanged="@HandleValidChanged">
                 <LoadingBox IsLoading="Loading">
                     @ChildContent
                 </LoadingBox>
@@ -21,41 +21,41 @@
     <DialogActions>
         @if (ObjectHelper.IsNotNull(Remove) && IsEdit && !RemoveDisabled)
         {
-            <MudButton Color="Color.Error" OnClick="Delete" Disabled="@(!CanDelete())">@LocalizationService.GetValue(LibraryLocalizer.EditorRemoveKey, "Remove")</MudButton>
+            <MudButton Color="Color.Error" OnClick="@Delete" Disabled="@(!CanDelete())">@LocalizationService.GetValue(LibraryLocalizer.EditorRemoveKey, "Remove")</MudButton>
         }
-        <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.EditorCancelKey, "Cancel")</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Save" Disabled="@(!CanSave())">@LocalizationService.GetValue(LibraryLocalizer.EditorSaveKey, "Save")</MudButton>
+        <MudButton OnClick="@Cancel">@LocalizationService.GetValue(LibraryLocalizer.EditorCancelKey, "Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@Save" Disabled="@(!CanSave())">@LocalizationService.GetValue(LibraryLocalizer.EditorSaveKey, "Save")</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
 
     [CascadingParameter]
-    private MudDialogInstance Dialog { get; set; } = null!;
+    private IMudDialogInstance Dialog { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public RenderFragment ChildContent { get; set; } = default!;
+    public required RenderFragment ChildContent { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public Func<Task<bool>> Submit { get; set; } = default!;
+    public required Func<Task<bool>> Submit { get; set; } = null!;
 
     [Parameter]
     public Func<Task<bool>>? Remove { get; set; }
 
     [Parameter]
-    public string RemoveConfirmMessage { get; set; } = default!;
+    public string RemoveConfirmMessage { get; set; } = null!;
 
     [Parameter]
-    public string RemoveConfirmTitle { get; set; } = default!;
+    public string RemoveConfirmTitle { get; set; } = null!;
 
     [Parameter]
     public string? Title { get; set; }
 
     [Parameter, EditorRequired]
-    public string EntityName { get; set; } = default!;
+    public required string EntityName { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public bool IsEdit { get; set; }
+    public required bool IsEdit { get; set; }
 
     [Parameter]
     public int MinWidth { get; set; } = 300;
@@ -64,7 +64,7 @@
     public Func<Model, ISnackbar, Task<bool>>? FormValidator { get; set; }
 
     [Parameter, EditorRequired]
-    public Model ModelObj { get; set; } = default!;
+    public required Model ModelObj { get; set; } = default!;
 
     [Parameter]
     public bool RemoveDisabled { get; set; }
@@ -76,10 +76,10 @@
     private ISnackbar Snackbar { get; set; } = null!;
 
     [Inject]
-    private IConfirmService ConfirmService { get; set; } = default!;
+    private IConfirmService ConfirmService { get; set; } = null!;
 
     [Inject]
-    private ILocalizationService LocalizationService { get; set; } = default!;
+    private ILocalizationService LocalizationService { get; set; } = null!;
 
     private MudForm? Form { get; set; }
     private string TitleText { get; set; } = "";

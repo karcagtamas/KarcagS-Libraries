@@ -36,7 +36,7 @@
 @code {
 
     [CascadingParameter]
-    private MudDialogInstance Dialog { get; set; } = null!;
+    private IMudDialogInstance Dialog { get; set; } = null!;
 
     [Parameter]
     public FileUploaderDialogInput Input { get; set; } = new();
@@ -45,11 +45,11 @@
     private ISnackbar Snackbar { get; set; } = null!;
 
     [Inject]
-    private ILocalizationService LocalizationService { get; set; } = default!;
+    private ILocalizationService LocalizationService { get; set; } = null!;
 
-    private List<IBrowserFile> Files { get; set; } = new();
+    private List<IBrowserFile> Files { get; set; } = [];
 
-    private async void Save()
+    private async Task Save()
     {
         if (Input.Required && ObjectHelper.IsEmpty(Files))
         {

@@ -3,10 +3,10 @@
 @code {
 
     [Parameter, EditorRequired]
-    public string Title { get; set; } = default!;
+    public required string Title { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public double Number { get; set; }
+    public required double Number { get; set; }
 
     [Parameter]
     public bool OneRow { get; set; }

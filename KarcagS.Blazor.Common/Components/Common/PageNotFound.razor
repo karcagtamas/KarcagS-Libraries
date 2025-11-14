@@ -1,7 +1,7 @@
 @inject NavigationManager Navigation
 
 @code {
-    [Parameter, EditorRequired]
+    [Parameter]
     public string Path { get; set; } = "/not-found";
 
     protected override void OnInitialized()

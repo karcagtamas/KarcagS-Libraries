@@ -4,15 +4,8 @@ using MudBlazor;
 
 namespace KarcagS.Blazor.Common.Services;
 
-public class ConfirmService : IConfirmService
+public class ConfirmService(IDialogService dialogService) : IConfirmService
 {
-    private readonly IDialogService dialogService;
-
-    public ConfirmService(IDialogService dialogService)
-    {
-        this.dialogService = dialogService;
-    }
-
     public Task<bool> Open(ConfirmDialogInput input, string title) => Open(input, title, () => { });
 
     public Task<bool> Open(ConfirmDialogInput input, string title, Action action, DialogOptions? options = null)

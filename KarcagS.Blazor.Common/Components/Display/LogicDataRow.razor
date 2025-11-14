@@ -2,16 +2,16 @@
 
 @code {
     [Parameter, EditorRequired]
-    public string Title { get; set; } = default!;
+    public required string Title { get; set; } = null!;
 
     [Parameter, EditorRequired]
-    public bool Value { get; set; }
+    public required bool Value { get; set; }
 
     [Parameter, EditorRequired]
-    public string TrueValue { get; set; } = "";
+    public required string TrueValue { get; set; } = "";
 
     [Parameter, EditorRequired]
-    public string FalseValue { get; set; } = "";
+    public required string FalseValue { get; set; } = "";
 
     [Parameter]
     public Color TrueColor { get; set; } = Color.Default;

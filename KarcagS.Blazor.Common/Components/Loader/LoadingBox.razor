@@ -10,13 +10,13 @@ else
 @code {
 
     [Parameter, EditorRequired]
-    public bool IsLoading { get; set; }
+    public required bool IsLoading { get; set; }
 
     [Parameter]
     public Color Color { get; set; } = Color.Primary;
 
     [Parameter, EditorRequired]
-    public RenderFragment ChildContent { get; set; } = default!;
+    public required RenderFragment ChildContent { get; set; } = null!;
 
     [Parameter]
     public bool Flex { get; set; } = true;

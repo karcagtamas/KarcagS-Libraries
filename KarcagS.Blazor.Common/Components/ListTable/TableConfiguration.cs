@@ -76,10 +76,10 @@ public class TableColumn<T, TKey>
     public string Title { get; set; } = string.Empty;
     public Color TitleColor { get; set; } = Color.Default;
     public Alignment Alignment { get; set; } = Alignment.Left;
-    public Func<T, object> ValueGetter { get; set; } = (data) => default!;
-    public Func<T, TKey, Color> ColorGetter { get; set; } = (data, key) => Color.Default;
-    public Func<object, string> Formatter { get; set; } = (data) => data?.ToString() ?? string.Empty;
-    public int? Width { get; set; } = null;
+    public Func<T, object> ValueGetter { get; set; } = _ => null!;
+    public Func<T, TKey, Color> ColorGetter { get; set; } = (_, _) => Color.Default;
+    public Func<object, string> Formatter { get; set; } = data => data?.ToString() ?? string.Empty;
+    public int? Width { get; set; }
 
     public TableColumn()
     {

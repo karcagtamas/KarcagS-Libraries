@@ -18,7 +18,7 @@ public partial class Table<TKey> : ComponentBase, IDisposable
     public RenderFragment<Table<TKey>>? FilterRow { get; set; }
 
     [Parameter, EditorRequired]
-    public ITableService<TKey> Service { get; set; } = default!;
+    public ITableService<TKey> Service { get; set; } = null!;
 
     [Parameter]
     public StyleConfiguration<TKey> TableStyle { get; set; } = StyleConfiguration<TKey>.Build();
@@ -42,7 +42,7 @@ public partial class Table<TKey> : ComponentBase, IDisposable
     public EventCallback<KeyValuePair<string, TableRowItem<TKey>>> OnAction { get; set; }
 
     [Inject]
-    private ILocalizationService LocalizationService { get; set; } = default!;
+    private ILocalizationService LocalizationService { get; set; } = null!;
 
     private MudTable<TableRowItem<TKey>>? TableComponent { get; set; }
 
@@ -57,7 +57,7 @@ public partial class Table<TKey> : ComponentBase, IDisposable
     private Dictionary<string, TableHeaderStyle<TKey>> ColumnStyles { get; set; } = new();
     private HttpErrorResult? ErrorResult { get; set; }
 
-    private Subject<TableRowClickArgs<TableRowItem<TKey>>> rowClickSubject = new();
+    private readonly Subject<TableRowClickArgs<TableRowItem<TKey>>> rowClickSubject = new();
     private IDisposable? disposable;
 
     protected override async Task OnInitializedAsync()

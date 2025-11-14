@@ -5,14 +5,9 @@ using KarcagS.Shared.Table;
 
 namespace KarcagS.Blazor.Common.Services;
 
-public abstract class TableService<TKey> : ITableService<TKey>
+public abstract class TableService<TKey>(IHttpService http) : ITableService<TKey>
 {
-    protected readonly IHttpService Http;
-
-    public TableService(IHttpService http)
-    {
-        Http = http;
-    }
+    protected readonly IHttpService Http = http;
 
     public abstract string GetBaseUrl();
 
