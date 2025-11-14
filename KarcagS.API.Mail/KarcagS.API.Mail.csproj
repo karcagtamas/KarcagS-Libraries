@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <Title>KarcagS API Mail Library</Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>6.1.2</PackageVersion>
-        <AssemblyVersion>6.1.2</AssemblyVersion>
-        <FileVersion>6.1.2</FileVersion>
+        <PackageVersion>6.2.0</PackageVersion>
+        <AssemblyVersion>6.2.0</AssemblyVersion>
+        <FileVersion>6.2.0</FileVersion>
         <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
@@ -18,7 +18,7 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
-      <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.11" />
     </ItemGroup>
 
     <ItemGroup>

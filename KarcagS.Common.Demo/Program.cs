@@ -35,8 +35,7 @@ builder.Services.AddScoped<ITestTableService, TestTableService>();
 builder.Services.UseEFPersistence<DemoContext, string>();
 
 // Add AutoMapper
-var mapperConfig = new MapperConfiguration(conf => { conf.AddProfile<GenderMapper>(); });
-builder.Services.AddSingleton(mapperConfig.CreateMapper());
+builder.Services.AddAutoMapper(conf => { conf.AddMaps(typeof(Program).Assembly); });
 
 var connString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContextPool<DemoContext>(opt =>
