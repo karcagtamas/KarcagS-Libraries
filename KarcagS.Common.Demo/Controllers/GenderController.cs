@@ -2,28 +2,20 @@
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
-namespace KarcagS.Common.Demo.Controllers
+namespace KarcagS.Common.Demo.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class GenderController(IGenderService genderService)
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class GenderController
+    [HttpGet]
+    public async Task<List<GenderDTO>> GetAll([FromQuery] string? orderBy, [FromQuery] string? orderDirection)
     {
-        private readonly IGenderService genderService;
-
-        public GenderController(IGenderService genderService)
+        if (ObjectHelper.IsNotNull(orderBy) && ObjectHelper.IsNotNull(orderDirection))
         {
-            this.genderService = genderService;
+            return (await genderService.GetMappedOrderedListAsync<GenderDTO>((x) => x.Id > 1, orderBy, orderDirection)).ToList();
         }
 
-        [HttpGet]
-        public async Task<List<GenderDTO>> GetAll([FromQuery] string? orderBy, [FromQuery] string? orderDirection)
-        {
-            if (ObjectHelper.IsNotNull(orderBy) && ObjectHelper.IsNotNull(orderDirection))
-            {
-                return (await genderService.GetMappedOrderedListAsync<GenderDTO>((x) => x.Id > 1, orderBy, orderDirection)).ToList();
-            }
-
-            return (await genderService.GetAllMappedAsync<GenderDTO>()).ToList();
-        }
+        return (await genderService.GetAllMappedAsync<GenderDTO>()).ToList();
     }
 }

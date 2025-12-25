@@ -6,40 +6,43 @@ namespace KarcagS.Shared.Utils;
 
 public static class Extensions
 {
-    public static IObservable<T> ThrottleMax<T>(this IObservable<T> source, TimeSpan dueTime, TimeSpan maxTime) => source.ThrottleMax(dueTime, maxTime, Scheduler.Default);
-
-    public static IObservable<T> ThrottleMax<T>(this IObservable<T> source, TimeSpan dueTime, TimeSpan maxTime, IScheduler scheduler)
+    extension<T>(IObservable<T> source)
     {
-        return Observable.Create<T>(o =>
+        public IObservable<T> ThrottleMax(TimeSpan dueTime, TimeSpan maxTime) => source.ThrottleMax(dueTime, maxTime, Scheduler.Default);
+
+        public IObservable<T> ThrottleMax(TimeSpan dueTime, TimeSpan maxTime, IScheduler scheduler)
         {
-            var hasValue = false;
-            T value = default(T)!;
-
-            var maxTimeDisposable = new SerialDisposable();
-            var dueTimeDisposable = new SerialDisposable();
-
-            Action action = () =>
+            return Observable.Create<T>(o =>
             {
-                if (hasValue)
-                {
-                    maxTimeDisposable.Disposable = Disposable.Empty;
-                    dueTimeDisposable.Disposable = Disposable.Empty;
-                    o.OnNext(value);
-                    hasValue = false;
-                }
-            };
+                var hasValue = false;
+                var value = default(T)!;
 
-            return source.Subscribe(x =>
-            {
-                if (!hasValue)
-                {
-                    maxTimeDisposable.Disposable = scheduler.Schedule(maxTime, action);
-                }
+                var maxTimeDisposable = new SerialDisposable();
+                var dueTimeDisposable = new SerialDisposable();
 
-                hasValue = true;
-                value = x;
-                dueTimeDisposable.Disposable = scheduler.Schedule(dueTime, action);
-            }, o.OnError, o.OnCompleted);
-        });
+                var action = () =>
+                {
+                    if (hasValue)
+                    {
+                        maxTimeDisposable.Disposable = Disposable.Empty;
+                        dueTimeDisposable.Disposable = Disposable.Empty;
+                        o.OnNext(value);
+                        hasValue = false;
+                    }
+                };
+
+                return source.Subscribe(x =>
+                {
+                    if (!hasValue)
+                    {
+                        maxTimeDisposable.Disposable = scheduler.Schedule(maxTime, action);
+                    }
+
+                    hasValue = true;
+                    value = x;
+                    dueTimeDisposable.Disposable = scheduler.Schedule(dueTime, action);
+                }, o.OnError, o.OnCompleted);
+            });
+        }
     }
 }

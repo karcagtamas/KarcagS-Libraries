@@ -2,6 +2,6 @@
 
 public class TablePagination
 {
-    public int Page { get; set; } = 0;
+    public int Page { get; set; }
     public int Size { get; set; } = 50;
 }

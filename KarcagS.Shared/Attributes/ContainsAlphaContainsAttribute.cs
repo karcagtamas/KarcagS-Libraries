@@ -4,7 +4,7 @@ using KarcagS.Shared.Helpers;
 
 namespace KarcagS.Shared.Attributes;
 
-public partial class ContainsNumericAttribute : ValidationAttribute
+public partial class ContainsAlphaContainsAttribute : ValidationAttribute, IContainsAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
@@ -20,10 +20,10 @@ public partial class ContainsNumericAttribute : ValidationAttribute
         return Error();
     }
 
-    protected string GetInvalidMessage() => "Does not contain any numeric characters.";
+    public string GetInvalidMessage() => "Does not contain any alpha characters.";
 
     private ValidationResult Error() => new(GetInvalidMessage());
 
-    [GeneratedRegex(@"^(?=.*\d).+$", RegexOptions.IgnoreCase, "en-US")]
+    [GeneratedRegex(@"^(?=.*[a-z]).+$", RegexOptions.None)]
     private static partial Regex MyRegex();
 }

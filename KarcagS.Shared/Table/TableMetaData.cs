@@ -1,12 +1,11 @@
-﻿using KarcagS.Shared.Enums;
-using KarcagS.Shared.Table.Enums;
+﻿using KarcagS.Shared.Table.Enums;
 
 namespace KarcagS.Shared.Table;
 
 public class TableMetaData
 {
-    public string Key { get; set; } = default!;
-    public string Title { get; set; } = default!;
+    public string Key { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
     public string? ResourceKey { get; set; }
 
     public FilterData FilterData { get; set; } = default!;
@@ -39,8 +38,8 @@ public class ColumnsData
 
 public class ColumnData
 {
-    public string Key { get; set; } = default!;
-    public string Title { get; set; } = default!;
+    public string Key { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
     public string? ResourceKey { get; set; }
     public ColumnFormatter Formatter { get; set; }
     public bool IsAction { get; set; }

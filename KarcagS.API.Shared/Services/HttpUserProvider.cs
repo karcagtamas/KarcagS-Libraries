@@ -6,16 +6,9 @@ using Microsoft.Extensions.Options;
 
 namespace KarcagS.API.Shared.Services;
 
-public class HttpUserProvider<TUserKey> : AbstractUserProvider<TUserKey>
+public class HttpUserProvider<TUserKey>(IHttpContextAccessor contextAccessor, IOptions<UtilsSettings> utilsOptions) : AbstractUserProvider<TUserKey>
 {
-    private readonly IHttpContextAccessor contextAccessor;
-    private readonly UtilsSettings settings;
-
-    public HttpUserProvider(IHttpContextAccessor contextAccessor, IOptions<UtilsSettings> utilsOptions)
-    {
-        this.contextAccessor = contextAccessor;
-        settings = utilsOptions.Value;
-    }
+    private readonly UtilsSettings settings = utilsOptions.Value;
 
     public override Task<TUserKey?> GetCurrentUserId()
     {

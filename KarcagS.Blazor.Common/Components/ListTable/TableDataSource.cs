@@ -8,17 +8,17 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 {
     private readonly Func<TableOptions, Task<TableResult<TKey>>> fetcher;
     private readonly List<T> rawData = [];
-    private int allDataCount = 0;
-    private bool initialized = false;
+    private int allDataCount;
+    private bool initialized;
 
-    private Predicate<T> isDisabled = (data) => false;
-    private Predicate<T> isHidden = (data) => false;
+    private Predicate<T> isDisabled = _ => false;
+    private Predicate<T> isHidden = _ => false;
 
     private ListTable<T, TKey> tableInstance = null!;
 
-    private List<TKey> preSelection = new();
+    private List<TKey> preSelection = [];
 
-    public List<RowItem<T, TKey>> Data = new();
+    public List<RowItem<T, TKey>> Data = [];
 
     public List<T> RawData => Data.Select(x => x.Data).ToList();
     public int AllDataCount => allDataCount;
@@ -28,21 +28,21 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
         this.fetcher = fetcher;
     }
 
-    public async Task Init(ListTable<T, TKey> tableInstance)
+    public async Task Init(ListTable<T, TKey> instance)
     {
-        await Init(tableInstance, new());
+        await Init(instance, []);
     }
 
-    public Task Init(ListTable<T, TKey> tableInstance, List<TKey> preSelection)
+    public Task Init(ListTable<T, TKey> instance, List<TKey> preSelectedKeys)
     {
         if (initialized)
         {
             return Task.CompletedTask;
         }
 
-        this.preSelection = preSelection;
+        preSelection = preSelectedKeys;
 
-        this.tableInstance = tableInstance;
+        tableInstance = instance;
 
         initialized = true;
 
@@ -66,10 +66,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
     {
         isHidden = predicate;
 
-        Data.ForEach(x =>
-        {
-            x.Hidden = isHidden(x.Data);
-        });
+        Data.ForEach(x => { x.Hidden = isHidden(x.Data); });
 
         return this;
     }
@@ -78,10 +75,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
     {
         isDisabled = predicate;
 
-        Data.ForEach(x =>
-        {
-            x.Disabled = isDisabled(x.Data);
-        });
+        Data.ForEach(x => { x.Disabled = isDisabled(x.Data); });
 
         return this;
     }
@@ -112,8 +106,6 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
             x.Disabled = isDisabled(x.Data);
         });
     }
-
-
 }
 
 public class RowItem<T, TKey> where T : class, IIdentified<TKey>

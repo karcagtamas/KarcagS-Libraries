@@ -8,7 +8,7 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
     public string Title { get; set; } = "Table";
     public string? ResourceKey { get; set; }
 
-    public List<Column<T, TKey>> Columns { get; set; } = new();
+    public List<Column<T, TKey>> Columns { get; set; } = [];
 
     public FilterConfiguration Filter { get; set; } = FilterConfiguration.Build();
     public OrderingConfiguration Ordering { get; set; } = OrderingConfiguration.Build();
@@ -16,7 +16,7 @@ public class Configuration<T, TKey> where T : class, IIdentified<TKey>
 
     public Func<T, Task<bool>> ClickDisableOn { get; set; } = _ => Task.FromResult(false);
     public Func<T, Column<T, TKey>, Task<bool>> IsActionsDisabled = (_, _) => Task.FromResult(false);
-    public List<Func<T, Column<T, TKey>, Task<string>>> TagProviders { get; set; } = new();
+    public List<Func<T, Column<T, TKey>, Task<string>>> TagProviders { get; set; } = [];
 
     private Configuration(string key = "table")
     {

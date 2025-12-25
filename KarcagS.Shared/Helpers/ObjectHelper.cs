@@ -14,25 +14,9 @@ public static class ObjectHelper
 
     public static T OrElse<T>(T? obj, T orElse) => IsNull(obj) ? orElse : obj;
 
-    public static T OrElseThrow<T, Ex>(T? obj, Ex e) where Ex : Exception, new()
-    {
-        if (IsNotNull(obj))
-        {
-            return obj;
-        }
+    public static T OrElseThrow<T, Ex>(T? obj, Ex e) where Ex : Exception, new() => IsNotNull(obj) ? obj : throw e;
 
-        throw e;
-    }
-
-    public static T OrElseThrow<T, Ex>(T? obj, Func<Ex> func) where Ex : Exception, new()
-    {
-        if (IsNotNull(obj))
-        {
-            return obj;
-        }
-
-        throw func();
-    }
+    public static T OrElseThrow<T, Ex>(T? obj, Func<Ex> func) where Ex : Exception, new() => IsNotNull(obj) ? obj : throw func();
 
     public static async Task<T> OrElseThrow<T, Ex>(T? obj, Func<Task<Ex>> func) where Ex : Exception, new()
     {

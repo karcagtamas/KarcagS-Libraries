@@ -18,7 +18,7 @@ public class HttpPathParameters : IListState<HttpPathParameters>
         pathParams = [];
     }
 
-    public static HttpPathParameters Build() => new HttpPathParameters();
+    public static HttpPathParameters Build() => new();
 
 
     /// <summary>

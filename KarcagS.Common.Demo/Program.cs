@@ -1,11 +1,9 @@
-using AutoMapper;
 using KarcagS.API.Http.Interceptor;
 using KarcagS.API.Http.Interceptor.Converters;
 using KarcagS.API.Repository;
 using KarcagS.API.Shared;
 using KarcagS.API.Table;
 using KarcagS.Common.Demo;
-using KarcagS.Common.Demo.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

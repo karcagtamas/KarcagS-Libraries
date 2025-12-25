@@ -6,7 +6,7 @@ namespace KarcagS.Shared.Localization;
 public class LibraryLocalizer
 {
     private static LibraryLocalizer? _instance;
-    private IStringLocalizer Localizer { get; set; } = default!;
+    private IStringLocalizer? Localizer { get; set; }
 
     private LibraryLocalizer()
     {
@@ -23,7 +23,12 @@ public class LibraryLocalizer
 
     public bool IsRegistered() => ObjectHelper.IsNotNull(Localizer);
 
-    public string GetValue(string key, params string[] args) => Localizer[key, args];
+    public string GetValue(string key, params string[] args)
+    {
+        return ObjectHelper.IsNotNull(Localizer)
+            ? Localizer[key, args]
+            : string.Empty;
+    }
 
     public const string DialogCancelKey = "Dialog.Cancel";
     public const string DialogSaveKey = "Dialog.Save";

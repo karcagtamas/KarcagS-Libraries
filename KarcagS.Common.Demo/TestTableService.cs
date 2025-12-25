@@ -12,22 +12,19 @@ public class TestTableService : TableService<TestEntity, string>, ITestTableServ
 
     public override Task<DataSource<TestEntity, string>> BuildDataSourceAsync()
     {
-        var dataSource = (DataSource<TestEntity, string>)AutoListTableDataSource<TestEntity, string>.Build(_ =>
+        var dataSource = (DataSource<TestEntity, string>)AutoListTableDataSource<TestEntity, string>.Build(_ => Task.FromResult(new List<TestEntity>
             {
-                return Task.FromResult(new List<TestEntity>
+                new()
                 {
-                    new()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Name = "Alma"
-                    },
-                    new()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Name = "Korte"
-                    }
-                }.AsQueryable());
-            })
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Alma"
+                },
+                new()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = "Korte"
+                }
+            }.AsQueryable()))
             .SetTextFilteredColumns("Name")
             .OrderBy(x => x.Name, OrderDirection.Descend)
             .ThenBy(x => x.Id)
@@ -57,6 +54,6 @@ public interface ITestTableService : ITableService<TestEntity, string>
 
 public record TestEntity : IIdentified<string>
 {
-    public string Id { get; set; } = default!;
-    public string Name { get; set; } = default!;
+    public string Id { get; set; } = string.Empty;
+    public string Name { get; set; } = string.Empty;
 }

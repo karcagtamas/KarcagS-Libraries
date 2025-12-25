@@ -4,14 +4,10 @@ using KarcagS.API.Data.Entities;
 
 namespace KarcagS.Common.Demo;
 
-public class DemoContext : DbContext
+public class DemoContext(DbContextOptions<DemoContext> options) : DbContext(options)
 {
     public DbSet<DemoEntry> Entries { get; set; } = default!;
     public DbSet<GenderEntry> Genders { get; set; } = default!;
-
-    public DemoContext(DbContextOptions<DemoContext> options) : base(options)
-    {
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -34,10 +30,10 @@ public class DemoEntry : Entity<string>
 {
     [Key]
     [Required]
-    public override string Id { get; set; } = default!;
+    public override string Id { get; set; } = string.Empty;
 
     [Required]
-    public string Name { get; set; } = default!;
+    public string Name { get; set; } = string.Empty;
 
     [Required]
     public int Age { get; set; }
@@ -61,7 +57,7 @@ public class GenderEntry : Entity<int>
     public override int Id { get; set; }
 
     [Required]
-    public string Name { get; set; } = default!;
+    public string Name { get; set; } = string.Empty;
 
     public virtual ICollection<DemoEntry> Entries { get; set; } = default!;
     public virtual ICollection<DemoEntry> OtherEntries { get; set; } = default!;

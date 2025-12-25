@@ -10,14 +10,9 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace KarcagS.API.Auth.JWT;
 
-public class JWTAuthService : IJWTAuthService
+public class JWTAuthService(IOptions<JWTConfiguration> jwtOptions) : IJWTAuthService
 {
-    private readonly JWTConfiguration jwtConfigurations;
-
-    public JWTAuthService(IOptions<JWTConfiguration> jwtOptions)
-    {
-        jwtConfigurations = jwtOptions.Value;
-    }
+    private readonly JWTConfiguration jwtConfigurations = jwtOptions.Value;
 
     public TokenResult BuildAccessToken(IUser user, IList<string> roles) => BuildAccessToken(user, roles, () => new List<Claim>());
 

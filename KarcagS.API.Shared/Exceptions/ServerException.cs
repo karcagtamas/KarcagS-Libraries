@@ -5,7 +5,7 @@ namespace KarcagS.API.Shared.Exceptions;
 /// </summary>
 public class ServerException : Exception
 {
-    public string? ResourceKey { get; set; } = null;
+    public string? ResourceKey { get; set; }
 
     /// <summary>
     /// Empty init

@@ -56,6 +56,4 @@ public class DemoService(DemoContext context) : TableService<DemoEntry, string>,
     public override Task<bool> AuthorizeAsync(QueryModel query) => Task.FromResult(true);
 }
 
-public interface IDemoService : ITableService<DemoEntry, string>
-{
-}
+public interface IDemoService : ITableService<DemoEntry, string>;

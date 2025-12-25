@@ -1,6 +1,6 @@
 using KarcagS.Shared.Helpers;
 
-namespace KarcagS.Common.Tests.Helpers;
+namespace KarcagS.Shared.Tests.Helpers;
 
 public class DateHelperTest
 {

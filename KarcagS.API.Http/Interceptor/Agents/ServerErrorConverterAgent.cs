@@ -9,7 +9,7 @@ public class ServerErrorConverterAgent : IErrorConverterAgent
     {
         if (exception is ServerException s)
         {
-            return new(s)
+            return new HttpErrorResult(s)
             {
                 Message = new ResourceMessage { Text = s.Message, ResourceKey = s.ResourceKey },
                 SubMessages = []

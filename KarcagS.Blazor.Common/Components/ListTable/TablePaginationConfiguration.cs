@@ -2,7 +2,7 @@
 
 public class TablePaginationConfiguration
 {
-    public bool PaginationEnabled { get; set; } = false;
+    public bool PaginationEnabled { get; set; }
     public int PageSize { get; set; } = 50;
 
     private TablePaginationConfiguration()

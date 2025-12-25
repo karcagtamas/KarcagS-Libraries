@@ -8,7 +8,7 @@ public class BasicErrorConverterAgent : IErrorConverterAgent
 
     public HttpErrorResult? TryToConvert(Exception exception)
     {
-        return new(exception)
+        return new HttpErrorResult(exception)
         {
             Message = new ResourceMessage { Text = FatalError, ResourceKey = "Server.Message.Fatal" },
             SubMessages = []

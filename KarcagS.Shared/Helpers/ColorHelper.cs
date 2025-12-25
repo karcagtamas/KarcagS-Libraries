@@ -15,10 +15,12 @@ public static class ColorHelper
 
     private static List<int> HexToRBG(string colorStr)
     {
-        var rbg = new List<int>();
-        rbg.Add(Convert.ToInt32(colorStr.Substring(1, 2), 16));
-        rbg.Add(Convert.ToInt32(colorStr.Substring(3, 2), 16));
-        rbg.Add(Convert.ToInt32(colorStr.Substring(5, 2), 16));
+        var rbg = new List<int>
+        {
+            Convert.ToInt32(colorStr.Substring(1, 2), 16),
+            Convert.ToInt32(colorStr.Substring(3, 2), 16),
+            Convert.ToInt32(colorStr.Substring(5, 2), 16)
+        };
         return rbg;
     }
 }

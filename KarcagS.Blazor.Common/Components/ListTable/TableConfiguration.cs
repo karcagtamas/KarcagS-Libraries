@@ -8,7 +8,7 @@ public class TableConfiguration<T, TKey> where T : class, IIdentified<TKey>
 {
     public string Title { get; set; } = "Table";
 
-    public List<TableColumn<T, TKey>> Columns { get; set; } = new();
+    public List<TableColumn<T, TKey>> Columns { get; set; } = [];
 
     public TableStyleConfiguration Style { get; set; } = TableStyleConfiguration.Build();
 
@@ -16,7 +16,7 @@ public class TableConfiguration<T, TKey> where T : class, IIdentified<TKey>
 
     public TablePaginationConfiguration Pagination { get; set; } = TablePaginationConfiguration.Build();
 
-    public Func<T, bool> ClickDisableOn { get; set; } = (data) => false;
+    public Func<T, bool> ClickDisableOn { get; set; } = _ => false;
 
     private TableConfiguration() { }
 
@@ -78,7 +78,7 @@ public class TableColumn<T, TKey>
     public Alignment Alignment { get; set; } = Alignment.Left;
     public Func<T, object> ValueGetter { get; set; } = _ => null!;
     public Func<T, TKey, Color> ColorGetter { get; set; } = (_, _) => Color.Default;
-    public Func<object, string> Formatter { get; set; } = data => data?.ToString() ?? string.Empty;
+    public Func<object, string> Formatter { get; set; } = data => data.ToString() ?? string.Empty;
     public int? Width { get; set; }
 
     public TableColumn()
@@ -96,7 +96,7 @@ public class TableColumn<T, TKey>
 public class TableColumnPreset
 {
     public Alignment Alignment { get; init; } = Alignment.Left;
-    public Func<object, string> Formatter { get; init; } = (data) => data?.ToString() ?? string.Empty;
+    public Func<object, string> Formatter { get; init; } = data => data.ToString() ?? string.Empty;
 }
 
 public static class Presets

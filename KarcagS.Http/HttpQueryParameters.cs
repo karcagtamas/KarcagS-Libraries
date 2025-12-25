@@ -34,13 +34,7 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
             return this;
         }
 
-        if (queryParams.ContainsKey(key))
-        {
-            throw new ArgumentException("Key already exists");
-        }
-
-        queryParams[key] = value;
-        return this;
+        return !queryParams.TryAdd(key, value) ? throw new ArgumentException("Key already exists") : this;
     }
 
     /// <summary>
@@ -73,12 +67,12 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     /// <returns>Value for the given key</returns>
     public T Get<T>(string key)
     {
-        if (!queryParams.ContainsKey(key))
+        if (!queryParams.TryGetValue(key, out var param))
         {
             throw new ArgumentException("Key does not exist");
         }
 
-        return (T)queryParams[key];
+        return (T)param;
     }
 
     /// <summary>
@@ -95,12 +89,7 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
             return this;
         }
 
-        if (queryParams.ContainsKey(key))
-        {
-            return this;
-        }
-
-        queryParams[key] = value;
+        queryParams.TryAdd(key, value);
         return this;
     }
 
@@ -121,12 +110,12 @@ public class HttpQueryParameters : IDictionaryState<HttpQueryParameters>
     /// <returns>Value for the given key</returns>
     public T? TryGet<T>(string key)
     {
-        if (!queryParams.ContainsKey(key))
+        if (!queryParams.TryGetValue(key, out var param))
         {
             return default;
         }
 
-        return (T)queryParams[key];
+        return (T)param;
     }
 
     /// <summary>

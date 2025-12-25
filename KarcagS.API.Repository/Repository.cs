@@ -197,7 +197,7 @@ public abstract class Repository<T, TKey>(ILoggerService logger, IPersistence pe
             }
 
             // Last entity is primitive (writeable)
-            if (lastEntity != null && lastType != null)
+            if (lastEntity != null)
             {
                 if (lastType == typeof(string))
                 {

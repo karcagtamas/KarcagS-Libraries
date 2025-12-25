@@ -117,7 +117,7 @@ public class AutoListTableDataSource<T, TKey> : DataSource<T, TKey> where T : cl
 
         var lambda = Expression.Lambda(body, param);
 
-        var queryExpr = Expression.Call(typeof(Queryable), "Where", new[] { typeof(T) }, query.Expression, lambda);
+        var queryExpr = Expression.Call(typeof(Queryable), "Where", [typeof(T)], query.Expression, lambda);
 
         return query.Provider.CreateQuery<T>(queryExpr);
     }

@@ -9,12 +9,7 @@ public class LocalizationService : ILocalizationService
     {
         var localizer = LibraryLocalizer.GetInstance();
 
-        if (localizer.IsRegistered())
-        {
-            return localizer.GetValue(key, args);
-        }
-
-        return string.Format(orElse, args);
+        return localizer.IsRegistered() ? localizer.GetValue(key, args) : string.Format(orElse, args);
     }
 
     public string GetValue(string key, params string[] args)

@@ -6,7 +6,7 @@ public class TableOptions
 {
     public TableFilter Filter { get; set; } = new();
     public TablePagination? Pagination { get; set; }
-    public List<Order> Ordering { get; set; } = new();
+    public List<Order> Ordering { get; set; } = [];
 }
 
 public static class TableOptionsExtensions
