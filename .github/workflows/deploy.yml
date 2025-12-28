@@ -31,7 +31,7 @@ jobs:
         id: version
         run: |
           TAG_NAME="${GITHUB_REF#refs/tags/}"
-          VERSION="{TAG_NAME#v}"
+          VERSION="${TAG_NAME#v}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
 
@@ -46,6 +46,6 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.tag }}
           name: Release ${{ steps.version.outputs.tag }}
-          generate_release_notes: true
+          generate_release_notes: false
           files: |
             nupkgs/*.nupkg
