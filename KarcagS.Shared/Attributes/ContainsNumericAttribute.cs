@@ -4,7 +4,7 @@ using KarcagS.Shared.Helpers;
 
 namespace KarcagS.Shared.Attributes;
 
-public partial class ContainsNumericContainsAttribute : ValidationAttribute, IContainsAttribute
+public partial class ContainsNumericAttribute : ValidationAttribute, IContainsAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {

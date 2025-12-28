@@ -4,7 +4,7 @@ using KarcagS.Shared.Helpers;
 
 namespace KarcagS.Shared.Attributes;
 
-public partial class ContainsCapitalAlphaContainsAttribute : ValidationAttribute, IContainsAttribute
+public partial class ContainsSpecialAttribute : ValidationAttribute, IContainsAttribute
 {
     protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
     {
@@ -20,10 +20,10 @@ public partial class ContainsCapitalAlphaContainsAttribute : ValidationAttribute
         return Error();
     }
 
-    public string GetInvalidMessage() => "Does not contain any capital alpha characters.";
+    public virtual string GetInvalidMessage() => "Does not contain any special characters.";
 
     private ValidationResult Error() => new(GetInvalidMessage());
 
-    [GeneratedRegex(@"^(?=.*[A-Z]).+$", RegexOptions.None)]
+    [GeneratedRegex(@"^(?=.*[-+_!@#$%^&*.,?]).+$", RegexOptions.IgnoreCase, "en-US")]
     private static partial Regex MyRegex();
 }
