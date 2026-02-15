@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <Title>KarcagS API Auth Library</Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>7.0.2</PackageVersion>
-        <AssemblyVersion>7.0.2</AssemblyVersion>
-        <FileVersion>7.0.2</FileVersion>
+        <PackageVersion>7.0.3</PackageVersion>
+        <AssemblyVersion>7.0.3</AssemblyVersion>
+        <FileVersion>7.0.3</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.16.0" />
     </ItemGroup>
 
     <PropertyGroup>

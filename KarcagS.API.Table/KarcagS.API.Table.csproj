@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <Title>KarcagS API Table Library</Title>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>7.0.2</PackageVersion>
-        <AssemblyVersion>7.0.2</AssemblyVersion>
-        <FileVersion>7.0.2</FileVersion>
+        <PackageVersion>7.0.3</PackageVersion>
+        <AssemblyVersion>7.0.3</AssemblyVersion>
+        <FileVersion>7.0.3</FileVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,7 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.3" />
     </ItemGroup>
 
     <PropertyGroup>
