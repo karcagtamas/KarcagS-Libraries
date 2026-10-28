@@ -12,19 +12,20 @@ public class TestTableService : TableService<TestEntity, string>, ITestTableServ
 
     public override Task<DataSource<TestEntity, string>> BuildDataSourceAsync()
     {
-        var dataSource = (DataSource<TestEntity, string>)AutoListTableDataSource<TestEntity, string>.Build(_ => Task.FromResult(new List<TestEntity>
-            {
-                new()
+        var dataSource = (DataSource<TestEntity, string>)LinqListTableDataSource<TestEntity, string>.Build(_ =>
+                Task.FromResult(new List<TestEntity>
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Alma"
-                },
-                new()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = "Korte"
-                }
-            }.AsQueryable()))
+                    new()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = "Alma"
+                    },
+                    new()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = "Korte"
+                    }
+                }.AsQueryable()))
             .SetTextFilteredColumns("Name")
             .OrderBy(x => x.Name, OrderDirection.Descend)
             .ThenBy(x => x.Id)
@@ -39,7 +40,8 @@ public class TestTableService : TableService<TestEntity, string>, ITestTableServ
             .Build("test-table")
             .SetTitle("Test Table")
             .AddColumn(Column<TestEntity, string>.Build("id").SetTitle("Id").AddValueGetter(x => x.Id))
-            .AddColumn(Column<TestEntity, string>.Build("name").SetTitle("Name").AddValueGetter(x => x.Name).MarkAsSortable("Name"))
+            .AddColumn(Column<TestEntity, string>.Build("name").SetTitle("Name").AddValueGetter(x => x.Name)
+                .MarkAsSortable("Name"))
             .AddFilter(FilterConfiguration.Build().IsTextFilterEnabled(true))
             .AddPagination(PaginationConfiguration.Build().IsPaginationEnabled(true))
             .AddOrdering(OrderingConfiguration.Build().IsEnabled());
