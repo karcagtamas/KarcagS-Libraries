@@ -9,8 +9,7 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
 {
     [Parameter, EditorRequired] public required TableDataSource<T, TKey> DataSource { get; set; } = null!;
 
-    [Parameter, EditorRequired]
-    public required TableConfiguration<T, TKey> Config { get; set; } = TableConfiguration<T, TKey>.Build();
+    [Parameter, EditorRequired] public required TableConfiguration<T, TKey> Config { get; set; } = TableConfiguration<T, TKey>.Build();
 
     [Parameter] public EventCallback<RowItem<T, TKey>> OnRowClick { get; set; }
 
@@ -58,7 +57,7 @@ public partial class ListTable<T, TKey> : ComponentBase where T : class, IIdenti
         CancellationToken cancellationToken = default)
     {
         await Refresh(state);
-        return new TableData<RowItem<T, TKey>> { Items = DataSource.Data, TotalItems = DataSource.AllDataCount };
+        return new TableData<RowItem<T, TKey>> { Items = DataSource.Data, TotalItems = (int)DataSource.AllDataCount };
     }
 
     private string GetTDStyle(Alignment alignment)

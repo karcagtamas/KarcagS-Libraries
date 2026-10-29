@@ -17,7 +17,7 @@ public class ListTableDataSource<T, TKey> : DataSource<T, TKey> where T : class,
 
     public override async Task<IEnumerable<T>> LoadDataAsync(QueryModel query, Configuration<T, TKey> configuration) => (await Fetcher(query)).ToList();
 
-    public override async Task<int> LoadAllDataCountAsync(QueryModel query) => (await Fetcher(query)).Count();
+    public override async Task<long> LoadAllDataCountAsync(QueryModel query) => (await Fetcher(query)).Count();
 
-    public override async Task<int> LoadFilteredAllDataCountAsync(QueryModel query, Configuration<T, TKey> configuration) => (await Fetcher(query)).Count();
+    public override async Task<long> LoadFilteredAllDataCountAsync(QueryModel query, Configuration<T, TKey> configuration) => (await Fetcher(query)).Count();
 }

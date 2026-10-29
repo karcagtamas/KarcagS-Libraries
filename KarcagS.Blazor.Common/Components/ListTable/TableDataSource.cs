@@ -8,7 +8,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
 {
     private readonly Func<TableOptions, Task<TableResult<TKey>>> fetcher;
     private readonly List<T> rawData = [];
-    private int allDataCount;
+    private long allDataCount;
     private bool initialized;
 
     private Predicate<T> isDisabled = _ => false;
@@ -21,7 +21,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
     public List<RowItem<T, TKey>> Data = [];
 
     public List<T> RawData => Data.Select(x => x.Data).ToList();
-    public int AllDataCount => allDataCount;
+    public long AllDataCount => allDataCount;
 
     public TableDataSource(Func<TableOptions, Task<TableResult<TKey>>> fetcher)
     {
@@ -97,8 +97,7 @@ public class TableDataSource<T, TKey> where T : class, IIdentified<TKey>
         //rawData = result.Items;
         allDataCount = result.All;
 
-        Data = rawData.Select(x => new RowItem<T, TKey> { Id = x.Id, Data = x })
-            .ToList();
+        Data = [.. rawData.Select(x => new RowItem<T, TKey> { Id = x.Id, Data = x })];
 
         Data.ForEach(x =>
         {

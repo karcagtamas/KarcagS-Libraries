@@ -26,11 +26,11 @@ public class EFListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey> w
         return this;
     }
 
-    public override async Task<int> LoadAllDataCountAsync(QueryModel query) => (await Fetcher(query)).Count();
+    public override async Task<long> LoadAllDataCountAsync(QueryModel query) => (await Fetcher(query)).LongCount();
 
-    public override async Task<int> LoadFilteredAllDataCountAsync(QueryModel query,
+    public override async Task<long> LoadFilteredAllDataCountAsync(QueryModel query,
         Configuration<T, TKey> configuration) =>
-        GetFilteredQuery(query, configuration, await Fetcher(query)).Count();
+        GetFilteredQuery(query, configuration, await Fetcher(query)).LongCount();
 
     public override async Task<IEnumerable<T>> LoadDataAsync(QueryModel query, Configuration<T, TKey> configuration)
     {

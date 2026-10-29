@@ -11,25 +11,50 @@ namespace KarcagS.API.Table.AutoListTable;
 public class Neo4jListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey> where T : class, IIdentified<TKey>
 {
     protected readonly Func<QueryModel, Task<ICypherFluentQuery>> Fetcher;
+    protected readonly Expression<Func<ICypherFluentQuery, ICypherFluentQuery<T>>> ReturnExpression;
+    protected readonly Expression<Func<ICypherFluentQuery, ICypherFluentQuery<long>>> CountExpression;
+    protected readonly string AliasPrefix;
 
-    private Neo4jListTableDataSource(Func<QueryModel, Task<ICypherFluentQuery>> fetcher)
+    private Neo4jListTableDataSource(
+        Func<QueryModel, Task<ICypherFluentQuery>> fetcher,
+        Expression<Func<ICypherFluentQuery, ICypherFluentQuery<T>>> returnExpression,
+        Expression<Func<ICypherFluentQuery, ICypherFluentQuery<long>>> countExpression,
+        string aliasPrefix
+    )
     {
         Fetcher = fetcher;
+        ReturnExpression = returnExpression;
+        CountExpression = countExpression;
+        AliasPrefix = aliasPrefix;
     }
 
-    public static Neo4jListTableDataSource<T, TKey> Build(Func<QueryModel, Task<ICypherFluentQuery>> fetcher) => new(fetcher);
+    public static Neo4jListTableDataSource<T, TKey> Build(Func<QueryModel, Task<ICypherFluentQuery>> fetcher, string aliasPrefix = "e")
+    {
+        return Build(fetcher, x => x.Return<T>(e => e.As<T>()), aliasPrefix);
+    }
 
-    public override async Task<int> LoadAllDataCountAsync(QueryModel query)
+    public static Neo4jListTableDataSource<T, TKey> Build(Func<QueryModel, Task<ICypherFluentQuery>> fetcher, Expression<Func<ICypherFluentQuery, ICypherFluentQuery<T>>> returnExpression, string aliasPrefix = "e")
+    {
+        return Build(fetcher, returnExpression, x => x.Return(e => e.Count()), aliasPrefix);
+    }
+
+    public static Neo4jListTableDataSource<T, TKey> Build(Func<QueryModel, Task<ICypherFluentQuery>> fetcher, Expression<Func<ICypherFluentQuery, ICypherFluentQuery<T>>> returnExpression,
+        Expression<Func<ICypherFluentQuery, ICypherFluentQuery<long>>> countExpression, string aliasPrefix = "e")
+    {
+        return new(fetcher, returnExpression, countExpression, aliasPrefix);
+    }
+
+    public override async Task<long> LoadAllDataCountAsync(QueryModel query)
     {
         var baseQuery = await Fetcher(query);
-        return (await baseQuery.Return<int>("count(e)").ResultsAsync).Single();
+        return (await CountExpression.Compile()(baseQuery).ResultsAsync).Single();
     }
 
-    public override async Task<int> LoadFilteredAllDataCountAsync(QueryModel query, Configuration<T, TKey> configuration)
+    public override async Task<long> LoadFilteredAllDataCountAsync(QueryModel query, Configuration<T, TKey> configuration)
     {
         var baseQuery = await Fetcher(query);
         baseQuery = ApplyCypherFiltering(query, configuration, baseQuery);
-        return (await baseQuery.Return<int>("count(e)").ResultsAsync).Single();
+        return (await CountExpression.Compile()(baseQuery).ResultsAsync).Single();
     }
 
     public override async Task<IEnumerable<T>> LoadDataAsync(QueryModel query, Configuration<T, TKey> configuration)
@@ -44,7 +69,7 @@ public class Neo4jListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey
 
         if (ObjectHelper.IsEmpty(ordering))
         {
-            orderClauses.Add("e.Id ASC");
+            orderClauses.Add($"{AliasPrefix}.Id ASC");
         }
         else
         {
@@ -56,7 +81,7 @@ public class Neo4jListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey
 
             if (IsIdOrderingFallbackRequired())
             {
-                orderClauses.Add("e.Id ASC");
+                orderClauses.Add($"{AliasPrefix}.Id ASC");
             }
         }
 
@@ -67,7 +92,7 @@ public class Neo4jListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey
             queryBuilder = queryBuilder.Skip(query.Size.Value * query.Page.Value).Limit(query.Size.Value);
         }
 
-        return await queryBuilder.Return<T>(e => e.As<T>()).ResultsAsync;
+        return await ReturnExpression.Compile()(queryBuilder).ResultsAsync;
     }
 
     private ICypherFluentQuery ApplyCypherFiltering(QueryModel query, Configuration<T, TKey> configuration, ICypherFluentQuery queryBuilder)
@@ -83,7 +108,7 @@ public class Neo4jListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey
             if (activeColumns.Count == 0) return;
 
             var cypherExpressions =
-                activeColumns.Select(col => $"e.{string.Join(".", col.OrderBy.Split('.'))} =~ $regexFilter");
+                activeColumns.Select(col => $"{AliasPrefix}.{string.Join(".", col.OrderBy.Split('.'))} =~ $regexFilter");
             queryBuilder = (ICypherFluentQuery<T>)queryBuilder
                 .Where(string.Join(" OR ", cypherExpressions))
                 .WithParam("regexFilter", $"(?i).*{filter}.*");
@@ -92,7 +117,7 @@ public class Neo4jListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey
         return queryBuilder;
     }
 
-    private static string ExtractCypherPropertyPath(Expression<Func<T, object?>> expression)
+    private string ExtractCypherPropertyPath(Expression<Func<T, object?>> expression)
     {
         Expression? body = expression.Body;
         if (body is UnaryExpression { NodeType: ExpressionType.Convert } unary) body = unary.Operand;
@@ -104,8 +129,8 @@ public class Neo4jListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey
             body = member.Expression;
         }
 
-        if (parts.Count == 0) return "e.Id";
+        if (parts.Count == 0) return $"{AliasPrefix}.Id";
         parts.Reverse();
-        return $"e.{string.Join(".", parts)}";
+        return $"{AliasPrefix}.{string.Join(".", parts)}";
     }
 }

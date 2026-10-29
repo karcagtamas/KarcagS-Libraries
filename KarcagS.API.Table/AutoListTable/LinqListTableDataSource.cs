@@ -16,11 +16,11 @@ public class LinqListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey>
 
     public static LinqListTableDataSource<T, TKey> Build(Func<QueryModel, Task<IQueryable<T>>> fetcher) => new(fetcher);
 
-    public override async Task<int> LoadAllDataCountAsync(QueryModel query) => (await Fetcher(query)).Count();
+    public override async Task<long> LoadAllDataCountAsync(QueryModel query) => (await Fetcher(query)).LongCount();
 
-    public override async Task<int> LoadFilteredAllDataCountAsync(QueryModel query,
+    public override async Task<long> LoadFilteredAllDataCountAsync(QueryModel query,
         Configuration<T, TKey> configuration) =>
-        GetFilteredQuery(query, configuration, await Fetcher(query)).Count();
+        GetFilteredQuery(query, configuration, await Fetcher(query)).LongCount();
 
     public override async Task<IEnumerable<T>> LoadDataAsync(QueryModel query, Configuration<T, TKey> configuration)
     {

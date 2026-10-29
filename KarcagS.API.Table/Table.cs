@@ -13,9 +13,9 @@ public abstract class Table<T, TKey>(DataSource<T, TKey> dataSource, Configurati
 
     public abstract Task<IEnumerable<T>> GetDataAsync(QueryModel query);
 
-    public abstract Task<int> GetAllDataCountAsync(QueryModel query);
+    public abstract Task<long> GetAllDataCountAsync(QueryModel query);
 
-    public abstract Task<int> GetAllFilteredCountAsync(QueryModel query);
+    public abstract Task<long> GetAllFilteredCountAsync(QueryModel query);
 
     public TableMetaData GetMetaData() => Configuration.Convert();
 

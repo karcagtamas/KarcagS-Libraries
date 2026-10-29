@@ -193,7 +193,7 @@ public partial class Table<TKey> : ComponentBase, IDisposable
         return new TableData<TableRowItem<TKey>>
         {
             Items = data.Result.Items.Select(x => new TableRowItem<TKey>(x, TableStyle, MetaData)).ToList(),
-            TotalItems = data.Result.FilteredAll
+            TotalItems = (int)data.Result.FilteredAll
         };
     }
 

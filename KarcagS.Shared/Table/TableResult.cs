@@ -3,12 +3,12 @@
 public class TableResult<TKey>
 {
     public List<ResultItem<TKey>> Items { get; set; } = [];
-    public int AllItemCount { get; set; } = -1;
-    public int FilteredAllItemCount { get; set; } = -1;
+    public long AllItemCount { get; set; } = -1;
+    public long FilteredAllItemCount { get; set; } = -1;
 
-    public int All => AllItemCount == -1 ? Items.Count : AllItemCount;
+    public long All => AllItemCount == -1 ? Items.Count : AllItemCount;
 
-    public int FilteredAll => FilteredAllItemCount == -1 ? All : FilteredAllItemCount;
+    public long FilteredAll => FilteredAllItemCount == -1 ? All : FilteredAllItemCount;
 }
 
 public class ResultItem<TKey>

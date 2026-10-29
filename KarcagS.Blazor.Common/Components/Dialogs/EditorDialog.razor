@@ -98,6 +98,7 @@
                 ? LocalizationService.GetValue(LibraryLocalizer.EditorEditEntityKey, "Edit {0}", EntityName)
                 : LocalizationService.GetValue(LibraryLocalizer.EditorCreateEntityKey, "Create {0}", EntityName);
         }
+
         StateHasChanged();
     }
 
@@ -115,7 +116,7 @@
             return;
         }
 
-        await Form.Validate();
+        await Form.ValidateAsync();
         if (!CanSave()) return;
 
         if (ObjectHelper.IsNotNull(FormValidator))
@@ -147,12 +148,12 @@
         }
 
         await ConfirmService.Open(new ConfirmDialogInput
-        {
-            Message = !string.IsNullOrEmpty(RemoveConfirmMessage)
-                ? RemoveConfirmMessage
-                : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteMessageKey, $"Are you sure you want to delete {EntityName}?", EntityName),
-            ActionFunction = async () => await Remove()
-        },
+            {
+                Message = !string.IsNullOrEmpty(RemoveConfirmMessage)
+                    ? RemoveConfirmMessage
+                    : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteMessageKey, $"Are you sure you want to delete {EntityName}?", EntityName),
+                ActionFunction = async () => await Remove()
+            },
             !string.IsNullOrEmpty(RemoveConfirmTitle)
                 ? RemoveConfirmTitle
                 : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteTitleKey, "Confirm Delete"),
