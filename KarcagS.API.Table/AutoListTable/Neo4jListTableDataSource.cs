@@ -10,15 +10,14 @@ namespace KarcagS.API.Table.AutoListTable;
 
 public class Neo4jListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey> where T : class, IIdentified<TKey>
 {
-    protected readonly Func<QueryModel, Task<ICypherFluentQuery<T>>> Fetcher;
+    protected readonly Func<QueryModel, Task<ICypherFluentQuery>> Fetcher;
 
-    private Neo4jListTableDataSource(Func<QueryModel, Task<ICypherFluentQuery<T>>> fetcher)
+    private Neo4jListTableDataSource(Func<QueryModel, Task<ICypherFluentQuery>> fetcher)
     {
         Fetcher = fetcher;
     }
 
-    public static Neo4jListTableDataSource<T, TKey> Build(Func<QueryModel, Task<ICypherFluentQuery<T>>> fetcher) =>
-        new(fetcher);
+    public static Neo4jListTableDataSource<T, TKey> Build(Func<QueryModel, Task<ICypherFluentQuery>> fetcher) => new(fetcher);
 
     public override async Task<int> LoadAllDataCountAsync(QueryModel query)
     {
@@ -26,8 +25,7 @@ public class Neo4jListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey
         return (await baseQuery.Return<int>("count(e)").ResultsAsync).Single();
     }
 
-    public override async Task<int> LoadFilteredAllDataCountAsync(QueryModel query,
-        Configuration<T, TKey> configuration)
+    public override async Task<int> LoadFilteredAllDataCountAsync(QueryModel query, Configuration<T, TKey> configuration)
     {
         var baseQuery = await Fetcher(query);
         baseQuery = ApplyCypherFiltering(query, configuration, baseQuery);
@@ -69,11 +67,10 @@ public class Neo4jListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey
             queryBuilder = queryBuilder.Skip(query.Size.Value * query.Page.Value).Limit(query.Size.Value);
         }
 
-        return await queryBuilder.ResultsAsync;
+        return await queryBuilder.Return<T>(e => e.As<T>()).ResultsAsync;
     }
 
-    private ICypherFluentQuery<T> ApplyCypherFiltering(QueryModel query, Configuration<T, TKey> configuration,
-        ICypherFluentQuery<T> queryBuilder)
+    private ICypherFluentQuery ApplyCypherFiltering(QueryModel query, Configuration<T, TKey> configuration, ICypherFluentQuery queryBuilder)
     {
         ObjectHelper.WhenNotNull(query.TextFilter, filter =>
         {
@@ -98,7 +95,7 @@ public class Neo4jListTableDataSource<T, TKey> : AutoListTableDataSource<T, TKey
     private static string ExtractCypherPropertyPath(Expression<Func<T, object?>> expression)
     {
         Expression? body = expression.Body;
-        if (body is UnaryExpression unary && unary.NodeType == ExpressionType.Convert) body = unary.Operand;
+        if (body is UnaryExpression { NodeType: ExpressionType.Convert } unary) body = unary.Operand;
 
         var parts = new List<string>();
         while (body is MemberExpression member)
